@@ -1,36 +1,51 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Contact Us</title>
-        <link rel="stylesheet" href="Feedback.css">
-    </head>
-    <body>
-        <ul class="Navbar">
-            <li><a href="default.asp">Home</a></li>
-            <li><a href="news.asp">Event</a></li>
-            <li><a href="donate.asp">Donate</a></li>
-            <li><a href="contact.asp">Contact</a></li>
-            <li><a href="about.asp">Account</a></li>
-        </ul>
-        <div id="feedback-form-wrapper">
-            <div id="banner">
-                <h1>Feedback</h1>
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us User</title>
+    <link rel="stylesheet" href="Feedback.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <ul class="Navbar">
+        <li><a href="default.asp">Home</a></li>
+        <li><a href="news.asp">Event</a></li>
+        <li><a href="donate.asp">Donate</a></li>
+        <li><a href="contact.asp">Contact</a></li>
+        <li><a href="about.asp">Account</a></li>
+    </ul>
+    <div id="feedback-form-wrapper">
+        <div id="banner">
+            <img src="assets/bannerforest.webp" alt="Banner Image">
+            <h1>Have Something To Tell?</h1>
+        </div>
+    </div>
+
+    <div class="contact-container">
+        <form action="" class="contact-left">
+            <div class="contact-left-title">
+                <h2>Tell Us!</h2>
+                <h3>Feel Free to contact us any time! <br>
+                    We will get back to you as fast as possible</h3>
+                <hr>
+            </div>
+            <input type="text" name="name" placeholder="Your Name" class="contact-inputs" required>
+            <input type="email" name="email" placeholder="Your Email" class="contact-inputs" required>
+            <input name="feedbackTitle" placeholder="Your Feedback Title" class="contact-inputs" required>
+            <textarea name="feedback" placeholder="Your Feedback" class="contact-inputs" required></textarea>
+            <button type="submit">Submit <img src="assets/arrow_icon.png"></button>
+        </form>
+        <div class="contact-right">
+            <div class="contact-right-title">
+                <h2>Contact Us!</h2>
+                <hr>
+                <ul>
+                    <li><i class="fas fa-phone"></i> Phone: (65) 456-7890</li>
+                                <li><i class="fab fa-instagram"></i> Instagram: @EcoImpact</li>
+                                <li><i class="fas fa-envelope"></i> Email: EcoImpact@gmail.com</li>
+                </ul>
             </div>
         </div>
-
-        <div class = "contact-container">
-            <form action="" class="contact-left">
-                <div class = "contact-left-title">
-                    <h2>Get in touch</h2>
-                    <hr>
-                </div>
-                <input type = "text" name = "name" placeholder="Your Name" class = "contact-inputs" required>
-                <input type = "email" name = "email" placeholder="Your Email" class = "contact-inputs" required>
-                <textarea name = "feedback" placeholder="Your Feedback" class = "contact-inputs" required></textarea>
-                <button type = "submit">Submit <img src = "assets/arrow_icon.png"></button>
-            </form>
-        </div>
-
-    </body>
+    </div>
+</body>
 </html>
