@@ -191,19 +191,21 @@ body {
 /* FEEDBACK STAFF */
 .feedback-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
 }
 
 .feedback-box {
+    position: relative; /* Allows positioning of buttons */
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 10px;
+    margin: 10px 0;
     padding: 20px;
-    width: 300px;
+    width: 80%; /* Adjust the width as needed */
+    max-width: 600px; /* Optional max width */
     box-sizing: border-box;
 }
 
@@ -212,5 +214,18 @@ body {
 }
 
 .feedback-box p {
-    margin-bottom: 0;
+    margin-bottom: 10px;
+}
+
+.action-buttons {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.action-buttons button {
+    margin-left: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border: none;
 }
