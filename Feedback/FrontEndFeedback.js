@@ -8,20 +8,26 @@ function deleteFeedback() {
     var modal = document.getElementById('deleteConfirmationModal');
     var feedbackId = modal.dataset.feedbackId;
     closeModal();
-    // Handle delete action here, e.g., remove the feedback box from DOM
     var feedbackBox = document.getElementById(feedbackId);
     feedbackBox.parentNode.removeChild(feedbackBox);
 }
 
 function closeModal() {
-    var modal = document.getElementById('deleteConfirmationModal');
-    modal.style.display = 'none';
-    modal.dataset.feedbackId = '';
+    var deleteModal = document.getElementById('deleteConfirmationModal');
+    var respondModal = document.getElementById('respondConfirmationModal');
+    
+    if (deleteModal.style.display === 'block') {
+        deleteModal.style.display = 'none';
+    }
+    
+    if (respondModal.style.display === 'block') {
+        respondModal.style.display = 'none';
+    }
 }
+
 
 function confirmRespond() {
     if (confirm("Do you really want to respond to this feedback?")) {
-        // Navigate to a new page for responding
-        window.location.href = 'respond.html'; // Replace with your response page URL
+        window.location.href = 'FeedbackResponse.html';
     }
 }
