@@ -1,11 +1,15 @@
 const Feedback = require("../models/feedback");
 
-const getAllFeedback = async (req, res) => {
+const getAllFeedbacks = async (req, res) => {
     try {
-      const Feedbacks = await Feedback.getAllBooks();
-      res.json(Feedbacks);
+        const feedbacks = await Feedback.getAllFeedbacks();
+        res.json(feedbacks);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Error retrieving Feedbacks");
+        console.error(error);
+        res.status(500).send("Error retrieving feedbacks");
     }
-  };
+};
+
+module.exports = {
+    getAllFeedbacks,
+};
