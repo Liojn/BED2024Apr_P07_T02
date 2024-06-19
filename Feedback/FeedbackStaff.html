@@ -14,7 +14,7 @@
             <li><a href="contact.asp">Contact</a></li>
             <li><a href="about.asp">Account</a></li>
         </ul>
-
+    
         <div class="feedback-container">
             <div class="feedback-box">
                 <h3>User 1</h3>
@@ -41,6 +41,29 @@
                 </div>
             </div>
         </div>
-
+    
+        <div id="deleteConfirmationModal" class="modal">
+            <div class="modal-content">
+                <p>Do you really want to delete this feedback?</p>
+                <div class="modal-actions">
+                    <button class="yes-btn" onclick="deleteFeedback()">Yes</button>
+                    <button class="no-btn" onclick="closeModal()">No</button>
+                </div>
+            </div>
+        </div>
+    
+        <div id="respondConfirmationModal" class="modal">
+            <div class="modal-content">
+                <p>Do you really want to respond to this feedback?</p>
+                <div class="modal-actions">
+                    <button class="yes-btn" onclick="respondFeedback()">Yes</button>
+                    <button class="no-btn" onclick="closeModal()">No</button>
+                </div>
+            </div>
+        </div>
+    
+    
+    
+        <script src = "FrontEndFeedback.js"></script>
     </body>
 </html>

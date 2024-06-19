@@ -1,6 +1,6 @@
 module.exports = {
-    user: "eco_impact", // Replace with your SQL Server login username
-    password: "eco_impact", // Replace with your SQL Server login password
+    user: "BEDassignment", // Replace with your SQL Server login username
+    password: "bed_assignment", // Replace with your SQL Server login password
     server: "localhost",
     database: "eco_impact",
     trustServerCertificate: true,
