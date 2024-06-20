@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Contact Us Staff</title>
+        <link rel="stylesheet" href="../css/Feedback.css">
+    </head>
+
+    <body>
+        <ul class="Navbar">
+            <li><a href="default.asp">Home</a></li>
+            <li><a href="news.asp">Event</a></li>
+            <li><a href="donate.asp">Donate</a></li>
+            <li><a href="contact.asp">Contact</a></li>
+            <li><a href="about.asp">Account</a></li>
+        </ul>
+    
+        <div class="feedback-container" id="feedbackContainer">
+
+        </div>
+    
+        <div id="deleteConfirmationModal" class="modal">
+            <div class="modal-content">
+                <p>Do you really want to delete this feedback?</p>
+                <div class="modal-actions">
+                    <button class="yes-btn" onclick="deleteFeedback()">Yes</button>
+                    <button class="no-btn" onclick="closeModal()">No</button>
+                </div>
+            </div>
+        </div>
+    
+        <div id="respondConfirmationModal" class="modal">
+            <div class="modal-content">
+                <p>Do you really want to respond to this feedback?</p>
+                <div class="modal-actions">
+                    <button class="yes-btn" onclick="respondFeedback()">Yes</button>
+                    <button class="no-btn" onclick="closeModal()">No</button>
+                </div>
+            </div>
+        </div>
+    
+        <script src="../script/FrontEndFeedback.js"></script>
+    </body>
+</html>
