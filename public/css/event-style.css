@@ -1,0 +1,44 @@
+/*Nav Bar Header*/
+#logined-nav {
+    overflow: hidden;
+}
+
+#logined-nav .logo{
+    float:left;
+    padding-left: 2%;
+    padding-bottom: 15px;
+    padding-top: 25px;
+}
+
+#logined-nav .logo img{
+    height:35px;
+    width:140px;
+}
+
+#logined-nav nav {
+    float: right;
+}
+
+#logined-nav nav a {
+    float: left;
+    text-align: center;
+    padding-top: 45px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 12px;
+    text-decoration: none;
+    font-size: 17px;
+    color: black;
+    font-family: "Lato", sans-serif;
+}
+
+#logined-nav nav #currentpage {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#logined-nav nav a:hover {
+    background-color: #4CAF50;
+    color: white;
+    transition: 1s;
+}
