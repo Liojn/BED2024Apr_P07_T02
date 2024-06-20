@@ -22,6 +22,8 @@ class Feedback {
             (row) => new Feedback(row.Fid, row.name, row.email, row.title, row.feedback, row.verified)
         );
     }
+
+    
 }
 
 module.exports = Feedback;
