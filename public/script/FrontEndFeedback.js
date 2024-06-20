@@ -49,9 +49,11 @@ async function fetchFeedbacks() {
             feedbackBox.id = `feedback-${feedback.Fid}`; // Set unique id
 
             feedbackBox.innerHTML = `
-                <h2>${feedback.name}</h2>
-                <h3>${feedback.email}</h3>
-                <h1>${feedback.title}</h1>
+                <h1>Title: ${feedback.title}</h1>
+                <h2>Name: ${feedback.name}</h2>
+                <h3>Email: ${feedback.email}</h3>
+                <hr>
+                <h3>Description:</h3>
                 <p>${feedback.feedback}</p>
                 <div class="action-buttons">
                     <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
