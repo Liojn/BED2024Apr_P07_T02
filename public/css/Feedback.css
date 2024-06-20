@@ -147,7 +147,6 @@ body {
     height: 15px;
 }
 
-
 .contact-right ul {
     list-style: none;
     padding: 0;
@@ -172,7 +171,7 @@ body {
     border-bottom: 1px solid #79bd55;
 }
 
-.contact-right hr{
+.contact-right hr {
     border: none;
     width: 120px;
     height: 5px;
@@ -197,15 +196,15 @@ body {
 }
 
 .feedback-box {
-    position: relative; /* Allows positioning of buttons */
+    position: relative; 
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin: 10px 0;
     padding: 20px;
-    width: 80%; /* Adjust the width as needed */
-    max-width: 600px; /* Optional max width */
+    width: 100%; 
+    max-width: 1000px; 
     box-sizing: border-box;
 }
 
@@ -214,7 +213,13 @@ body {
 }
 
 .feedback-box p {
+    margin-left: 30px;
     margin-bottom: 10px;
+}
+
+.feedback-box hr {
+    margin-bottom: 30px;
+    margin-top: 15px;
 }
 
 .action-buttons {

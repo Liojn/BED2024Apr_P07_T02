@@ -1,17 +1,18 @@
 const express = require("express");
-const sql = require("mssql"); 
+const sql = require("mssql");
 const feedbackController = require("./controllers/feedbackController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.PORT || 3000;
-const staticMiddleware = express.static("public");
+const staticMiddleware = express.static("public");  // Changed to serve from 'public' directory
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(staticMiddleware);
 
+// Feedback Routes
 app.get("/feedbacks", feedbackController.getAllFeedbacks);
 
 app.listen(port, async () => {
