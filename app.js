@@ -3,7 +3,7 @@ const sql = require("mssql");
 const feedbackController = require("./controllers/feedbackController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
-
+ 
 const app = express();
 const port = process.env.PORT || 3000;
 const staticMiddleware = express.static("public");  // Changed to serve from 'public' directory
@@ -14,6 +14,7 @@ app.use(staticMiddleware);
 
 // Feedback Routes
 app.get("/feedbacks", feedbackController.getAllFeedbacks);
+app.delete("/feedback/:id",feedbackController.deleteFeedback);
 
 app.listen(port, async () => {
     try {

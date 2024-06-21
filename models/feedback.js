@@ -24,6 +24,21 @@ class Feedback {
     }
 
     
+    static async deleteFeedback(Fid){
+        const connect =await sql.connect(dbConfig);
+
+        const sqlQuery = `DELETE FROM Feedback WHERE Fid = @Fid`; // Parameterized query
+
+        const request = connecttion.request();
+        request.input("Fid",Fid);
+        const result = await request.query(sqlQuery);
+
+        connection.close();
+
+        return result.rowsAffected >0;
+    }
+
+    
 }
 
 module.exports = Feedback;
