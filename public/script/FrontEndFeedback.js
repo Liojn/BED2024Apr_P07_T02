@@ -12,7 +12,7 @@ async function deleteFeedback() {
     var feedbackBox = document.getElementById(feedbackId);
 
     try {
-        const response = await fetch(`/feedback/${feedbackId.split('-')[1]}`, {
+        const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {
             method: 'DELETE',
         });
 
