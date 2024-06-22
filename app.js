@@ -15,7 +15,8 @@ app.use(staticMiddleware);
 
 // Feedback Routes
 app.get("/feedbacks", feedbackController.getAllFeedbacks);
-app.delete("/feedback/:id",feedbackController.deleteFeedback);
+app.get("/feedbacks/:id", feedbackController.getFeedbackById);
+app.delete("/feedbacks/:id",feedbackController.deleteFeedback);
 
 // Event Routes
 app.get("/events", eventController.getAllEvents);

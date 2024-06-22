@@ -10,11 +10,25 @@ const getAllFeedbacks = async (req, res) => {
     }
 };
 
+const getFeedbackById = async (req, res) => {
+  const Fid = parseInt(req.params.id);
+  try {
+    const fb = await Feedback.getFeedbackById(Fid);
+    if (!fb) {
+      return res.status(404).send("Feedback not found");
+    }
+    res.json(fb);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error retrieving feedback");
+  }
+};
+
 const deleteFeedback = async (req, res) => {
     const Fid = parseInt(req.params.id);
   
     try {
-      const success = await Feedback.deleteBook(Fid);
+      const success = await Feedback.deleteFeedback(Fid);
       if (!success) {
         return res.status(404).send("Feedback not found");
       }
@@ -27,5 +41,6 @@ const deleteFeedback = async (req, res) => {
 
 module.exports = {
     getAllFeedbacks,
+    getFeedbackById,
     deleteFeedback,
 };
