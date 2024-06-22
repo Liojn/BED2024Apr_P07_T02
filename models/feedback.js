@@ -24,12 +24,35 @@ class Feedback {
     }
 
     
-    static async deleteFeedback(Fid){
-        const connect =await sql.connect(dbConfig);
+    static async getFeedbackById(Fid){
+        const connection = await sql.connect(dbConfig);
 
+        const sqlQuery = `SELECT * FROM Feedback WHERE Fid = @Fid`; // Parameterized query
+
+        const request = connection.request();
+        request.input("Fid",Fid);
+        const result = await request.query(sqlQuery)
+
+        connection.close();
+
+        return result.recordset[0]
+        ? new Feedback(
+            result.recordset[0].Fid,
+            result.recordset[0].name,
+            result.recordset[0].email,
+            result.recordset[0].title,
+            result.recordset[0].feedback,
+            result.recordset[0].verified,   
+        )
+        : null;
+    }
+
+    
+    static async deleteFeedback(Fid){
+        const connection = await sql.connect(dbConfig);
         const sqlQuery = `DELETE FROM Feedback WHERE Fid = @Fid`; // Parameterized query
 
-        const request = connecttion.request();
+        const request = connection.request();
         request.input("Fid",Fid);
         const result = await request.query(sqlQuery);
 
