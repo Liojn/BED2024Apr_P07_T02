@@ -10,6 +10,22 @@ const getAllFeedbacks = async (req, res) => {
     }
 };
 
+const deleteFeedback = async (req, res) => {
+    const Fid = parseInt(req.params.id);
+  
+    try {
+      const success = await Feedback.deleteBook(Fid);
+      if (!success) {
+        return res.status(404).send("Feedback not found");
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error deleting feedback");
+    }
+  };
+
 module.exports = {
     getAllFeedbacks,
+    deleteFeedback,
 };
