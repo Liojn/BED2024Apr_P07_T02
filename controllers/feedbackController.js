@@ -39,8 +39,22 @@ const deleteFeedback = async (req, res) => {
     }
   };
 
+const createFeedback = async (req, res) => {
+    const newFeedback = req.body;
+    try {
+      const createdFeedback = await Feedback.createFeedback(newFeedback);
+      res.status(201).json(createdFeedback);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error creating Feedback");
+    }
+  };
+
+  
+
 module.exports = {
     getAllFeedbacks,
     getFeedbackById,
     deleteFeedback,
+    createFeedback,
 };
