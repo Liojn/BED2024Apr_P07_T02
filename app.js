@@ -1,6 +1,7 @@
 const express = require("express");
 const sql = require("mssql");
 const feedbackController = require("./controllers/feedbackController");
+const eventController = require("./controllers/eventController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
  
@@ -15,6 +16,9 @@ app.use(staticMiddleware);
 // Feedback Routes
 app.get("/feedbacks", feedbackController.getAllFeedbacks);
 app.delete("/feedback/:id",feedbackController.deleteFeedback);
+
+// Event Routes
+app.get("/events", eventController.getAllEvents);
 
 app.listen(port, async () => {
     try {
