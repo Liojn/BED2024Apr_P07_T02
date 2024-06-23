@@ -1,0 +1,207 @@
+.inter-regular {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0;
+}
+  .itim-regular {
+    font-family: "Itim", cursive;
+    font-weight: 400;
+    font-style: normal;
+  }  
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    text-align: center;
+}
+
+header {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+header .modifyText {
+    color: rgb(39, 193, 39);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.welcome {
+    font-family: "Itim", cursive;
+    font-size: 32px;
+    margin-bottom: 20px;
+    word-wrap: break-word;
+}
+
+.welcome .modifyText {
+    color:rgb(111, 250, 42)
+}
+
+.btn_login_signup{
+    margin-bottom: 10px;
+}
+
+.btn_login_signup button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    font-family: "Inter", sns-serif;
+    font-weight: bold;
+    border-radius: 12px;
+}
+
+.btn_login_signup .login {
+    background-color: rgb(171, 252, 156);
+}
+
+.btn_login_signup .signup {
+    background-color: rgb(31, 154, 31);
+    color:white;
+}
+
+.credits {
+    font-size: 12px;
+    position: absolute;
+    bottom: 10px;
+    text-align: center;
+    width: 100%;
+}
+
+.subheader {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+    font-family: "Inter", sns-serif;
+    font-weight: bold; 
+    font-size: 20px;
+}
+
+.input_container {
+    background-color: white;
+    padding: 20px 40px; 
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 350px;
+}
+
+.google-signup {
+    background-color: #e3ecfc;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 70%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 10px;
+}
+
+.google-signup:hover {
+    background-color: #d4dcea;
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ccc;
+}
+
+.separator::before {
+    margin-right: .25em;
+}
+
+.separator::after {
+    margin-left: .25em;
+}
+
+.separator span {
+    color: #666;
+    font-size: 12px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 15px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.user-input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.user-input label {
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.user-input input {
+    width: 100% ;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.redirect {
+    margin: 10px 10px;
+    font-size: 10px;
+    font-style: italic;
+}
+
+.redirect a {
+    color: #4285F4;
+    text-decoration: none;
+}
+
+.submit_button {
+    width: 60%;
+    background-color: #97ea9a;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.submit_button:hover {
+    background-color: #8dec92;
+} 
