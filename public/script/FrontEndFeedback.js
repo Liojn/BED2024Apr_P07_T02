@@ -12,7 +12,9 @@ function deleteFeedback() {
     var feedbackBox = document.getElementById(feedbackId);
     feedbackBox.parentNode.removeChild(feedbackBox);
 }
-
+document.getElementById('donate').addEventListener('click', function() {
+    window.location.href = "donationPage.html";
+});
 function closeModal() {
     var deleteModal = document.getElementById('deleteConfirmationModal');
     var respondModal = document.getElementById('respondConfirmationModal');

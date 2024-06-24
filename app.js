@@ -1,6 +1,8 @@
 const express = require("express");
 const sql = require("mssql");
 const feedbackController = require("./controllers/feedbackController");
+const donationController = require("./controllers/donationController");
+
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
 
@@ -14,6 +16,7 @@ app.use(staticMiddleware);
 
 // Feedback Routes
 app.get("/feedbacks", feedbackController.getAllFeedbacks);
+app.get("/donations", donationController.getAllDonations);
 
 app.listen(port, async () => {
     try {

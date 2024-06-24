@@ -15,7 +15,7 @@
                     <a href="#">Home</a>
                     <a href="#">Event</a>
                     <a id = "currentpage" href="#">Donate</a>
-                    <a href="#">Contact</a>
+                    <a href="#" id = "contactus">Contact</a>
                     <a href="#">Account</a>
                 </div>
             </nav>
@@ -33,7 +33,79 @@
         <div class = "numbers">120,041+</div>
         <div class = "donation-overlay2">people already joining</div>
     </div>
+    <div class = "Donation-form">
+        <img src = "Rectangle 21.png" class = "form-image">
+        <div class="form-container">
+            <img src="Rectangle 20.png" class="form">
+            <div class="overlay-rectangle">
+                <p class = "title">Make A Donation</p>
+                <h3 class = "subtitle">Select your company to donate to:</h3>
+                <div class="dropdown" id="companyDropdown">
+                    <div class="dropdown-toggle" onclick="toggleDropdown()">Company Name</div>
+                    <div class="dropdown-content" id="dropdownContent">
+                        <a href="#" onclick="selectCompany('Company A')">Company A</a>
+                        <a href="#" onclick="selectCompany('Company B')">Company B</a>
+                        <a href="#" onclick="selectCompany('Company C')">Company C</a>
+                        <a href="#" onclick="selectCompany('Company D')">Company D</a>
+                    </div>
+                    <form id="donationForm">
+                        <h3 class = "donationSelection">Select a donation amount:</h3>
+                        <label>
+                            <input type="radio" name="donation" value="10">
+                            $10
+                        </label><br>
+                        <label>
+                            <input type="radio" name="donation" value="20">
+                            $20
+                        </label><br>
+                        <label>
+                            <input type="radio" name="donation" value="50">
+                            $50
+                        </label><br>
+                        <label class="custom-amount">
+                            <input type="radio" name="donation" value="custom" id="customAmountRadio">
+                            Other: $
+                            <input type="number" id="customAmountInput" min="1" disabled>
+                        </label><br>
+                    </form>
+                    <div class = "submit-button">Submit</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
+<script>
+    function toggleDropdown() {
+    var dropdown = document.getElementById("companyDropdown");
+    dropdown.classList.toggle("active");
+}
+    document.getElementById('contactus').addEventListener('click', function() {
+            window.location.href = "FeedbackUser.html";
+        });
+    function selectCompany(companyName) {
+            event.preventDefault();
+            document.querySelector(".dropdown-toggle").innerText = companyName;
+            toggleDropdown(); // Optionally close the dropdown after selection
+        }
+        // Get references to the custom amount radio and input elements
+        const customAmountRadio = document.getElementById('customAmountRadio');
+        const customAmountInput = document.getElementById('customAmountInput');
+
+        // Add event listeners to the radio buttons
+        const donationRadios = document.querySelectorAll('input[name="donation"]');
+        donationRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    customAmountInput.disabled = false;
+                    customAmountInput.focus();
+                } else {
+                    customAmountInput.disabled = true;
+                }
+            });
+        });
+
+</script>
 </html>
