@@ -5,12 +5,25 @@ function confirmDelete(button) {
     modal.dataset.feedbackId = button.closest('.feedback-box').id;
 }
 
-function deleteFeedback() {
+async function deleteFeedback() {
     var modal = document.getElementById('deleteConfirmationModal');
     var feedbackId = modal.dataset.feedbackId;
     closeModal();
     var feedbackBox = document.getElementById(feedbackId);
-    feedbackBox.parentNode.removeChild(feedbackBox);
+
+    try {
+        const response = await fetch(`/feedback/${feedbackId.split('-')[1]}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            feedbackBox.parentNode.removeChild(feedbackBox);
+        } else {
+            console.error('Failed to delete feedback:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error deleting feedback:', error);
+    }
 }
 
 function closeModal() {
@@ -26,6 +39,11 @@ function closeModal() {
     }
 }
 
+function confirmDelete(button) {
+    var modal = document.getElementById('deleteConfirmationModal');
+    modal.style.display = 'block';
+    modal.dataset.feedbackId = button.closest('.feedback-box').id;
+}
 
 function confirmRespond() {
     if (confirm("Do you really want to respond to this feedback?")) {
@@ -33,9 +51,14 @@ function confirmRespond() {
     }
 }
 
+function confirmDelete(button) {
+    var modal = document.getElementById('deleteConfirmationModal');
+    modal.style.display = 'block';
+    modal.dataset.feedbackId = button.closest('.feedback-box').id;
+}
+
+
 //Adding Data
-
-
 async function fetchFeedbacks() {
     try {
         const response = await fetch("/feedbacks");
