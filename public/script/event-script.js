@@ -1,4 +1,10 @@
 
+localStorage.setItem('username', 'msneoERC');
+
+const navigatetoEventForm = () => {
+    window.location.href = "../html/event-creation.html"
+}
+
 //GET function for ALL events in the event.html
 async function getAllEvents(eventIndicator) {
     try {
@@ -37,7 +43,7 @@ async function getAllEvents(eventIndicator) {
             eventIndicator[0].appendChild(eventBox);
         });
 
-    } catch (error) {
+    } catch (error) { //error handling
         console.log(error);
     }
 }
@@ -54,3 +60,44 @@ function formatted_date(dateString) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
 }
+
+document.getElementById('eventForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    let title = document.getElementById('title').value;
+    let date = document.getElementById('date').value;
+    let startTime = document.getElementById('start-time').value;
+    let endTime = document.getElementById('end-time').value;
+    let location = document.getElementById('location').value;
+    let description = document.getElementById('description').value;
+    let username = localStorage.getItem('username');
+
+    const jsonData ={
+        "title": title,
+        "date": date,
+        "startTime": startTime,
+        "endTime": endTime,
+        "location": location,
+        "description": description,
+        "username": username,
+    }
+
+    console.log(jsonData); //test
+
+    fetch('/events', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonData)
+    })
+    .then(response => response.json())
+    .then(result => {
+        //Handle successful form submission
+        console.log('Success:', result);
+    })
+    .catch(error => {
+        //Handle errors
+        console.error('Error:', error);
+    });
+});

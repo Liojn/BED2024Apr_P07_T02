@@ -20,6 +20,7 @@ app.delete("/feedbacks/:id",feedbackController.deleteFeedback);
 
 // Event Routes
 app.get("/events", eventController.getAllEvents);
+app.post("/events", eventController.createEvent);
 
 app.listen(port, async () => {
     try {

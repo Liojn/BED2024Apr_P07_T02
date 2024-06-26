@@ -29,25 +29,27 @@
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
                 </svg>
             </div>
-            <label for="title">Post Title:</label>
-            <input type="text" id="title" name="title">
-        
-            <label for="date">Date:</label>
-            <input type="date" id="date" name="date">
-        
-            <label for="start-time">Start Time:</label>
-            <input type="time" id="start-time" name="start-time">
-        
-            <label for="end-time">End Time:</label>
-            <input type="time" id="end-time" name="end-time">
-        
-            <label for="location">Location:</label>
-            <input type="text" id="location" name="location">
-        
-            <label for="description">Post Description:</label>
-            <textarea id="description" name="description"></textarea>
-        
-            <button type="submit">Publish</button>
+            <form id="eventForm">
+                <label for="title">Post Title:</label>
+                <input type="text" id="title" name="title" required>
+            
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            
+                <label for="start-time">Start Time:</label>
+                <input type="time" id="start-time" name="start-time"  required>
+            
+                <label for="end-time">End Time:</label>
+                <input type="time" id="end-time" name="end-time" required>
+            
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required>
+            
+                <label for="description">Post Description:</label>
+                <textarea id="description" name="description" required></textarea>
+            
+                <button type="submit">Publish</button>
+            </form>
         </div>
         </div>
 <script src="../script/event-script.js"></script>
