@@ -4,7 +4,7 @@ const feedbackController = require("./controllers/feedbackController");
 const eventController = require("./controllers/eventController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
- 
+
 const app = express();
 const port = process.env.PORT || 3000;
 const staticMiddleware = express.static("public");  // Changed to serve from 'public' directory

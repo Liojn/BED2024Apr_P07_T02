@@ -1,8 +1,11 @@
+
+require('dotenv').config();
+
 module.exports = {
-    user: "BEDassignment", // Replace with your SQL Server login username
-    password: "bed_assignment", // Replace with your SQL Server login password
-    server: "localhost",
-    database: "eco_impact",
+    user: process.env.DB_USERNAME, // Replace with your SQL Server login username
+    password: process.env.DB_PASSWORD, // Replace with your SQL Server login password
+    server: process.env.DB_SERVER,
+    database: process.env.DB_NAME,
     trustServerCertificate: true,
     options: {
       port: 1433, // Default SQL Server port
