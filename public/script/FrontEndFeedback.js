@@ -90,3 +90,37 @@ async function fetchFeedbacks() {
         console.error('Error fetching feedbacks:', error);
     }
 }
+
+//Post Method for front end to database
+
+const feedbackForm = document.querySelector('.contact-left');
+feedbackForm.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(feedbackForm);
+    const feedbackData = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        feedbackTitle: formData.get('feedbackTitle'),
+        feedback: formData.get('feedback')
+    };
+
+    try {
+        const response = await fetch('/feedbacks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(feedbackData)
+        });
+
+        if (response.ok) {
+            console.log('Feedback submitted successfully');
+            feedbackForm.reset();
+        } else {
+            console.error('Failed to submit feedback:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+    }
+});
