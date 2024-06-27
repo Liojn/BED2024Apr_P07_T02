@@ -93,34 +93,41 @@ async function fetchFeedbacks() {
 
 //Post Method for front end to database
 
-const feedbackForm = document.querySelector('.contact-left');
-feedbackForm.addEventListener('submit', async function (event) {
-    event.preventDefault();
+// FrontEndFeedback.js
 
-    const formData = new FormData(feedbackForm);
-    const feedbackData = {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        feedbackTitle: formData.get('feedbackTitle'),
-        feedback: formData.get('feedback')
-    };
+document.addEventListener('DOMContentLoaded', () => {
+    const feedbackForm = document.querySelector('.contact-left');
 
-    try {
-        const response = await fetch('/feedbacks', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(feedbackData)
-        });
+    feedbackForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-        if (response.ok) {
-            console.log('Feedback submitted successfully');
-            feedbackForm.reset();
-        } else {
-            console.error('Failed to submit feedback:', response.statusText);
+        const formData = new FormData(feedbackForm);
+        const feedbackData = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            title: formData.get('feedbackTitle'),
+            feedback: formData.get('feedback'),
+            verified: "N"
+        };
+
+        try {
+            const response = await fetch('/feedbacks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(feedbackData),
+            });
+
+            if (response.ok) {
+                alert('Feedback submitted successfully!');
+                feedbackForm.reset();
+                fetchFeedbacks(); // Update feedback list
+            } else {
+                console.error('Failed to submit feedback:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error submitting feedback:', error);
         }
-    } catch (error) {
-        console.error('Error submitting feedback:', error);
-    }
+    });
 });
