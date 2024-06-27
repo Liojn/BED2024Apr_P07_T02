@@ -12,7 +12,7 @@ async function deleteFeedback() {
     var feedbackBox = document.getElementById(feedbackId);
 
     try {
-        const response = await fetch(`/feedback/${feedbackId.split('-')[1]}`, {
+        const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {
             method: 'DELETE',
         });
 
@@ -90,3 +90,44 @@ async function fetchFeedbacks() {
         console.error('Error fetching feedbacks:', error);
     }
 }
+
+//Post Method for front end to database
+
+// FrontEndFeedback.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    const feedbackForm = document.querySelector('.contact-left');
+
+    feedbackForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(feedbackForm);
+        const feedbackData = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            title: formData.get('feedbackTitle'),
+            feedback: formData.get('feedback'),
+            verified: "N"
+        };
+
+        try {
+            const response = await fetch('/feedbacks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(feedbackData),
+            });
+
+            if (response.ok) {
+                alert('Feedback submitted successfully!');
+                feedbackForm.reset();
+                fetchFeedbacks(); // Update feedback list
+            } else {
+                console.error('Failed to submit feedback:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error submitting feedback:', error);
+        }
+    });
+});
