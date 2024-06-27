@@ -1,6 +1,7 @@
 const express = require("express");
 const sql = require("mssql");
 const feedbackController = require("./controllers/feedbackController");
+const eventController = require("./controllers/eventController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
  
@@ -17,6 +18,9 @@ app.get("/feedbacks", feedbackController.getAllFeedbacks);
 app.get("/feedbacks/:id", feedbackController.getFeedbackById);
 app.delete("/feedbacks/:id",feedbackController.deleteFeedback);
 app.post("/feedbacks", feedbackController.createFeedback); 
+
+// Event Routes
+app.get("/events", eventController.getAllEvents);
 
 app.listen(port, async () => {
     try {
