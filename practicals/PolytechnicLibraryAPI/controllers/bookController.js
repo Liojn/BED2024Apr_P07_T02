@@ -1,6 +1,6 @@
 const Book = require("../models/book");
 
-//utilizes the Book.getAllBooks method to retrieve all books. It catches potential errors and sends appropriate error responses to the client.
+
 const getAllBooks = async (req, res) => {
   try {
     const books = await Book.getAllBooks();
@@ -11,7 +11,25 @@ const getAllBooks = async (req, res) => {
   }
 };
 
+const updateBookAvailability = async (req, res) => {
+    const bookId = parseInt(req.params.bookId);
+    const { availability } = req.body;
 
+    try{
+        const success = await Book.updateBookAvailability(bookId, availability);
+        if (!success) {
+            return res.status(404).send("Book not found");
+        }
+        res.status(200).json({
+          message: 'Update successful!',}
+        );
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error updating availability of book");
+
+    }
+}
 module.exports = {
     getAllBooks,
+    updateBookAvailability,
 }
