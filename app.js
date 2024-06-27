@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 const sql = require("mssql");
 const feedbackController = require("./controllers/feedbackController");
 const donationController = require("./controllers/donationController");
@@ -13,6 +14,9 @@ const staticMiddleware = express.static("public");  // Changed to serve from 'pu
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(staticMiddleware);
+app.use(cors());
+
+
 
 // Feedback Routes
 app.get("/feedbacks", feedbackController.getAllFeedbacks);

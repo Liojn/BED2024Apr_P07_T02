@@ -40,8 +40,9 @@
             <div class="overlay-rectangle">
                 <p class = "title">Make A Donation</p>
                 <h3 class = "subtitle">Select your company to donate to:</h3>
+                <form id = "form">
                 <div class="dropdown" id="companyDropdown">
-                    <div class="dropdown-toggle" onclick="toggleDropdown()">Company Name</div>
+                    <div class="dropdown-toggle" id="dropdownToggle" onclick="toggleDropdown()">Company Name</div>
                     <div class="dropdown-content" id="dropdownContent">
                         <a href="#" onclick="selectCompany('Company A')">Company A</a>
                         <a href="#" onclick="selectCompany('Company B')">Company B</a>
@@ -68,9 +69,14 @@
                             <input type="number" id="customAmountInput" min="1" disabled>
                         </label><br>
                     </form>
-                    <div class = "submit-button">Submit</div>
+                    <div class = "submit-button" onclick="successfulSubmission()">Submit</div>
+                    <div class="overlay" id="overlay"></div>
+                    <div class="popup" id="popup">
+                        <div id = "anotherDonation" onclick="submitAnotherDonation()">Submit Another Donation</div>
+                        <div id = "view">View Your Donations</div>
+                    </div>
                 </div>
-
+                </form>
             </div>
         </div>
     </div>
@@ -78,18 +84,6 @@
     <script src="script.js"></script>
 </body>
 <script>
-    function toggleDropdown() {
-    var dropdown = document.getElementById("companyDropdown");
-    dropdown.classList.toggle("active");
-}
-    document.getElementById('contactus').addEventListener('click', function() {
-            window.location.href = "FeedbackUser.html";
-        });
-    function selectCompany(companyName) {
-            event.preventDefault();
-            document.querySelector(".dropdown-toggle").innerText = companyName;
-            toggleDropdown(); // Optionally close the dropdown after selection
-        }
         // Get references to the custom amount radio and input elements
         const customAmountRadio = document.getElementById('customAmountRadio');
         const customAmountInput = document.getElementById('customAmountInput');
@@ -106,6 +100,61 @@
                 }
             });
         });
+    function toggleDropdown() {
+    var dropdown = document.getElementById("companyDropdown");
+    dropdown.classList.toggle("active");
+}
+    document.getElementById('contactus').addEventListener('click', function() {
+            window.location.href = "FeedbackUser.html";
+        });
+    document.getElementById('view').addEventListener('click', function() {
+            window.location.href = "viewDonations.html";
+        });
+    function selectCompany(companyName) {
+            event.preventDefault();
+            document.querySelector(".dropdown-toggle").innerText = companyName;
+            toggleDropdown(); // Optionally close the dropdown after selection
+        }
+    function successfulSubmission() {
+        const companyName = document.querySelector(".dropdown-toggle").innerText.trim();
+        const donationAmount = document.querySelector('input[name="donation"]:checked');
+        const customAmount = document.getElementById('customAmountInput').value.trim();
+
+        // Check if all fields are filled
+        if (companyName === 'Company Name' || !donationAmount || (donationAmount.value === 'custom' && customAmount === '')) {
+            alert('Please fill in all fields before submitting.');
+            return;
+        }
+        updateCounter();
+        document.getElementById('form').reset();
+        document.getElementById('dropdownToggle').innerText = 'Company Name';
+        // Hide the submit button
+        document.querySelector('.submit-button').style.display = 'none';
+
+        // Show the popup
+        document.getElementById('anotherDonation').style.display = 'block';
+        document.getElementById('view').style.display = 'block';
+    }
+    function submitAnotherDonation(){
+        const companyName = document.querySelector(".dropdown-toggle").innerText.trim();
+        const donationAmount = document.querySelector('input[name="donation"]:checked');
+        const customAmount = document.getElementById('customAmountInput').value.trim();
+
+        if (companyName === 'Company Name' || !donationAmount || (donationAmount.value === 'custom' && customAmount === '')) {
+            alert('Please fill in all fields before submitting.');
+            return;
+        }
+        updateCounter();
+        document.getElementById('dropdownToggle').innerText = 'Company Name';
+        document.getElementById('form').reset();
+        event.preventDefault()
+    }
+    function updateCounter() {
+        const counterElement = document.querySelector('.numbers');
+        let currentCount = parseInt(counterElement.textContent.replace(/\D/g, ''), 10);
+        currentCount++;
+        counterElement.textContent = currentCount.toLocaleString() + "+"; // Update the counter display
+    }
 
 </script>
 </html>

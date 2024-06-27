@@ -48,57 +48,6 @@ body {
     color: white;
     transition: 1s;
 }
-
-.Wallpaper1 {
-    width: 100%;
-    margin-top: 0px;
-}
-
-.Counter {
-    width: 100%;
-    margin-top: 10px;
-}
-
-.overlay-text {
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 60px;
-    font-weight: bold;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.5); 
-    padding: 10px;
-    border-radius: 5px; 
-}
-
-.overlay-text2 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 30px;
-    font-weight: bold;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.5); 
-    padding: 10px;
-    border-radius: 5px; 
-}
-
-.nav-container {
-    display: flex;
-    align-items: center;
-    padding: 14px 20px;
-    max-width: 1200px;
-    margin: auto;
-}
-
-.overlay-text2:hover {
-    color: rgb(241, 241, 161);
-}
-
 .nav-logo {
     color: #fff;
     text-decoration: none;
@@ -135,11 +84,63 @@ body {
     width: 25px;
     margin: 3px 0;
 }
+.nav-container {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+/*First image*/
+.Wallpaper1 {
+    width: 100%;
+    margin-top: 0px;
+}
+
+
+.overlay-text {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5); 
+    padding: 10px;
+    border-radius: 5px; 
+}
+
+.overlay-text2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5); 
+    padding: 10px;
+    border-radius: 5px; 
+}
+
+
+.overlay-text2:hover {
+    color: rgb(241, 241, 161);
+}
+
 
 .container {
     position: relative;
 }
 
+/*Counter image*/
+.Counter {
+    width: 100%;
+    margin-top: 10px;
+}
 .donation-overlay {
     position: absolute;
     top: 20%;
@@ -176,6 +177,8 @@ body {
     border-radius: 5px;
     width:650px;
 }
+/*Donation form*/
+
 .Donation-form {
     display: flex;
     flex-direction: row;
@@ -270,13 +273,45 @@ body {
 }
 
 .submit-button {
+    border-radius: 8px;
     margin-top:70px;
     margin-left:250px;
     text-align: center;
-    background-color: green; /* Green background */
-    color: white;           /* White text */
-    padding: 10px 20px;     /* Padding to make it a rectangle */
-    border: none;           /* Remove border */
-    font-size: 16px;        /* Font size */
+    background-color: green;
+    color: white;          
+    padding: 10px 20px;     
+    border: none;           
+    font-size: 16px;        
     width:100px;
+}
+#anotherDonation{
+    border-radius: 8px;
+    display:none;
+    margin-top:70px;
+    margin-left:0px;
+    text-align: center;
+    background-color: green; 
+    color: white;           
+    padding: 10px 20px;    
+    border: none;           
+    font-size: 16px;       
+    width:150px;
+}
+#view{
+    border-radius: 8px;
+    align-content: center;
+    display:none;
+    margin-top:70px;
+    margin-left:10px;
+    text-align: center;
+    background-color: green; 
+    color: white;           
+    padding: 10px 20px;     
+    border: none;          
+    font-size: 16px;
+    width:150px;
+}
+.popup{
+    display: flex;
+    justify-content: center;
 }

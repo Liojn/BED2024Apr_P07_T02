@@ -18,7 +18,7 @@ class Donation {
         connection.close();
 
         return result.recordset.map(
-            (row) => new Feedback(row.id, row.amount, row.datetime, row.company)
+            (row) => new Donation(row.id, row.amount, row.datetime, row.company)
         );
     }
 
