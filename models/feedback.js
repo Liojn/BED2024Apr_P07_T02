@@ -61,6 +61,28 @@ class Feedback {
         return result.rowsAffected >0;
     }
 
+    static async createFeedback(newFeedbackData){
+        const connection = await sql.connect(dbConfig);
+
+        const sqlQuery = `INSERT INTO Feedback (name, email, title, feedback, verified) VALUES (@name, @email, @title, @feedback, @verified); SELECT SCOPE_IDENTITY() AS Fid;`; // Retrieve ID of inserted record
+
+        const request = connection.request();
+        request.input("name", newFeedbackData.name);
+        request.input("email", newFeedbackData.email);
+        request.input("title", newFeedbackData.title);
+        request.input("feedback", newFeedbackData.feedback);
+        request.input("verified", newFeedbackData.verified);
+        
+
+        const result = await request.query(sqlQuery);
+
+        connection.close();
+
+        // Retrieve the newly created book using its ID
+        return this.getFeedbackById(result.recordset[0].Fid)
+    }
+
+
     
 }
 
