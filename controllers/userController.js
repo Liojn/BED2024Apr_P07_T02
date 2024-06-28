@@ -28,7 +28,9 @@ const checkUser = async (req, res) => {
                     UserID: user.userId,
                     Username : user.username,
                     Email: user.email,
-                    Password: user.password,
+                    Password: user.hashedPassword,
+                    AccountType: user.accountType,
+                    
                 }
             });
         } else {
@@ -60,50 +62,53 @@ const getUserById = async (req, res) => {
     }
 };
 
-/*
+
 const addNewUser = async (req, res) => {
-    const newUser = req.body;
+    const newUser = { 
+        Username: req.body.Username, 
+        Email: req.body.Email,
+        Password: req.body.Password,
+        AccountType: req.body.AccountType
+    };  
 
     try {
-        const existingUser = await User.checkUser(email);
-        
-        if (existingUser) {
-            return res.status(400).send("User with this email already exists. Try logging in");
-        }
-
-        const userAdded = await User.addNewUser(username, email, password);
+        const userAdded = await User.addNewUser(newUser);
         if (userAdded) {
-            res.status(201).send("User added successfully");
+            res.status(201).send("User created successfully");
         } else {
-            res.status(400).send("Error adding user");
+            res.status(400).send("Error creating user");
         }
     } catch (error) {
-        console.error(error)
-        res.status(500).send("Error occured")
+        console.error("Error creating user: ", error);
+        res.status(500).send("Error occured");
     }
 };
 
-const getUserByEmail = async (req, res) => {
-    const { email, password } = req.query;
+
+const loginUser = async (req, res) => {
+    const userLogin = {
+        Email: req.body.Email,
+        Password: req.body.Password
+    };
+
     try {
-        const user = await User.getUserByEmail(email);
-        
-        if (await bcrypt.compare(user.password === password)) {
-            res.status(200).send("Login successful");
+        const loggingUser = await User.loginUser(userLogin);
+        if (loggingUser) {
+            res.status(201).send("Login successfully");
         } else {
-            res.status(401).send("Invalid email or password");
+            res.status(400).send("Invalid email or password");
         }
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error logging in");
+        res.status(500).send("Error logging user in");
     }
 };
-*/
+ 
 
 module.exports = {
     getAllUser,
     checkUser,
     getUserById,
-    //addNewUser,
-    //getUserByEmail,
+    addNewUser,
+    loginUser,
 }

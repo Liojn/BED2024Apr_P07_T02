@@ -3,11 +3,12 @@ const sql = require("mssql");
 const bcrypt = require('bcrypt');
 
 class User {
-    constructor(userId, username, email, password) {
+    constructor(userId, username, email, hashedPassword, accountType) {
         this.userId = userId;
         this.username = username;
         this.email = email;
-        this.password = password;
+        this.hashedPassword = hashedPassword;
+        this.accountType = accountType;
     }
 
     static async getAllUser() {
@@ -21,7 +22,7 @@ class User {
         connection.close();
 
         return result.recordset.map(
-            (row) => new User(row.UserID, row.Username, row.Email, row.Password)
+            (row) => new User(row.UserID, row.Username, row.Email, row.Password, row.AccountType)
         );
     }
 
@@ -40,7 +41,7 @@ class User {
         }
 
         const userRecord = result.recordset[0];
-        return new User(userRecord.UserID, userRecord.Username, userRecord.Email, userRecord.Password);
+        return new User(userRecord.UserID, userRecord.Username, userRecord.Email, userRecord.Password, userRecord.AccountType);
     }
 
     static async getUserById(UserID) {
@@ -61,10 +62,10 @@ class User {
             }
 
             const userRecord = result.recordset[0];
-            return new User(userRecord.UserID, userRecord.Username, userRecord.Email, userRecord.Password);
+            return new User(userRecord.UserID, userRecord.Username, userRecord.Email, userRecord.Password, userRecord.AccountType);
         
         } catch (error) {
-            console.errror("Error fetching user by ID: ", error);
+            console.error("Error fetching user by ID: ", error);
             throw error;
         
         } finally {
@@ -75,49 +76,62 @@ class User {
     }
 
     static async addNewUser(newUser) {
+        const existingUser = await this.checkUser(newUser.Email);
+        if (existingUser) {
+            throw new Error("User has already been registered with the email"); // Assuming each email is unique
+        }
+        
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newUser.Password, salt);
+        
+        let connection;
         try{
             connection = await sql.connect(dbConfig);
-        
-            const hashedPassword = await bcrypt.hash(newUser.Password, 10);
-            const sqlQuery = `INSERT INTO Users (Username, Email, Password) VALUES (@Username, @EMail, @Password); SELECT SCOPE_IDENTITY() AS UserID;`;
+            
+            const sqlQuery = `INSERT INTO Users (Username, Email, Password, AccountType) VALUES (@Username, @Email, @Password, @AccountType); SELECT SCOPE_IDENTITY() AS UserID;`;
             
             const request = connection.request();
+            // console.log(newUser);
             request.input("Username", newUser.Username);
             request.input("Email", newUser.Email);
             request.input("Password", hashedPassword);
+            request.input("AccountType", newUser.AccountType);
 
             const result = await request.query(sqlQuery);
+            // console.log("Query results: ", result);
             connection.close();
 
-            if (result.rowAffected[0] === 0) {
+            if (result.rowsAffected && result.rowsAffected[0] > 0) {
+                const row = result.recordset[0];
+                return new User(row.UserID, newUser.Username, newUser.Email, hashedPassword, newUser.AccountType);
+            } else {
                 console.log("User not created");
+                return null;
             }
-
-            const row = result.recordset[0];
-            return new User(row.UserID, row.Username, row.Email, row.Password)
-
+            
         } catch (error) {
             console.error("Error creating new user: ", error);
-            throw error;
+            throw error; 
         }
     }
 
-    /*static async getUserByEmail(email){
-        const connection = await sql.connect(dbConfig);
-        const sqlQuery = `SELECT * FROM Users WHERE Email = @Email`;
-
-        const request = connection.request();
-        request.input('Email', email);
-
-        const result = await request.query(sqlQuery);
-        
-        connection.close()
-        if (result.recordset.length === 0) {
+    static async loginUser(userLogin) {
+        const existingUser = await this.checkUser(userLogin.Email);
+        if (!existingUser) {
+            console.log("User not found");
             return null;
         }
-        const row = result.recordset[0];
-        return new User(row.UserID, row.Username, row.Email, row.Password);
-    }*/
+
+        const passwordMatch = await bcrypt.compare(userLogin.Password, existingUser.hashedPassword);
+        if (passwordMatch) {
+            console.log("Login successful");
+            return existingUser;
+        } else {
+            console.log("Password incorrect");
+            return null;
+        }
+    }
+
 }
 
 module.exports = User;

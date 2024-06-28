@@ -5,6 +5,7 @@ const eventController = require("./controllers/eventController");
 const userController = require("./controllers/userController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
+const cors = require("cors"); // cors middleware for Express server
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -13,6 +14,7 @@ const staticMiddleware = express.static("public");  // Changed to serve from 'pu
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(staticMiddleware);
+app.use(cors());
 
 // Feedback Routes
 app.get("/feedbacks", feedbackController.getAllFeedbacks);
@@ -28,8 +30,8 @@ app.post("/events", eventController.createEvent);
 app.get('/users', userController.getAllUser);
 app.get('/users/checkUser', userController.checkUser);
 app.get('/users/:id', userController.getUserById);
-//app.post('/users/add', userController.addNewUser);
-//app.post('/login', userController.getUserByEmail);
+app.post('/users/register', userController.addNewUser);
+app.post('/users/login', userController.loginUser);
 
 app.listen(port, async () => {
     try {
