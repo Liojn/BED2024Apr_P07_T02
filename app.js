@@ -2,9 +2,10 @@ const express = require("express");
 const sql = require("mssql");
 const feedbackController = require("./controllers/feedbackController");
 const eventController = require("./controllers/eventController");
+const userController = require("./controllers/userController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
- 
+
 const app = express();
 const port = process.env.PORT || 3000;
 const staticMiddleware = express.static("public");  // Changed to serve from 'public' directory
@@ -20,6 +21,13 @@ app.delete("/feedbacks/:id",feedbackController.deleteFeedback);
 
 // Event Routes
 app.get("/events", eventController.getAllEvents);
+
+// Users Routes
+app.get('/users', userController.getAllUser);
+app.get('/users/checkUser', userController.checkUser);
+app.get('/users/:id', userController.getUserById);
+//app.post('/users/add', userController.addNewUser);
+//app.post('/login', userController.getUserByEmail);
 
 app.listen(port, async () => {
     try {
