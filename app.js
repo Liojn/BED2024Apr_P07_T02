@@ -18,9 +18,11 @@ app.use(staticMiddleware);
 app.get("/feedbacks", feedbackController.getAllFeedbacks);
 app.get("/feedbacks/:id", feedbackController.getFeedbackById);
 app.delete("/feedbacks/:id",feedbackController.deleteFeedback);
+app.post("/feedbacks", feedbackController.createFeedback); 
 
 // Event Routes
 app.get("/events", eventController.getAllEvents);
+app.post("/events", eventController.createEvent);
 
 // Users Routes
 app.get('/users', userController.getAllUser);
