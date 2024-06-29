@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Welcome Page</title>
+    <link rel="stylesheet" href="../css/login-signup-style.css">
+    <script src="../script/login-signup.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Itim&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header><span class="modifyText">Eco</span>Impact</header>
+    <div class="subheader">Create Account</div>
+    <div class="input_container">
+        <!-- Signup Form with ID and Class -->
+        <form id="signupForm" class="signupForm">
+            <div class="user_input"> 
+                <input type="text" id="Username" name="Username" placeholder="Username">
+            </div>
+            <div class="user_input">
+                <input type="email" id="Email" name="Email" placeholder="Email" required>
+            </div>
+            <div class="user_input">
+                <input type="password" id="Password" name="Password" placeholder="Password" required>
+            </div>
+            <div class="user_input">
+                <label for="AccountType">Account Type: </label>
+                <input type="radio" id="student" name="AccountType" value="Student" required>
+                <label for="student">Student</label>
+                <input type="radio" id="staff" name="AccountType" value="Staff" required>
+                <label for="staff">Staff</label>
+            </div>
+            <!-- Redirect to login page ling -->
+            <div class="redirect">
+                Already have an account? <a href="loginPage.html">Log In</a>
+            </div>
+            <!-- Submit button -->
+            <button type="submit" class="submit_button">Sign Up</button>
+        </form>
+    </div>
+
+</body>
+</html>
