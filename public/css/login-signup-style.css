@@ -107,49 +107,6 @@ header .modifyText {
     width: 350px;
 }
 
-.google-signup {
-    background-color: #e3ecfc;
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 70%;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    margin: 10px;
-}
-
-.google-signup:hover {
-    background-color: #d4dcea;
-}
-
-.separator {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 20px 0;
-    width: 100%;
-}
-
-.separator::before,
-.separator::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #ccc;
-}
-
-.separator::before {
-    margin-right: .25em;
-}
-
-.separator::after {
-    margin-left: .25em;
-}
-
-.separator span {
-    color: #666;
-    font-size: 12px;
-}
-
 .loginForm {
     display: flex;
     flex-direction: column;

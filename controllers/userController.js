@@ -1,6 +1,8 @@
+// Imports
 const User = require("../models/user");
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
  
+// Controller function to get all users
 const getAllUser = async (req, res) => {
     try {
         const user = await User.getAllUser();
@@ -11,6 +13,7 @@ const getAllUser = async (req, res) => {
     }
 };
 
+// Controller function to check users based on email
 const checkUser = async (req, res) => {
     const { Email } = req.query;
 
@@ -22,6 +25,7 @@ const checkUser = async (req, res) => {
         const user = await User.checkUser(Email);
 
         if (user) {
+            // Sending user details if user exists
             return res.status(200).json({
                 message: 'User exists', 
                 User: {
@@ -44,6 +48,7 @@ const checkUser = async (req, res) => {
     }
 };
 
+// Controller function to get a user by their ID
 const getUserById = async (req, res) => {
     const UserID = req.params.id;
 
@@ -62,14 +67,14 @@ const getUserById = async (req, res) => {
     }
 };
 
-
+//Controller function to add a new user
 const addNewUser = async (req, res) => {
-    const { Username, Email, Password, AccountType } = req.body;
+    const { Username, Email, Password, AccountType } = req.body; // Extracting user details from request body
 
     try {
-        const newUser = { Username, Email, Password, AccountType };
+        const newUser = { Username, Email, Password, AccountType }; // Creating a new user object
 
-        const userAdded = await User.addNewUser(newUser);
+        const userAdded = await User.addNewUser(newUser); // Adding new user to the database
         if (userAdded) {
             res.status(201).json({ message: "User registered successfully" });
         } else {
@@ -81,12 +86,12 @@ const addNewUser = async (req, res) => {
     }
 };
 
-
+//Controller function to authenticate user login
 const loginUser = async (req, res) => {
-    const { Email, Password } = req.body;
+    const { Email, Password } = req.body; // Extracting email and password from request body
     try {
-        const userLogin = { Email, Password };
-        const loggingUser = await User.loginUser(userLogin);
+        const userLogin = { Email, Password }; // Creating user login object
+        const loggingUser = await User.loginUser(userLogin); // Attempting to log in the user
         if (loggingUser) {
             res.status(201).json({ message: "User login successfully"});
         } else {
@@ -98,7 +103,7 @@ const loginUser = async (req, res) => {
     }
 };
  
-
+// Exporting all controller functions
 module.exports = {
     getAllUser,
     checkUser,
