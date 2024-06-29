@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             formData.forEach((value, key) => {
                 dataReceived[key] = value;
             });
+            console.log(dataReceived);
 
             try {
                 const response = await fetch('http://localhost:3000/users/register', {
@@ -37,11 +38,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 });
 
                 const result = await response.json();
-                console.log("Signup successful!");
-
+                console.log(result);
+                
                 if (response.status == 201) {
-                    alert("Signup Successful!");
-                    window.location.href = "html/loginPage.html";
+                    alert("Signup Successful! ", result.message);
+                    window.location.href = "#";
                 } else {
                     alert("Signup Failed: ", result.message);
                 }
@@ -73,11 +74,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 });
 
                 const result = await response.json();
-                console.log("Login Response: ", result);
-
+                console.log(result);
+                
                 if (response.status == 201) {
-                    alert("Login Successful!");
-                    window.location.href = "html/home.html";
+                    alert("Login Successful!", result.message);
+                    window.location.href = "#";
                 } else {
                     alert("Login Failed: ", result.message);
                 }

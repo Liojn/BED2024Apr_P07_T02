@@ -64,43 +64,37 @@ const getUserById = async (req, res) => {
 
 
 const addNewUser = async (req, res) => {
-    const newUser = { 
-        Username: req.body.Username, 
-        Email: req.body.Email,
-        Password: req.body.Password,
-        AccountType: req.body.AccountType
-    };  
+    const { Username, Email, Password, AccountType } = req.body;
 
     try {
+        const newUser = { Username, Email, Password, AccountType };
+
         const userAdded = await User.addNewUser(newUser);
         if (userAdded) {
-            res.status(201).send("User created successfully");
+            res.status(201).json({ message: "User registered successfully" });
         } else {
-            res.status(400).send("Error creating user");
+            res.status(400).json({ message: "Error creating user" });
         }
     } catch (error) {
         console.error("Error creating user: ", error);
-        res.status(500).send("Error occured");
+        res.status(500).json({ message: "Error occurred. Unable to create user"});
     }
 };
 
 
 const loginUser = async (req, res) => {
-    const userLogin = {
-        Email: req.body.Email,
-        Password: req.body.Password
-    };
-
+    const { Email, Password } = req.body;
     try {
+        const userLogin = { Email, Password };
         const loggingUser = await User.loginUser(userLogin);
         if (loggingUser) {
-            res.status(201).send("Login successfully");
+            res.status(201).json({ message: "User login successfully"});
         } else {
-            res.status(400).send("Invalid email or password");
+            res.status(400).json({ message: "Invalid email or password" });
         }
     } catch (error) {
-        console.error(error);
-        res.status(500).send("Error logging user in");
+        console.error("Error logging user in: ", error);
+        res.status(500).json({ message: "Error logging user in" });
     }
 };
  
