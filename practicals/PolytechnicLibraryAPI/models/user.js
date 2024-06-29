@@ -1,6 +1,7 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 class User {
     constructor(user_id, username, passwordHash, role){
@@ -62,6 +63,27 @@ class User {
             connection.close();
             throw new Error("Internal server error");
         } 
+    }
+
+    // Method to log in users (Practica)
+    static async loginUser(username, password) {
+        const existingUser = await this.getUserByUsername(username);
+
+        // Checks if the user is already created in the database
+        if (!existingUser) {
+            throw new Error("User not found");
+        }
+
+        // Checks if the password the user entered and the password stored in the database match 
+        const passwordMatch = await bcrypt.compare(password, existingUser.passwordHash)
+        if (!passwordMatch) {
+            throw new Error("Invalid credentials");
+        }
+
+        // Generate JWT token
+        const user = { user_id: existingUser.user_id, role: existingUser.role, };
+        const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "3600s" })
+        return({ token: token });
     }
 }
 
