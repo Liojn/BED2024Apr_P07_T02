@@ -1,10 +1,12 @@
+require('dotenv').config(); 
 const express = require("express");
 const sql = require("mssql");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
 const bookController = require("./controllers/bookController");
 const userController = require("./controllers/userController");
- 
+
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -17,6 +19,7 @@ app.put("/books/:bookId/availability", bookController.updateBookAvailability); /
 
 app.get("/users/:userId", userController.getUserByUsername);
 app.post("/register", userController.registerUser);  //Part 2.1
+app.post("/login", userController.loginUser); //Part 3
 
 app.listen(port, async () => {
     try {

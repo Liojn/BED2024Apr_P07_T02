@@ -31,11 +31,24 @@ const registerUser = async (req, res) => {
         }
         res.status(500).send("Error creating user");
     }
-
-
 }
+
+const loginUser = async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const token = await User.loginUser(username, password);
+        res.status(201).json({ token });
+    } catch (error) {  // Exception handling 
+        console.error(error);
+        if (error.message === "User not found" ||  error.message === "Invalid credentials") {
+            res.status(401).json({ message: error.message });
+        }
+       res.status(500).json({ message: "Internal server error" });
+    }
+};
 
 module.exports = {
     getUserByUsername,
     registerUser,
+    loginUser,
 }
