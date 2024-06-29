@@ -2,10 +2,11 @@ const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
 class Book {
-    constructor(id, title, author) {
-        this.id = id;
+    constructor(book_id, title, author, availability) {
+        this.book_id = book_id;
         this.title = title;
         this.author = author;
+        this.availability = availability;
     }
 
     static async getAllBooks() {
@@ -19,12 +20,28 @@ class Book {
         connection.close();
 
         return result.recordset.map(
-        (row) => new Book(row.book_id, row.title, row.author)
+        (row) => new Book(row.book_id, row.title, row.author, row.availability)
         ); // Convert rows to Book objects
     }
 
-    static async updateBook() {
-        
+    static async updateBookAvailability(bookId, availability) {
+        const connection = await sql.connect(dbConfig);
+
+        const sqlQuery = `
+            UPDATE Books
+            SET availability = @availability
+            WHERE book_id = @book_id`;
+
+        const request = connection.request();
+        request.input("book_id", bookId);
+        request.input("availability", availability);
+
+        const result = await request.query(sqlQuery);
+
+        connection.close();
+
+        return result.rowsAffected > 0; 
+
     }
 }
 
