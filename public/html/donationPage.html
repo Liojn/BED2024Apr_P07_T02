@@ -87,7 +87,6 @@
         // Get references to the custom amount radio and input elements
         const customAmountRadio = document.getElementById('customAmountRadio');
         const customAmountInput = document.getElementById('customAmountInput');
-
         // Add event listeners to the radio buttons
         const donationRadios = document.querySelectorAll('input[name="donation"]');
         donationRadios.forEach(radio => {
@@ -115,13 +114,24 @@
             document.querySelector(".dropdown-toggle").innerText = companyName;
             toggleDropdown(); // Optionally close the dropdown after selection
         }
+
+    //function for successful submission button
     function successfulSubmission() {
+        let value;
+        const now = new Date();
+        const currentDateTime = now.toISOString().slice(0, 19).replace('T', ' '); // Format: YYYY-MM-DD HH:MM:SS
         const companyName = document.querySelector(".dropdown-toggle").innerText.trim();
         const donationAmount = document.querySelector('input[name="donation"]:checked');
-        const customAmount = document.getElementById('customAmountInput').value.trim();
+        const selectedDonation = document.querySelector('input[name="donation"]:checked');
+            let donationValue = selectedDonation.value;
+
+            if (donationValue === 'custom') {
+                donationValue = customAmountInput.value;
+            }
+
 
         // Check if all fields are filled
-        if (companyName === 'Company Name' || !donationAmount || (donationAmount.value === 'custom' && customAmount === '')) {
+        if (companyName === 'Company Name' || !donationAmount || (donationValue === 'custom' && customAmount === '')) {
             alert('Please fill in all fields before submitting.');
             return;
         }
@@ -131,10 +141,43 @@
         // Hide the submit button
         document.querySelector('.submit-button').style.display = 'none';
 
-        // Show the popup
+        // Show the 2 other buttons
         document.getElementById('anotherDonation').style.display = 'block';
         document.getElementById('view').style.display = 'block';
+        if (donationValue === 'custom'){
+            donationValue == donationAmount
+        }
+        console.log(donationValue)
+        console.log(currentDateTime)
+        //jsonDate for post request
+
+        const jsonData = {
+            "company":companyName,
+            "amount": donationValue,
+            "datetime": currentDateTime,
+        }
+        console.log(jsonData)
+        fetch('http://localhost:3000/donations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            //Handle successful form submission
+            console.log('Success:', result);
+        })
+        .catch(error => {
+            //Handle errors
+            console.error('Error:', error);
+        });
+
     }
+
+
+    //function for submit another donation
     function submitAnotherDonation(){
         const companyName = document.querySelector(".dropdown-toggle").innerText.trim();
         const donationAmount = document.querySelector('input[name="donation"]:checked');
@@ -148,13 +191,45 @@
         document.getElementById('dropdownToggle').innerText = 'Company Name';
         document.getElementById('form').reset();
         event.preventDefault()
+        if (donationValue === 'custom'){
+            donationValue == donationAmount
+        }
+        console.log(donationValue)
+        console.log(currentDateTime)
+        //jsonDate for post request
+
+        const jsonData = {
+            "company":companyName,
+            "amount": donationValue,
+            "datetime": currentDateTime,
+        }
+        console.log(jsonData)
+        fetch('http://localhost:3000/donations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            //Handle successful form submission
+            console.log('Success:', result);
+        })
+        .catch(error => {
+            //Handle errors
+            console.error('Error:', error);
+        });
     }
+    
     function updateCounter() {
         const counterElement = document.querySelector('.numbers');
         let currentCount = parseInt(counterElement.textContent.replace(/\D/g, ''), 10);
         currentCount++;
         counterElement.textContent = currentCount.toLocaleString() + "+"; // Update the counter display
     }
+
+    // Back end post function
 
 </script>
 </html>

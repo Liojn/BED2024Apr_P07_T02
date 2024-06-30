@@ -21,6 +21,8 @@ app.use(cors());
 // Feedback Routes
 app.get("/feedbacks", feedbackController.getAllFeedbacks);
 app.get("/donations", donationController.getAllDonations);
+app.post("/donations",donationController.createDonation);
+//app.get("/donations",donationController.getDonationCount)
 
 app.listen(port, async () => {
     try {
