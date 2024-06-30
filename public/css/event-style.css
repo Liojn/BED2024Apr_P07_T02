@@ -203,9 +203,10 @@
     align-items: flex-end;
 }
 
-#content .right svg{
+#content .right .optionbar{
     margin-bottom: 100px;
     cursor: pointer;
+    font-size: 15px;
 }
 #content .right .actions {
     display: flex;
