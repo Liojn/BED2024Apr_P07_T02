@@ -25,6 +25,7 @@ app.post("/feedbacks", feedbackController.createFeedback);
 // Event Routes
 app.get("/events", eventController.getAllEvents);
 app.post("/events", eventController.createEvent);
+app.delete("/events/:id", eventController.deleteEvent);
 
 // Users Routes
 app.get('/users', userController.getAllUser);
