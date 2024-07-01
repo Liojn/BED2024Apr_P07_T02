@@ -24,6 +24,20 @@ const getFeedbackById = async (req, res) => {
   }
 };
 
+const getFeedbackByVerified = async (req, res) => {
+  const verified = req.params.verified;
+  try {
+    const fb = await Feedback.getFeedbackByVerified(verified);
+    if (!fb) {
+      return res.status(404).send("Verified Feedback not found");
+    }
+    res.json(fb);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error retrieving verified feedback");
+  }
+};
+
 const deleteFeedback = async (req, res) => {
     const Fid = parseInt(req.params.id);
   
@@ -54,6 +68,7 @@ const createFeedback = async (req, res) => {
 
 module.exports = {
     getAllFeedbacks,
+    getFeedbackByVerified,
     getFeedbackById,
     deleteFeedback,
     createFeedback,

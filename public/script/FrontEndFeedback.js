@@ -1,71 +1,69 @@
-fetchFeedbacks();
-function confirmDelete(button) {
-    var modal = document.getElementById('deleteConfirmationModal');
-    modal.style.display = 'block';
-    modal.dataset.feedbackId = button.closest('.feedback-box').id;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    fetchFeedbacks();
 
-async function deleteFeedback() {
-    var modal = document.getElementById('deleteConfirmationModal');
-    var feedbackId = modal.dataset.feedbackId;
-    closeModal();
-    var feedbackBox = document.getElementById(feedbackId);
 
-    try {
-        const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {
-            method: 'DELETE',
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}/${month}/${day}`;
+    }
+    
+    
+    const feedbackForm = document.querySelector('.contact-left');
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(feedbackForm);
+            const feedbackData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                title: formData.get('feedbackTitle'),
+                feedback: formData.get('feedback'),
+                verified: "N",
+                date : formatDate(new Date())
+            };
+
+            try {
+                const response = await fetch('/feedbacks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(feedbackData),
+                });
+
+                if (response.ok) {
+                    alert('Feedback submitted successfully!');
+                    feedbackForm.reset();
+                    fetchFeedbacks(); // Update feedback list
+                } else {
+                    console.error('Failed to submit feedback:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+            }
         });
-
-        if (response.ok) {
-            feedbackBox.parentNode.removeChild(feedbackBox);
-        } else {
-            console.error('Failed to delete feedback:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error deleting feedback:', error);
     }
-}
+});
 
-function closeModal() {
-    var deleteModal = document.getElementById('deleteConfirmationModal');
-    var respondModal = document.getElementById('respondConfirmationModal');
-    
-    if (deleteModal.style.display === 'block') {
-        deleteModal.style.display = 'none';
-    }
-    
-    if (respondModal.style.display === 'block') {
-        respondModal.style.display = 'none';
-    }
-}
-
-function confirmDelete(button) {
-    var modal = document.getElementById('deleteConfirmationModal');
-    modal.style.display = 'block';
-    modal.dataset.feedbackId = button.closest('.feedback-box').id;
-}
-
-function confirmRespond() {
-    if (confirm("Do you really want to respond to this feedback?")) {
-        window.location.href = 'FeedbackResponse.html';
-    }
-}
-
-function confirmDelete(button) {
-    var modal = document.getElementById('deleteConfirmationModal');
-    modal.style.display = 'block';
-    modal.dataset.feedbackId = button.closest('.feedback-box').id;
-}
-
-
-//Adding Data
-async function fetchFeedbacks() {
+async function fetchFeedbacks(filter = 'all') {
     try {
-        const response = await fetch("/feedbacks");
+        const url = filter === 'all' ? "/feedbacks" : `/feedbacks/verified/${filter}`;
+        const response = await fetch(url);
         const feedbacks = await response.json();
-        console.log(feedbacks)
+
+        console.log('Fetched feedbacks:', feedbacks); // Log the fetched feedbacks
+
+        // Check if the response is an array
+        if (!Array.isArray(feedbacks)) {
+            throw new Error('Response is not an array');
+        }
+
         const feedbackContainer = document.getElementById('feedbackContainer');
-        
+        feedbackContainer.innerHTML = ''; // Clear existing feedbacks
+
         feedbacks.forEach(feedback => {
             const feedbackBox = document.createElement('div');
             feedbackBox.classList.add('feedback-box');
@@ -91,43 +89,53 @@ async function fetchFeedbacks() {
     }
 }
 
-//Post Method for front end to database
+function filterFeedbacks() {
+    const filterValue = document.getElementById('filterDropdown').value;
+    fetchFeedbacks(filterValue);
+}
 
-// FrontEndFeedback.js
+function confirmDelete(button) {
+    const modal = document.getElementById('deleteConfirmationModal');
+    modal.style.display = 'block';
+    modal.dataset.feedbackId = button.closest('.feedback-box').id;
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    const feedbackForm = document.querySelector('.contact-left');
+async function deleteFeedback() {
+    const modal = document.getElementById('deleteConfirmationModal');
+    const feedbackId = modal.dataset.feedbackId;
+    closeModal();
+    const feedbackBox = document.getElementById(feedbackId);
 
-    feedbackForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
+    try {
+        const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {
+            method: 'DELETE',
+        });
 
-        const formData = new FormData(feedbackForm);
-        const feedbackData = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            title: formData.get('feedbackTitle'),
-            feedback: formData.get('feedback'),
-            verified: "N"
-        };
-
-        try {
-            const response = await fetch('/feedbacks', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(feedbackData),
-            });
-
-            if (response.ok) {
-                alert('Feedback submitted successfully!');
-                feedbackForm.reset();
-                fetchFeedbacks(); // Update feedback list
-            } else {
-                console.error('Failed to submit feedback:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error submitting feedback:', error);
+        if (response.ok) {
+            feedbackBox.parentNode.removeChild(feedbackBox);
+        } else {
+            console.error('Failed to delete feedback:', response.statusText);
         }
-    });
-});
+    } catch (error) {
+        console.error('Error deleting feedback:', error);
+    }
+}
+
+function closeModal() {
+    const deleteModal = document.getElementById('deleteConfirmationModal');
+    const respondModal = document.getElementById('respondConfirmationModal');
+    
+    if (deleteModal.style.display === 'block') {
+        deleteModal.style.display = 'none';
+    }
+    
+    if (respondModal.style.display === 'block') {
+        respondModal.style.display = 'none';
+    }
+}
+
+function confirmRespond() {
+    if (confirm("Do you really want to respond to this feedback?")) {
+        window.location.href = 'FeedbackResponse.html';
+    }
+}
