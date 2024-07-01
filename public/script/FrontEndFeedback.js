@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     fetchFeedbacks();
 
-
     function formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -9,20 +8,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${year}/${month}/${day}`;
     }
     
-    
     const feedbackForm = document.querySelector('.contact-left');
     if (feedbackForm) {
         feedbackForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
+            
             const formData = new FormData(feedbackForm);
             const feedbackData = {
-                name: formData.get('name'),
+                username: formData.get('username'), 
                 email: formData.get('email'),
                 title: formData.get('feedbackTitle'),
                 feedback: formData.get('feedback'),
                 verified: "N",
-                date : formatDate(new Date())
+                date: formatDate(new Date())
             };
 
             try {
@@ -71,7 +70,7 @@ async function fetchFeedbacks(filter = 'all') {
 
             feedbackBox.innerHTML = `
                 <h1>Title: ${feedback.title}</h1>
-                <h2>Name: ${feedback.name}</h2>
+                <h2>Username: ${feedback.username}</h2>
                 <h3>Email: ${feedback.email}</h3>
                 <hr>
                 <h3>Description:</h3>

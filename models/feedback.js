@@ -3,9 +3,9 @@ const dbConfig = require("../dbConfig");
 const sql = require("mssql");
 
 class Feedback {
-    constructor(Fid, name, email, title, feedback, verified, date) {
+    constructor(Fid, username, email, title, feedback, verified, date) {
         this.Fid = Fid;
-        this.name = name;
+        this.username = username;
         this.email = email;
         this.title = title;
         this.feedback = feedback;
@@ -21,8 +21,8 @@ class Feedback {
         connection.close();
     
         return result.recordset.map((row) => {
-            const formattedDate = Feedback.formatDate(new Date(row.date));
-            return new Feedback(row.Fid, row.name, row.email, row.title, row.feedback, row.verified, formattedDate);
+            const formattedDate = Feedback.formatDate(new Date(row.Date));
+            return new Feedback(row.Fid, row.Username, row.Email, row.Title, row.Feedback, row.Verified, formattedDate);
         });
     }
 
@@ -44,27 +44,27 @@ class Feedback {
         return result.recordset[0]
             ? new Feedback(
                 result.recordset[0].Fid,
-                result.recordset[0].name,
-                result.recordset[0].email,
-                result.recordset[0].title,
-                result.recordset[0].feedback,
-                result.recordset[0].verified,
-                result.recordset[0].date
+                result.recordset[0].Username,
+                result.recordset[0].Email,
+                result.recordset[0].Title,
+                result.recordset[0].Feedback,
+                result.recordset[0].Verified,
+                result.recordset[0].Date
             )
             : null;
     }
 
     static async getFeedbackByVerified(verified) {
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `SELECT * FROM Feedback WHERE verified = @verified`;
+        const sqlQuery = `SELECT * FROM Feedback WHERE Verified = @verified`;
         const request = connection.request();
         request.input("verified", verified);
         const result = await request.query(sqlQuery);
         connection.close();
         
         return result.recordset.map((row) => {
-            const formattedDate = Feedback.formatDate(new Date(row.date));
-            return new Feedback(row.Fid, row.name, row.email, row.title, row.feedback, row.verified, formattedDate);
+            const formattedDate = Feedback.formatDate(new Date(row.Date));
+            return new Feedback(row.Fid, row.Username, row.Email, row.Title, row.Feedback, row.Verified, formattedDate);
         });
     }
 
@@ -80,10 +80,13 @@ class Feedback {
     }
 
     static async createFeedback(newFeedbackData) {
+        console.log("New Feedback Data:", newFeedbackData); // Add this line
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `INSERT INTO Feedback (name, email, title, feedback, verified, date) VALUES (@name, @email, @title, @feedback, @verified, @date); SELECT SCOPE_IDENTITY() AS Fid;`;
+        const sqlQuery = `INSERT INTO Feedback (Username, Email, Title, Feedback, Verified, Date) 
+                          VALUES (@username, @email, @title, @feedback, @verified, @date); 
+                          SELECT SCOPE_IDENTITY() AS Fid;`;
         const request = connection.request();
-        request.input("name", newFeedbackData.name);
+        request.input("username", newFeedbackData.username);
         request.input("email", newFeedbackData.email);
         request.input("title", newFeedbackData.title);
         request.input("feedback", newFeedbackData.feedback);
@@ -91,9 +94,12 @@ class Feedback {
         request.input("date", newFeedbackData.date);
         const result = await request.query(sqlQuery);
         connection.close();
-
+    
+        console.log("Inserted Feedback Result:", result); // Add this line
+    
         return this.getFeedbackById(result.recordset[0].Fid);
     }
+    
 }
 
 module.exports = Feedback;
