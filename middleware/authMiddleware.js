@@ -3,17 +3,21 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+
 const authMiddleware = (req, res, next) => {
-    const token = req.headers['authorization'];
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
     if (!token) {
+        console.log("No token provided");
         return res.status(403).json({ message: 'No token provided' });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
+            console.log("Failed to authenticate token", err);
             return res.status(500).json({ message: 'Failed to authenticate token' });
         }
-
         req.userId = decoded.id;
         req.accountType = decoded.accountType;
         next();
@@ -33,5 +37,6 @@ const studentsOnly = (req, res, next) => {
     }
     next();
 };
+
 
 module.exports = { authMiddleware, staffOnly, studentsOnly };
