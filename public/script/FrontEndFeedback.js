@@ -7,16 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}/${month}/${day}`;
     }
+
+    const accountType = localStorage.getItem('accountType');
+    const staffButton = document.getElementById('staffButton');
     
+    if (accountType === 'Staff' && staffButton) {
+        staffButton.style.display = 'block';
+    }
+
     const feedbackForm = document.querySelector('.contact-left');
     if (feedbackForm) {
         feedbackForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            
             const formData = new FormData(feedbackForm);
             const feedbackData = {
-                username: formData.get('username'), 
+                username: formData.get('username'),
                 email: formData.get('email'),
                 title: formData.get('feedbackTitle'),
                 feedback: formData.get('feedback'),
