@@ -1,51 +1,55 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Contact Us Staff</title>
-        <link rel="stylesheet" href="../css/Feedback.css">
-    </head>
-
-    <body>
-        <div id="eventwrapper">
-            <header id="logined-nav">
-                <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
-                <nav>
-                    <div class="nav">
-                        <a href="#">Home</a>
-                        <a id="currentpage" href="#">Event</a>
-                        <a href="#">Donate</a>
-                        <a href="../html/FeedbackStaff.html">Contact</a>
-                        <a href="#">Account</a>
-                    </div>
-                </nav>
-                
-            </header>
-        </div>
-        <div class="feedback-container" id="feedbackContainer">
-
-        </div>
-    
-        <div id="deleteConfirmationModal" class="modal">
-            <div class="modal-content">
-                <p>Do you really want to delete this feedback?</p>
-                <div class="modal-actions">
-                    <button class="yes-btn" onclick="deleteFeedback()">Yes</button>
-                    <button class="no-btn" onclick="closeModal()">No</button>
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us Staff</title>
+    <link rel="stylesheet" href="../css/Feedback.css">
+</head>
+<body>
+    <div id="eventwrapper">
+        <header id="logined-nav">
+            <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo"> </div> <!--Logo nav page-->
+            <nav>
+                <div class="nav">
+                    <a href="#">Home</a>
+                    <a id="currentpage" href="#">Event</a>
+                    <a href="#">Donate</a>
+                    <a href="../html/FeedbackStaff.html">Contact</a>
+                    <a href="#">Account</a>
                 </div>
+            </nav>
+        </header>
+    </div>
+    <div class="filter-container">
+        <label for="filterDropdown">Filter:</label>
+        <select id="filterDropdown" onchange="filterFeedbacks()">
+            <option value="all">All</option>
+            <option value="Y">Verified</option>
+            <option value="N">Unverified</option>
+        </select>
+    </div>
+    <div class="feedback-container" id="feedbackContainer"></div>
+
+    <div id="deleteConfirmationModal" class="modal">
+        <div class="modal-content">
+            <p>Do you really want to delete this feedback?</p>
+            <div class="modal-actions">
+                <button class="yes-btn" onclick="deleteFeedback()">Yes</button>
+                <button class="no-btn" onclick="closeModal()">No</button>
             </div>
         </div>
-    
-        <div id="respondConfirmationModal" class="modal">
-            <div class="modal-content">
-                <p>Do you really want to respond to this feedback?</p>
-                <div class="modal-actions">
-                    <button class="yes-btn" onclick="respondFeedback()">Yes</button>
-                    <button class="no-btn" onclick="closeModal()">No</button>
-                </div>
+    </div>
+
+    <div id="respondConfirmationModal" class="modal">
+        <div class="modal-content">
+            <p>Do you really want to respond to this feedback?</p>
+            <div class="modal-actions">
+                <button class="yes-btn" onclick="respondFeedback()">Yes</button>
+                <button class="no-btn" onclick="closeModal()">No</button>
             </div>
         </div>
-    
-        <script src="../script/FrontEndFeedback.js"></script>
-    </body>
+    </div>
+
+    <script src="../script/FrontEndFeedback.js"></script>
+</body>
 </html>
