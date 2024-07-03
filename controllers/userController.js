@@ -1,7 +1,12 @@
 // Imports
 const User = require("../models/user");
 // const bcrypt = require('bcrypt');
- 
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+
 // Controller function to get all users
 const getAllUser = async (req, res) => {
     try {
@@ -88,12 +93,16 @@ const addNewUser = async (req, res) => {
 
 //Controller function to authenticate user login
 const loginUser = async (req, res) => {
-    const { Email, Password } = req.body; // Extracting email and password from request body
+    const { Email, Password } = req.body;
     try {
-        const userLogin = { Email, Password }; // Creating user login object
-        const loggingUser = await User.loginUser(userLogin); // Attempting to log in the user
+        const userLogin = { Email, Password };
+        const loggingUser = await User.loginUser(userLogin);
         if (loggingUser) {
-            res.status(201).json({ message: "User login successfully"});
+            const token = jwt.sign(
+                { id: loggingUser.userId, accountType: loggingUser.accountType },
+                process.env.JWT_SECRET
+            );
+            res.status(200).json({ message: "User login successful", token });
         } else {
             res.status(400).json({ message: "Invalid email or password" });
         }
@@ -102,6 +111,7 @@ const loginUser = async (req, res) => {
         res.status(500).json({ message: "Error logging user in" });
     }
 };
+
  
 // Exporting all controller functions
 module.exports = {
