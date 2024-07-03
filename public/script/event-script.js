@@ -30,9 +30,10 @@ async function getAllEvents(eventIndicator) {
                     </div>
                 </div>
                 <div class="right">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                    </svg>
+                    <div class="optionbar">
+                        <a href="#">Edit</a>
+                        <a href="#">Delete</a>
+                    </div>
                     <div class="actions">
                         <button id="register">Register Interest</button>
                         <button id="pList">View Participant List</button>
@@ -95,6 +96,7 @@ document.getElementById('eventForm').addEventListener('submit', function(event) 
     .then(result => {
         //Handle successful form submission
         console.log('Success:', result);
+        window.alert("Post successful!");
     })
     .catch(error => {
         //Handle errors
