@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 
                 if (response.status == 201) {
                     alert("Login Successful!", result.message);
-                    window.location.href = "#";
+                    window.location.href = "../html/homePage.html";
                 } else {
                     alert("Login Failed: ", result.message);
                 }
