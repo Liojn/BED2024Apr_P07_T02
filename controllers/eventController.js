@@ -18,7 +18,7 @@ const createEvent = async (req, res) => {
         res.status(201).json(createdEvent);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error creating book");
+        res.status(500).send("Error creating Events");
     }
 }
 
