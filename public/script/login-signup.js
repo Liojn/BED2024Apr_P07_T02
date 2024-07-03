@@ -67,9 +67,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
             formData.forEach((value, key) => {
                 dataReceived[key] = value; // Parsing form data into an object
             });
-
+    
             try {
-                // Sending for data to server for user login
+                // Sending form data to server for user login
                 const response = await fetch('http://localhost:3000/users/login', {
                     method: 'POST', 
                     headers: {
@@ -77,21 +77,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     }, 
                     body: JSON.stringify(dataReceived)
                 });
-
+    
                 const result = await response.json(); // Parsing server response
-                // console.log(result); 
                 
-                if (response.status == 201) {
-                    alert("Login Successful!", result.message);
-                    window.location.href = "../html/homePage.html";
+                if (response.status == 200) { // Checking for 200 status
+                    alert("Login Successful! " + result.message);
+                    window.location.href = "../html/Homepage.html";
                 } else {
-                    alert("Login Failed: ", result.message);
+                    alert("Login Failed: " + result.message);
                 }
-            } catch (error) { // Exception handlings
-                console.error("Error logging up: ", error);
-                alert("An error occurred. Please try again");
+            } catch (error) { // Exception handling
+                console.error("Error logging in: ", error);
+                alert("An error occurred. Please try again.");
             }
         });
     }
-
 });
