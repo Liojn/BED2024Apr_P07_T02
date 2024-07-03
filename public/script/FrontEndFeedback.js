@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const accountType = localStorage.getItem('accountType');
+    console.log(accountType)
     const staffButton = document.getElementById('staffButton');
     
     if (accountType === 'Staff' && staffButton) {
