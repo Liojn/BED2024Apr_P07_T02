@@ -32,6 +32,18 @@ CREATE TABLE Feedback (
   FOREIGN KEY (Username) REFERENCES Users(Username)
 ); 
 
+--Create Donation table
+CREATE TABLE Donations (
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  Username NVARCHAR(255) NOT NULL, 
+  Email NVARCHAR(255) NOT NULL, 
+  amount int NOT NULL,
+  company VARCHAR(50) NOT NULL,
+  datetime DATE NOT NULL,
+  FOREIGN KEY (Username) REFERENCES Users(Username)
+); 
+
+
 -- Insert data into Users table
 INSERT INTO Users (Username, Email, Password, AccountType) 
 VALUES
@@ -53,6 +65,12 @@ VALUES
   ('user2', 'user2@example.com', 'Ugly', 'The website design was so badly design my eyes hurt', 'Y', '2023-05-13'),
   ('msneoERC', 'msneo@example.com', 'Confusing', 'UI confusing not sure where to go', 'N', '2023-01-01'),
   ('user1', 'user1@example.com', 'Slow', 'Website slow response rate', 'Y', '2024-12-12');
+
+-- Insert data into Donation table
+Insert into Donations(Username, Email, amount, company, datetime)
+VALUES
+('user1', 'user1@example.com','12','Company A', '2023-01-01 10:00:00'),
+('user2', 'user2@example.com', '20', 'Company B', '2023-04-20 11:15:00');
 
 Select * from Feedback
 Drop Table Users

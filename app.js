@@ -8,7 +8,6 @@ const donationController = require("./controllers/donationController");
 
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const { authMiddleware, staffOnly, studentsOnly } = require('./middleware/authMiddleware');
 
 const app = express();

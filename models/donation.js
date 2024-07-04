@@ -24,8 +24,10 @@ class Donation {
 
     static async createDonation(donationData){
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `INSERT INTO DONATIONS (amount , datetime, company) VALUES (@amount, @datetime, @company);`;
+        const sqlQuery = `INSERT INTO DONATIONS (Username, Email, amount , datetime, company) VALUES (@Username, @Email, @amount, @datetime, @company);`;
         const request = connection.request();
+        request.input("username", newFeedbackData.username);
+        request.input("email", newFeedbackData.email);
         request.input("amount", donationData.amount);
         request.input("datetime", donationData.datetime);
         request.input("company", donationData.company);
