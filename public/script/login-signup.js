@@ -82,6 +82,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 
                 if (response.status == 200) { // Checking for 200 status
                     alert("Login Successful! " + result.message);
+
+                     // Store token and user data in localStorage
+                     localStorage.setItem('token', result.token);
+                     localStorage.setItem('userId', result.user.userId);
+                     localStorage.setItem('username', result.user.username);
+                     localStorage.setItem('email', result.user.email);
+                     localStorage.setItem('accountType', result.user.accountType);
+                    
                     window.location.href = "../html/Homepage.html";
                 } else {
                     alert("Login Failed: " + result.message);
