@@ -9,11 +9,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const accountType = localStorage.getItem('accountType');
-    console.log(accountType)
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username'); // Retrieve username from local storage
+    const email = localStorage.getItem('email'); // Retrieve email from local storage
+
+    console.log(accountType);
     const staffButton = document.getElementById('staffButton');
     
     if (accountType === 'Staff' && staffButton) {
         staffButton.style.display = 'block';
+        staffButton.addEventListener('click', () => {
+            window.location.href = 'FeedbackStaff.html'; 
+        });
     }
 
     const feedbackForm = document.querySelector('.contact-left');
@@ -23,8 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const formData = new FormData(feedbackForm);
             const feedbackData = {
-                username: formData.get('username'),
-                email: formData.get('email'),
+                username: username, // Use username from local storage
+                email: email, // Use email from local storage
                 title: formData.get('feedbackTitle'),
                 feedback: formData.get('feedback'),
                 verified: "N",
@@ -36,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` // Include token in request headers
                     },
                     body: JSON.stringify(feedbackData),
                 });
@@ -56,8 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function fetchFeedbacks(filter = 'all') {
     try {
+        const token = localStorage.getItem('token');
         const url = filter === 'all' ? "/feedbacks" : `/feedbacks/verified/${filter}`;
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}` // Include token in request headers
+            }
+        });
         const feedbacks = await response.json();
 
         console.log('Fetched feedbacks:', feedbacks); // Log the fetched feedbacks
@@ -111,10 +124,14 @@ async function deleteFeedback() {
     const feedbackId = modal.dataset.feedbackId;
     closeModal();
     const feedbackBox = document.getElementById(feedbackId);
+    const token = localStorage.getItem('token');
 
     try {
         const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {
             method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}` // Include token in request headers
+            }
         });
 
         if (response.ok) {
