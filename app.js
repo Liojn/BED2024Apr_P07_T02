@@ -21,7 +21,7 @@ app.use(cors());
 app.get("/feedbacks", authMiddleware, feedbackController.getAllFeedbacks);
 app.get("/feedbacks/:id", authMiddleware, feedbackController.getFeedbackById);
 app.delete("/feedbacks/:id", authMiddleware, staffOnly, feedbackController.deleteFeedback); 
-app.post("/feedbacks", authMiddleware, feedbackController.createFeedback);
+app.post("/feedbacks", feedbackController.createFeedback);
 app.get("/feedbacks/verified/:verified", authMiddleware, feedbackController.getFeedbackByVerified);
 
 // Event Routes

@@ -130,6 +130,7 @@ async function deleteFeedback() {
         const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}` // Include token in request headers
             }
         });
@@ -143,6 +144,7 @@ async function deleteFeedback() {
         console.error('Error deleting feedback:', error);
     }
 }
+
 
 function closeModal() {
     const deleteModal = document.getElementById('deleteConfirmationModal');
