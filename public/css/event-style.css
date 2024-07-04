@@ -1,0 +1,391 @@
+/*Nav Bar Header*/
+#logined-nav {
+    overflow: hidden;
+}
+
+#logined-nav .logo{
+    float:left;
+    padding-left: 2%;
+    padding-bottom: 15px;
+    padding-top: 25px;
+}
+
+#logined-nav .logo img{
+    height:35px;
+    width:140px;
+}
+
+#logined-nav nav {
+    float: right;
+}
+
+#logined-nav nav a {
+    float: left;
+    text-align: center;
+    padding-top: 45px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 12px;
+    text-decoration: none;
+    font-size: 17px;
+    color: black;
+    font-family: "Lato", sans-serif;
+}
+
+#logined-nav nav #currentpage {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#logined-nav nav a:hover {
+    background-color: #4CAF50;
+    color: white;
+    transition: 1s;
+}
+
+.nature-banner{
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.nature-banner img {
+    width: 100%;
+    height: 100%
+}
+
+
+.nature-banner #banner-msg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.nature-banner #banner-msg h3{
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.nature-banner #banner-msg p{
+    font-size: 18px;
+    margin-top: 0;
+}
+
+.searchbar-event {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    margin-left: 9%;
+    margin-right: 8%;
+}
+
+.searchbar-event input{
+    width: 70%;
+    padding: 12px;
+    border: 2px black solid;
+    border-radius: 10px;
+}
+
+.searchbar-event button {
+    border-radius: 10px;
+    background-color:#4CAF50;
+    margin-left: 10px;
+    padding: 8px;
+}
+
+.searchbar-event button:hover {
+    transition: 1s;
+    background-color: darkgreen;
+    cursor: pointer;
+}
+#add-new-post button{
+    margin-left: 5px;
+    padding: 8px;
+    width: 110px;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    border: 2px darkgreen solid;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    font-family: "Lato", sans-serif;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 2%; /*spacing below from post*/
+}
+
+#add-new-post button svg{
+    margin-left: 8px;
+}
+
+#add-new-post button:hover{
+    cursor: pointer;
+    background-color: darkgreen;
+    transition: 1s;
+}
+
+.event-content{
+    display: flex;
+    margin-left: 6%;
+    margin-right: 6%;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.316);
+    border: 0.6px grey solid;
+    margin-bottom: 20px;
+}
+
+#content .left{
+    width: 50%;
+    padding-right: 20px;
+}
+
+#content .left #username{
+    font-size: 12px;
+    color:#333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+#content .left #title{
+    font-size: 36px;
+    color:#11a316;
+    text-decoration: underline;
+    margin-bottom: 10px;
+    font-weight: bolder;
+}
+
+#content .left #date{
+    font-size: 30px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight:700;
+}
+
+#content .left #location {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#content .left #info {
+    color: #666;
+}
+
+#content .left #info span{
+    color: red;
+
+}
+
+#content .right{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#content .right .optionbar{
+    margin-bottom: 100px;
+    cursor: pointer;
+    font-size: 15px;
+}
+#content .right .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#content .right .actions button {
+    border: 0.6px gainsboro solid;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+#content .right .actions #register{
+    background-color: #f8c200;
+    color: #fff;
+}
+
+#content .right .actions #pList{
+    background-color: #0067f8;
+    color: #fff;
+}
+
+#content .right #id {
+    font-size: 12px;
+    color: #666;
+    margin-top: 10px;
+}
+
+/*CSS for creation*/
+#picturecreate{
+    background-image: url(../assets/nature-banner-img.jpg);
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    display: flex;
+    justify-content: center;
+}
+
+.create-content {
+    width: 60%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    background-color: #f5f5f5;
+    font-family: Arial, Helvetica, sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.316);
+}
+
+.create-content .create-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0;
+}
+.create-content .create-header h1{
+    color:#4CAF50;
+    font-weight:700;
+    margin-left: 1%;
+    font-size: 35px;
+    margin-top: 10px;
+}
+
+.create-content .create-header svg{
+    color:#4CAF50;
+    cursor: pointer;
+    margin-right: 1%;
+}
+
+.create-content .create-header svg:hover{
+    color: darkgreen;
+    transition: 1s;
+}
+
+.create-content label{
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.create-content
+input[type="text"],
+input[type="date"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  box-sizing: border-box;
+  border: 1.5px black solid;
+}
+
+.create-content input[type="time"] {
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+}
+
+.create-content button{
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    float: right;
+}
+
+.create-content button:hover{
+    background-color: darkgreen;
+    transition: 1s;
+}
+
+
+/*CSS FOR HOMEPAGE*/
+.homeContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 1%;
+    margin-right: 1%;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 2%;
+}
+
+.homeContainer .slogan{
+    width: 50%;
+    text-align: left;
+}
+.homeContainer .slogan h2{
+    word-spacing: 1px;
+    font-size: 63px;
+    font-weight: 700;
+    margin-left: 30px;
+}
+
+.homeContainer .slogan img{
+    width: 320px;
+    height: 320px;
+    margin-left: 10px;
+
+}
+
+.homeContainer .homeLink{
+    width: 50%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.homeContainer #smallbox{
+    width: 42%;
+    padding: 15px;
+    border-radius: 15px;
+    margin: 1%;
+    background-color: #f2fdea;
+}
+
+.homeContainer #smallbox img{
+    width: 120px;
+    height: 120px;
+}
+
+.homeContainer #smallbox a{
+    padding: 8px;
+    width: 110px;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    border: 2px darkgreen solid;
+    color: white;
+    text-decoration: none;
+}
+
+.homeContainer #smallbox a:hover{
+    cursor: pointer;
+    background-color: darkgreen;
+    margin-bottom: 1%;
+}
