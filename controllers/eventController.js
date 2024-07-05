@@ -11,6 +11,20 @@ const getAllEvents = async (req, res) => {
     }
 };
 
+const getEventbyId = async (req, res) => {
+    const eventId = parseInt(req.params.id);
+    try {
+        const event = await Event.getEventbyId(eventId);
+        if (!event) { //null given
+            return res.status(404).send({ message: "Event not found"});
+        }
+        res.json(event);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Error retrieving events"})
+    }
+}
+
 const createEvent = async (req, res) => {
     const newEvent = req.body;
     try {
@@ -53,6 +67,7 @@ const deleteEvent = async (req, res) => {
 
 module.exports = {
     getAllEvents,
+    getEventbyId,
     createEvent,
     updateEvent,
     deleteEvent,

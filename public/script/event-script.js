@@ -1,7 +1,7 @@
 
 let isFormDirty = false; //default false as form not edited yet
 localStorage.setItem('username', 'user2');
-localStorage.setItem('role', 'Student')
+localStorage.setItem('accountType', 'Student')
 
 const navigatetoEventForm = () => {
     window.location.href = "../html/event-creation.html"
@@ -84,8 +84,11 @@ async function getAllEvents(eventIndicator) {
 const navigateToEdit = (event) => {
     const eventId = event.target.getAttribute('data-event-id');
     event.preventDefault();
-    console.log(eventId);
+    //console.log(eventId); test
+    window.location.href = "";
+    getExistingInfo();
 }
+
 //indicator to check wheteher to execute getAllEvents, if at the correct site using the .class tag
 document.addEventListener("DOMContentLoaded", function () {
     const eventIndicator = document.getElementsByClassName("event-content"); //check if at the corresponding page
