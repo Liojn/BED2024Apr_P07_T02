@@ -25,8 +25,9 @@ app.post("/feedbacks", authMiddleware, feedbackController.createFeedback);
 app.get("/feedbacks/verified/:verified", authMiddleware, feedbackController.getFeedbackByVerified);
 
 // Event Routes
-app.get("/events", authMiddleware, eventController.getAllEvents);
-app.post("/events", authMiddleware, eventController.createEvent);
+app.get("/events", eventController.getAllEvents);
+app.post("/events", eventController.createEvent);
+app.put("/events/:id", eventController.updateEvent);
 app.delete("/events/:id", eventController.deleteEvent);
 
 
