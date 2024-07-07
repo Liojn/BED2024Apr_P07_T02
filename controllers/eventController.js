@@ -18,7 +18,7 @@ const getEventbyId = async (req, res) => {
         if (!event) { //null given
             return res.status(404).send({ message: "Event not found"});
         }
-        res.json(event);
+        res.json(event).status(200);
     } catch (error) {
         console.error(error);
         res.status(500).send({ message: "Error retrieving events"})

@@ -3,9 +3,14 @@ let isFormDirty = false; //default false as form not edited yet
 localStorage.setItem('username', 'user2');
 localStorage.setItem('accountType', 'Student')
 
-const navigatetoEventForm = () => {
-    window.location.href = "../html/event-creation.html"
+//A function that executes when the button Create new Post is clicked on event.html
+const navigatetoEventForm = (isEdit) => {
+    if (isEdit) {
+        sessionStorage.setItem('mode', 'create'); //Indicator for which text to display, This function only activates for creation.
+    } 
+    window.location.href = "../html/event-creation.html";
 }
+
 
 //GET function for ALL events in the event.html
 async function getAllEvents(eventIndicator) {
@@ -39,8 +44,8 @@ async function getAllEvents(eventIndicator) {
                 </div>
                 <div class="right">
                     <div class="optionbar">
-                        <a onclick="navigateToEdit(event)" href="#" data-event-id="${element.eventId}">Edit</a> <!---This is for Edit and Delete, to get their id number through storing attributes---->
-                        <a onclick="navigateToDelete(event)" href="#" data-event-id="${element.eventId}">Delete</a>
+                        <a onclick="navigateToEdit(event, false)" href="#" data-event-id="${element.eventId}">Edit</a> <!---This is for Edit and Delete, to get their id number through storing attributes---->
+                        <a onclick="navigateToDelete(event, false)" href="#" data-event-id="${element.eventId}">Delete</a>
                     </div>
                     <div class="actions">
                         <button id="register">Register Interest</button>
@@ -81,20 +86,56 @@ async function getAllEvents(eventIndicator) {
     }
 }
 
+//A function that executes when the <a> tag Edit is clicked on event.html
 const navigateToEdit = (event) => {
     const eventId = event.target.getAttribute('data-event-id');
     event.preventDefault();
-    //console.log(eventId); test
-    window.location.href = "";
-    getExistingInfo();
+
+    console.log(eventId);
+    sessionStorage.setItem('mode', 'edit'); //To display the text edit, indicator
+    sessionStorage.setItem('eventId', eventId);  // Save event ID for PUT request and displaying 
+    window.location.href = "../html/event-creation.html";
 }
 
-//indicator to check wheteher to execute getAllEvents, if at the correct site using the .class tag
+const getExistingInfo = async(eventId) => {
+    const response = await fetch (`/events/${eventId}`);
+    if (response.ok) {
+        const eventData = await response.json();
+
+        //Formatting of data for display
+        document.getElementById('title').value = eventData.title;
+        document.getElementById('date').value = eventData.date.split('T')[0]; //"2024-09-14T00:00:00.000Z" Example
+        document.getElementById('start-time').value = eventData.startTime.split('T')[1].substring(0, 5);  //"1900-01-01T18:00:00.000Z" Example
+        document.getElementById('end-time').value = eventData.endTime.split('T')[1].substring(0, 5);
+        document.getElementById('location').value = eventData.location;
+        document.getElementById('description').value = eventData.description;
+    } else {
+        console.error('Failed to fetch event info');
+        alert('Failed to fetch event info');
+    }
+}
+
+//Indicator to check wheteher to execute getAllEvents, if at the correct site using the .class tag
 document.addEventListener("DOMContentLoaded", function () {
     const eventIndicator = document.getElementsByClassName("event-content"); //check if at the corresponding page
     if (eventIndicator.length > 0) {
         getAllEvents(eventIndicator);
     }
+
+    //This session of code will check if it needs to display edit or create, when loading a page. Must be at event-creation.html
+    const mode = sessionStorage.getItem('mode');
+    const isCorrectPage = document.getElementById("header-title");
+    if (mode === 'edit' && isCorrectPage != null) {
+        const eventId = sessionStorage.getItem('eventId');
+        if (eventId) {
+            document.getElementById('header-title').textContent = `Edit Current Post: ID ${eventId}`;
+            getExistingInfo(eventId); // Fetch existing event info if editing    
+        }
+    } 
+    else if (mode === 'create' && isCorrectPage != null) {
+        document.getElementById('header-title').textContent = "Create New Post";
+    }
+    
 });
 
 //define the formatted_date function to reflect the date nicely
@@ -123,8 +164,10 @@ document.querySelectorAll('#eventForm input, #eventForm textarea').forEach(eleme
     });
 });
 
+//This function handles the PUT or POST method
 document.getElementById('eventForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent default form submission
+    const mode = sessionStorage.getItem('mode');
 
     let title = document.getElementById('title').value;
     let date = document.getElementById('date').value;
@@ -142,11 +185,37 @@ document.getElementById('eventForm').addEventListener('submit', function(event) 
         "location": location,
         "description": description,
         "username": username,
+    };
+
+    if (mode === 'edit') {
+        const eventId = sessionStorage.getItem('eventId');
+
+    } else if (mode === 'create') {
+        fetch('/events', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            //Handle successful form submission
+            console.log('Success:', result);
+            window.alert("Post successful!");
+            window.location.href = "../html/event.html"
+        })
+        .catch(error => {
+            //Handle errors
+            console.error('Error:', error);
+        });
+    } else {
+        alert('Error with Internal System.')
     }
 
-    console.log(jsonData); //test
+    //console.log(jsonData); test
 
-    fetch('/events', {
+    /*fetch('/events', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -163,5 +232,5 @@ document.getElementById('eventForm').addEventListener('submit', function(event) 
     .catch(error => {
         //Handle errors
         console.error('Error:', error);
-    });
+    });*/
 });
