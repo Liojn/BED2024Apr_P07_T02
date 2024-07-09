@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const formData = new FormData(feedbackForm);
             const feedbackData = {
-                username: username, // Use username from local storage
-                email: email, // Use email from local storage
+                username: username, 
+                email: email, 
                 title: formData.get('feedbackTitle'),
                 feedback: formData.get('feedback'),
                 verified: "N",
@@ -97,7 +97,7 @@ async function fetchFeedbacks(filter = 'all') {
                 <p>${feedback.feedback}</p>
                 <div class="action-buttons">
                     <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-                    <button class="respond-btn" onclick="confirmRespond()">Respond</button>
+                    <button class="respond-btn" onclick="confirmRespond(this)">Respond</button>
                 </div>
             `;
             
@@ -159,8 +159,29 @@ function closeModal() {
     }
 }
 
-function confirmRespond() {
-    if (confirm("Do you really want to respond to this feedback?")) {
-        window.location.href = 'FeedbackResponse.html';
-    }
+function confirmRespond(button) {
+    const feedbackBox = button.closest('.feedback-box');
+    const feedbackDetails = {
+        title: feedbackBox.querySelector('h1').innerText.replace('Title: ', ''),
+        username: feedbackBox.querySelector('h2').innerText.replace('Username: ', ''),
+        email: feedbackBox.querySelector('h3').innerText.replace('Email: ', ''),
+        feedback: feedbackBox.querySelector('p').innerText
+    };
+
+    localStorage.setItem('selectedFeedback', JSON.stringify(feedbackDetails));
+
+    const modal = document.getElementById('respondConfirmationModal');
+    modal.style.display = 'block';
+    modal.dataset.feedbackId = feedbackBox.id;
 }
+
+function respondFeedback() {
+    const modal = document.getElementById('respondConfirmationModal');
+    const feedbackId = modal.dataset.feedbackId;
+    closeModal();
+    window.location.href = 'FeedbackResponse.html';
+}
+
+
+
+
