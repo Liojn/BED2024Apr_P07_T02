@@ -3,6 +3,7 @@ const sql = require("mssql");
 const feedbackController = require("./controllers/feedbackController");
 const eventController = require("./controllers/eventController");
 const userController = require("./controllers/userController");
+const notificationsController = require("./controllers/notificationsController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -14,8 +15,14 @@ const staticMiddleware = express.static("public");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(staticMiddleware);
+app.use(staticMiddleware);  
 app.use(cors());
+
+//Notifications Routes
+app.get("/notifications/userNotif/:id",authMiddleware,notificationsController.getNotificationsByUserId)
+app.get("/notifications/:id",authMiddleware,notificationsController.getNotificationById)
+app.post("/notifactions",authMiddleware,notificationsController.createNotification)
+
 
 // Feedback Routes
 app.get("/feedbacks", authMiddleware, feedbackController.getAllFeedbacks);

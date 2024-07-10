@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const feedbackDetails = JSON.parse(localStorage.getItem('selectedFeedback'));
+    const accountType = localStorage.getItem('accountType');
+    const token = localStorage.getItem('token');
+    const UserID = localStorage.getItem('userId'); // Retrieve UserID from local storage
+    const username = localStorage.getItem('username'); // Retrieve username from local storage
+    const email = localStorage.getItem('email'); // Retrieve email from local storage
 
     if (feedbackDetails) {
         const feedbackContainer = document.getElementById('feedback-details');
@@ -19,17 +24,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const responseText = document.getElementById('response').value;
         const responseType = document.getElementById('response-type').value;
-        const token = localStorage.getItem('token');
 
         const responsePayload = {
-            ...feedbackDetails,
+            UserID: UserID, // UserID from local storage
+            Fid: feedbackDetails.Fid, // Fid from feedbackDetails
+            justification: responseType,
             response: responseText,
-            responseType: responseType,
-            date: new Date().toISOString()
+            seen: 'N',
+            date: new Date().toISOString().split('T')[0] // Format date to YYYY-MM-DD
         };
 
         try {
-            const response = await fetch('/feedbacks/respond', {
+            const response = await fetch('/notifications', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    fetchFeedbacks();
+    fetchFeedbacks('N');
 
+    
     function formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const accountType = localStorage.getItem('accountType');
     const token = localStorage.getItem('token');
+    const UserID = localStorage.getItem('userId')
     const username = localStorage.getItem('username'); // Retrieve username from local storage
     const email = localStorage.getItem('email'); // Retrieve email from local storage
 
@@ -162,6 +164,7 @@ function closeModal() {
 function confirmRespond(button) {
     const feedbackBox = button.closest('.feedback-box');
     const feedbackDetails = {
+        Fid: feedbackBox.Fid,
         title: feedbackBox.querySelector('h1').innerText.replace('Title: ', ''),
         username: feedbackBox.querySelector('h2').innerText.replace('Username: ', ''),
         email: feedbackBox.querySelector('h3').innerText.replace('Email: ', ''),
