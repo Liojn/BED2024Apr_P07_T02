@@ -1,12 +1,14 @@
 const express = require("express");
+const cors = require('cors');
+const axios = require('axios');
 const sql = require("mssql");
 const feedbackController = require("./controllers/feedbackController");
 const eventController = require("./controllers/eventController");
 const userController = require("./controllers/userController");
+const donationController = require("./controllers/donationController");
 const notificationsController = require("./controllers/notificationsController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const { authMiddleware, staffOnly, studentsOnly } = require('./middleware/authMiddleware');
 
 const app = express();
@@ -56,6 +58,12 @@ app.get("/staff-only", authMiddleware, staffOnly, (req, res) => {
 app.get("/students-only", authMiddleware, studentsOnly, (req, res) => {
     res.send("Students only content");
 });
+
+// Donation routes
+app.get("/donations", donationController.getAllDonations);
+app.get('/nonprofits', donationController.fetchNonProfitNames);
+app.post("/donations",donationController.createDonation);
+//app.get("/donations",donationController.getDonationCount)
 
 app.listen(port, async () => {
     try {
