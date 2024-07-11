@@ -11,8 +11,8 @@
             <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo"> </div> <!--Logo nav page-->
             <nav>
                 <div class="nav">
-                    <a href="#">Home</a>
-                    <a href="#">Event</a>
+                    <a href="homePage.html">Home</a>
+                    <a href="event-creation.html">Event</a>
                     <a href="#">Donate</a>
                     <a id="currentpage" href="../html/FeedbackUser.html">Contact</a>
                     <a href="#">Account</a>
@@ -23,9 +23,9 @@
     <div class="filter-container">
         <label for="filterDropdown">Filter:</label>
         <select id="filterDropdown" onchange="filterFeedbacks()">
-            <option value="all">All</option>
+            <option value="all">Unverified</option>
             <option value="Y">Verified</option>
-            <option value="N">Unverified</option>
+            <option value="N">All</option>
         </select>
     </div>
     <div class="feedback-container" id="feedbackContainer"></div>

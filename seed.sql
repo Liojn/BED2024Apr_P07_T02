@@ -1,4 +1,4 @@
--- Create Users table
+  -- Create Users table
 CREATE TABLE Users (
   UserID INT PRIMARY KEY IDENTITY(1,1),
   Username NVARCHAR(255) NOT NULL UNIQUE,  
@@ -22,12 +22,34 @@ CREATE TABLE Events (
 
  CREATE TABLE Feedback (
   Fid INT IDENTITY(1,1) PRIMARY KEY,
-  name VARCHAR(50) NOT NULL , 
-  email VARCHAR(50) NOT NULL,
-  title VARCHAR(20) NOT NULL,
-  feedback VARCHAR(300) NOT NULL,
-  verified char(1) NOT NULL,
-); 
+  Username NVARCHAR(255) NOT NULL, 
+  Email NVARCHAR(255) NOT NULL, 
+  Title VARCHAR(20) NOT NULL,
+  Feedback VARCHAR(300) NOT NULL,
+  Verified CHAR(1) NOT NULL CHECK (Verified IN ('Y', 'N')),
+  Date DATE NOT NULL,
+  FOREIGN KEY (Username) REFERENCES Users(Username)
+);
+
+
+-- Create Notifcaiton table
+CREATE TABLE Notifications(
+	notification_id INT IDENTITY(1,1) PRIMARY KEY,
+	UserID int NOT NULL,
+	Fid int NOT NULL,
+	justification VARCHAR(40) NOT NULL,
+	response TEXT NOT NULL,
+	seen char(1) CHECK (seen IN ('Y', 'N')),
+	date DATE NOT NULL,
+	FOREIGN KEY(Fid) REFERENCES Feedback(Fid),
+	FOREIGN KEY(UserID) REFERENCES Users(UserID),
+)
+
+Select * from Notifications INNER JOIN Feedback ON Notifications.Fid = Feedback.Fid where UserID = 1
+	
+
+
+
 
 
 INSERT INTO Users (Username, Email, Password, AccountType) 
@@ -43,8 +65,16 @@ VALUES
   ('Tree Planting Extravaganza', '2024-10-12', '10:00:00', '11:30:00', 'NP Block 68, Outside Aerospace', 'Join us for a fun-filled day of giving back to the environment! We will be planting trees on Earth Day. This is a great opportunity to learn about the importance of trees in our ecosystem, get some exercise in the fresh air, and make a positive impact on your community. S point will be given.', 'msneoERC'); 
 
 
-Insert into Feedback (name,email,title,feedback,verified) VALUES
-('ze yu','zy@gmail.com','Bad Customer Service','Customer service was very rude to me','N'),
-('ah ma','am@gmail.com','Ugly','The website design was so badly design my eyes hurt','Y'),
-('blob','b@gmail.com','Confusing','UI confusing not sure where to go','N'),
-('clive','clive@gmail.com','Slow','Website slow response rate','Y')
+
+Insert Into Notifications (UserID, Fid, justification, response, seen, date)
+Values
+	('1', '1', 'Addressing Concerns','We have re-trained our workers','N', '2024-09-30'),
+	('2','2','Needing More Information','Which part of the design sucks?','N', '2023-10-13'),
+	('3','3','Positive Feedback Acknowledgement','Thank you for your feedback','N', '2023-02-02'),
+	('1','4','Others','test','N','2025-01-01')
+
+
+Select * from Feedback
+Drop Table Users
+Drop Table Events
+Drop Table Feedback
