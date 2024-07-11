@@ -86,7 +86,7 @@ class Event {
     static async updateEvent(eventId, newEventData){
         const connection = await sql.connect(dbConfig);
 
-        const sqlQuery = `UPDATE Events SET title = @title, date = @date, startTime = @startTime, endTime = @endTime, location = @location, description = @description WHERE eventId = @eventId`;
+        const sqlQuery = `UPDATE Events SET title = @title, date = @date, startTime = @startTime, endTime = @endTime, location = @location, description = @description, username = @username WHERE eventId = @eventId`;
 
         const request = connection.request();
         request.input("title", newEventData.title);
@@ -96,7 +96,7 @@ class Event {
         request.input("location", newEventData.location);
         request.input("description", newEventData.description);
         request.input("eventId", eventId);
-        //no parameter for username
+        request.input("username", newEventData.username);
 
         const result = await request.query(sqlQuery);
     
@@ -119,6 +119,19 @@ class Event {
         connection.close();
     
         return result.rowsAffected > 0; // Indicate success based on affected rows
+    }
+
+    static async searchEvent(title){
+        const connection = await sql.connect(dbConfig);
+
+        try {
+            const sqlQuery = `SELECT * FROM Events WHERE title LIKE '${title}'`;
+            const request = connection.request();
+            const result = await request.query(sqlQuery);
+            
+        } catch{
+
+        }
     }
 }
 

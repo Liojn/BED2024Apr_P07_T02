@@ -45,7 +45,7 @@ async function getAllEvents(eventIndicator) {
                 <div class="right">
                     <div class="optionbar">
                         <a onclick="navigateToEdit(event, false)" href="#" data-event-id="${element.eventId}">Edit</a> <!---This is for Edit and Delete, to get their id number through storing attributes---->
-                        <a onclick="navigateToDelete(event, false)" href="#" data-event-id="${element.eventId}">Delete</a>
+                        <a onclick="deleteEventConfirm(event, false)" href="#" data-event-id="${element.eventId}">Delete</a>
                     </div>
                     <div class="actions">
                         <button id="register">Register Interest</button>
@@ -97,10 +97,43 @@ const navigateToEdit = (event) => {
     window.location.href = "../html/event-creation.html";
 }
 
+//Function for confirming deletion of the user post first
+const deleteEventConfirm = (event) => {
+    const eventId = event.target.getAttribute('data-event-id');
+    event.preventDefault();
+
+    const confirmation = confirm(`Are you sure you want to delete this event with the ID: ${eventId}? Action is irreversible.`);
+    if (confirmation){
+        deleteEvent(eventId);
+    }
+}
+
+const deleteEvent = async(eventId) => {
+    await fetch(`/events/${eventId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        window.alert("Event deleted successfully!");
+        window.location.href = "../html/event.html";
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        window.alert("Error deleting event. Please try again later.")
+    });
+}
+
+//Function for retrieving specific Event Post based on ID, used for editing 
 const getExistingInfo = async(eventId) => {
     const response = await fetch (`/events/${eventId}`);
     if (response.ok) {
         const eventData = await response.json();
+        console.log(eventData);
 
         //Formatting of data for display
         document.getElementById('title').value = eventData.title;
@@ -165,7 +198,7 @@ document.querySelectorAll('#eventForm input, #eventForm textarea').forEach(eleme
 });
 
 //This function handles the PUT or POST method
-document.getElementById('eventForm').addEventListener('submit', function(event) {
+document.getElementById('eventForm').addEventListener('submit', async function (event) {
     event.preventDefault(); // Prevent default form submission
     const mode = sessionStorage.getItem('mode');
 
@@ -186,12 +219,33 @@ document.getElementById('eventForm').addEventListener('submit', function(event) 
         "description": description,
         "username": username,
     };
+    console.log(jsonData); //test
 
-    if (mode === 'edit') {
+    if (mode === 'edit') {  //PUT command 
         const eventId = sessionStorage.getItem('eventId');
+        //delete jsonData.username; //not needed, will be the same user 
 
-    } else if (mode === 'create') {
-        fetch('/events', {
+        await fetch(`/events/${eventId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            // Handle successful form submission
+            console.log('Success:', result);
+            window.alert("Updated successful!");
+            window.location.href = "../html/event.html";
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error:', error);
+        });
+
+    } else if (mode === 'create') {   //POST command 
+        await fetch('/events', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -212,25 +266,4 @@ document.getElementById('eventForm').addEventListener('submit', function(event) 
     } else {
         alert('Error with Internal System.')
     }
-
-    //console.log(jsonData); test
-
-    /*fetch('/events', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(jsonData)
-    })
-    .then(response => response.json())
-    .then(result => {
-        //Handle successful form submission
-        console.log('Success:', result);
-        window.alert("Post successful!");
-        window.location.href = "../html/event.html"
-    })
-    .catch(error => {
-        //Handle errors
-        console.error('Error:', error);
-    });*/
 });
