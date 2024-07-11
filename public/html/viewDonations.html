@@ -31,7 +31,6 @@
     <div id = "title">My Donations</div>
     <div id="donationContainer"></div>
     <div id = "backButton">Back</div>
-
     <script>
         document.getElementById('backButton').addEventListener('click', function() {
             window.location.href = "donationPage.html";
@@ -72,6 +71,8 @@
                 console.error('Error fetching donations:', error);
             }
         }
+
+
 
         window.onload = fetchDonations;
     </script>

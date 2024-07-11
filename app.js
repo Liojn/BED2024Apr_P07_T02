@@ -15,6 +15,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 const staticMiddleware = express.static("public");
 
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(staticMiddleware);

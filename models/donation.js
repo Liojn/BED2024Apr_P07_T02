@@ -1,8 +1,12 @@
 const dbConfig = require("../dbConfig");
 const sql = require("mssql");
 const apiKey = '40c8f517-2100-47ec-9aca-4963466a3b51'
-const apiUrl = 'https://api.globalgiving.org/api/public/orgservice/all/organizations';
+const apiUrl = 'https://api.globalgiving.org/api/public/orgservice/all/organizations?api_key=40c8f517-2100-47ec-9aca-4963466a3b51';
+// const apiKey = 'stl8_a2c9adc0263dc5f2d0bed57d31e745cdae1147dc6c6b561499445b247de93bf3'
+// const apiUrl = 'https://data.charitynavigator.org'
 const axios = require('axios');
+const cors = require('cors');
+
 class Donation {
     constructor(id, amount, datetime, company) {
         this.id = id;
@@ -54,7 +58,8 @@ class Donation {
 
         return result.recordset[0].count;
     }
-    static async fetchNonProfitCompanyNames() {
+
+    static async fetchNonProfitNames() {
         try {
             const response = await axios.get(apiUrl, {
                 params: {

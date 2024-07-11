@@ -44,10 +44,10 @@
                 <div class="dropdown" id="companyDropdown">
                     <div class="dropdown-toggle" id="dropdownToggle" onclick="toggleDropdown()">Company Name</div>
                     <div class="dropdown-content" id="dropdownContent">
-                        <a href="#" onclick="selectCompany('Company A')">Company A</a>
+                        <!-- <a href="#" onclick="selectCompany('Company A')">Company A</a>
                         <a href="#" onclick="selectCompany('Company B')">Company B</a>
                         <a href="#" onclick="selectCompany('Company C')">Company C</a>
-                        <a href="#" onclick="selectCompany('Company D')">Company D</a>
+                        <a href="#" onclick="selectCompany('Company D')">Company D</a> -->
                     </div>
                     <form id="donationForm">
                         <h3 class = "donationSelection">Select a donation amount:</h3>
@@ -239,6 +239,40 @@
         currentCount++;
         counterElement.textContent = currentCount.toLocaleString() + "+"; // Update the counter display
     }
+
+    async function fetchNonProfitNames() {
+            try {
+                const response = await fetch('http://localhost:3000/nonprofits');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch non-profit names');
+                }
+                const nonProfitNames = await response.json();
+                displayNonProfitNames(nonProfitNames);
+            } catch (error) {
+                console.error('Error fetching non-profit names:', error.message);
+            }
+        }
+
+    function displayNonProfitNames(names) {
+        // const list = document.getElementById('nonProfitList');
+        // list.innerHTML = names.map(name => `<li>${name}</li>`).join('');
+        const dropdownContent = document.getElementById('dropdownContent');
+        dropdownContent.innerHTML = ''; // Clear existing options
+        names.forEach(name => {
+            const link = document.createElement('a');
+            link.href = '#'; // Replace with actual link behavior if needed
+            link.textContent = name;
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                selectCompany(name);
+            });
+            dropdownContent.appendChild(link);
+        });
+    }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchNonProfitNames();
+        });
 
     // Back end post function
 
