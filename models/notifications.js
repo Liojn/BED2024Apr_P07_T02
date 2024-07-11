@@ -64,8 +64,6 @@ class Notifcations {
     
         return this.getNotificationById(result.recordset[0].notification_id);
     }
-
-
 }
 
 

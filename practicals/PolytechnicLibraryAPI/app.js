@@ -5,13 +5,17 @@ const bodyParser = require("body-parser");
 const bookController = require("./controllers/bookController");
 const userController = require("./controllers/userController");
 const verifyJWT = require("./middlewares/checkAccessAuthorization");
-
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger-output.json"); // Import generated spec
  
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve the Swagger UI at a specific route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Route for API Endpoint
 app.get("/books", verifyJWT, bookController.getAllBooks);
