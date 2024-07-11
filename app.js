@@ -36,6 +36,8 @@ app.get('/users/checkUser', userController.checkUser);
 app.get('/users/:id', authMiddleware, userController.getUserById);
 app.post('/users/register', userController.addNewUser);
 app.post('/users/login', userController.loginUser);
+app.put('users/:id', userController.updateUser);
+app.delete('/users/:id', userController.deleteUser);
 
 // Protect certain routes for staff only
 app.get("/staff-only", authMiddleware, staffOnly, (req, res) => {

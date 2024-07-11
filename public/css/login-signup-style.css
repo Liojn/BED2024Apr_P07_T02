@@ -171,3 +171,143 @@ header .modifyText {
 .submit_button:hover {
     background-color: #8dec92;
 } 
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+    margin: auto;
+    text-align: center;
+}
+
+.profile-picture {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 5px;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.profile-info {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 90%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding-right: 30px; /* Space for the clear button */
+}
+
+.clear-field {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: red;
+    display: none;
+}
+
+.profile-container-show {
+    width: 300px;
+    margin: auto;
+    text-align: center;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-picture-show {
+    width: 100px;
+    height: 100px;
+    padding-right: 20px;
+}
+
+.profile-picture-show img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.profile-details {
+    text-align: left;
+}
+
+.profile-details h2, .profile-details p {
+    margin: 5px 0;
+}
+
+.submit_edit_button {
+    width: 80%;
+    background-color: #97ea9a;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.submit_edit_button:hover {
+    background-color: #8dec92;
+}
+
+.donation-container {
+    margin: 20px 0;
+}
+
+.feedback-events-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.redirect_button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.redirect_button:hover {
+    background-color: #218838;
+}
+
+.log_out_button {
+    padding: 10px 20px;
+    background-color: #477b53;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.log_out_button:hover {
+    background-color: #165d26;
+}

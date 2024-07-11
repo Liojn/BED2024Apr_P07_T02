@@ -3,7 +3,7 @@ const dbConfig = require("../dbConfig");
 const sql = require("mssql");
 const bcrypt = require('bcrypt');
 
-class User {
+ class User {
     constructor(userId, username, email, hashedPassword, accountType) {
         this.userId = userId;
         this.username = username;
@@ -141,6 +141,53 @@ class User {
         }
     }
 
+    // Static method to update a user in the database
+    static async updateUser(userId, updatedUser) {
+        const connection = await sql.connect(dbConfig);
+        try {
+            if (updatedUser.Password) {
+                const salt = await bcrypt.genSalt(10);
+                updatedUser.Password = await bcrypt.hash(updatedUser.Password, salt);
+            }
+            const sqlQuery = `UPDATE Users SET Username = @Username, Email = @Email, Password = @Password, AccountType = @AccountType WHERE UserID = @UserID`;
+            const request = connection.request();
+            request.input("UserID", userId);
+            request.input("Username", updatedUser.Username);
+            request.input("Email", updatedUser.Email);
+            request.input("Password", updatedUser.Password);
+            request.input("AccountType", updatedUser.AccountType);
+
+            const result = await request.query(sqlQuery);
+            connection.close();
+
+            // Checking if the user was successfully created and returning a User Object
+            if (result.rowsAffected && result.rowsAffected[0] > 0) {
+                console.log("User successfully updated: ", updatedUser);
+                return updatedUser;
+            } else { 
+                console.log("User not updated");
+                return null; // Log message and return null if user was not created
+            }
+        } catch (error) {
+            console.error("Error updating user: ", error);
+            throw error;
+        }
+    }
+
+    // Static method to delete a user from the database
+    static async deleteUser(userId) {
+        const connection = await sql.connect(dbConfig);
+
+        const sqlQuery = `DELETE FROM Users WHERE UserID = @UserID`;
+
+        const request = connection.request();
+        request.input("UserID", userId);
+
+        const result = await request.query(sqlQuery);
+        connection.close();
+
+        return result.rowsAffected[0] > 0;
+    }
 }
 
 module.exports = User;

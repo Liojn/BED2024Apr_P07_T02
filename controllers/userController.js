@@ -112,6 +112,58 @@ const loginUser = async (req, res) => {
     }
 };
 
+//Controller function to update a user 
+const updateUser = async (req, res) => {
+    const { UserID } = req.params;
+    const { Username, Email, Password, AccountType } = req.body;
+
+    console.log("Request to update user: ", { UserID, Username, Email, Password, AccountType });
+    
+    try {
+        const existingUser = await User.getUserById(UserID);
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        
+        const updatedUser = {
+            Username: Username,
+            Email: Email,
+            Password: Password,
+            AccountType: AccountType
+        };
+
+        const result = await User.updateUser(UserID, updatedUser);
+
+        if (result) {
+            console.log("User successfully updated: ", result);
+            res.status(200).json({ message: "User updated successfully", user: result });
+        } else {
+            console.log("User not updated");
+            res.status(400).json({ message: "User information not updated" });
+        }
+    } catch (error) {
+        console.error("Error updating user: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+//Controller function to delete a user 
+const deleteUser = async (req, res) => {
+    const { UserID } = req.params;
+
+    try {
+        const success = await User.deleteUser(UserID);
+
+        if (success) {
+            res.status(200).json({ message: "User deleted successfully" });
+        } else {
+            res.status(400).json({ message: "Error deleting user" });
+        }
+    } catch (error) {
+        console.error("Error deleting user: ", error);
+        res.status(500).json({ message: "Server error "});
+    }
+};
  
 // Exporting all controller functions
 module.exports = {
@@ -120,4 +172,6 @@ module.exports = {
     getUserById,
     addNewUser,
     loginUser,
+    updateUser,
+    deleteUser,
 }

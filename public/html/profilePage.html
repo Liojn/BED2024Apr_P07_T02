@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Welcome Page</title>
+    <link rel="stylesheet" href="../css/login-signup-style.css">
+    <script src="../script/login-signup.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Itim&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header><span class="modifyText">Eco</span>Impact</header>
+    <div class="profile-container-show">
+        <div class="subheader">Profile</div>
+        <div class="profile-header">
+            <div class="profile-picture-show">
+                <img id="profileImage" alt="Profile Picture">
+            </div>
+            <div class="profile-details">
+                <h2>Username</h2>
+                <p>Email</p>
+                <button id="editButton" class="submit_edit_button" onclick="profileEdit.html">Edit Profile</button>
+            </div>
+        </div>
+        <div class="donation-container">
+            <h3>Donations</h3>
+            <p>Total Amount Donated: $0</p>
+        </div>
+        <div class="feedbacks-events-container">
+            <button class="redirect_button" onclick="">Events history</button>
+            <button class="redirect_button" onclick="">Feedbacks</button>
+        </div>
+        <button id="logOutButton" class="log_out_button" onclick="">Log Out</button>
+    </div>
+</body>
+</html>
