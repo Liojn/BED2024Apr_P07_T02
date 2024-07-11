@@ -21,7 +21,7 @@ app.use(cors());
 //Notifications Routes
 app.get("/notifications/userNotif/:id",authMiddleware,notificationsController.getNotificationsByUserId)
 app.get("/notifications/:id",authMiddleware,notificationsController.getNotificationById)
-app.post("/notifactions",authMiddleware,notificationsController.createNotification)
+app.post("/notifications",authMiddleware,notificationsController.createNotification)
 
 
 // Feedback Routes
@@ -30,6 +30,7 @@ app.get("/feedbacks/:id", authMiddleware, feedbackController.getFeedbackById);
 app.delete("/feedbacks/:id", authMiddleware, staffOnly, feedbackController.deleteFeedback); 
 app.post("/feedbacks", feedbackController.createFeedback);
 app.get("/feedbacks/verified/:verified", authMiddleware, feedbackController.getFeedbackByVerified);
+app.put("/feedbacks/:id",authMiddleware,feedbackController.updateFeedback)
 
 // Event Routes
 app.get("/events", authMiddleware, eventController.getAllEvents);

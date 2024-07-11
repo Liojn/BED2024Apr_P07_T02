@@ -64,10 +64,26 @@ const createFeedback = async (req, res) => {
     }
 };
 
+const updateFeedback= async (req, res) => {
+    const Fid = parseInt(req.params.id);
+  
+    try {
+      const updatedFeedback = await Feedback.updateFeedback(Fid);
+      if (!updatedFeedback) {
+        return res.status(404).send("Feedback not found");
+      }
+      res.json(updatedFeedback);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error updating feedback");
+    }
+  };
+
 module.exports = {
     getAllFeedbacks,
     getFeedbackByVerified,
     getFeedbackById,
     deleteFeedback,
     createFeedback,
+    updateFeedback,
 };

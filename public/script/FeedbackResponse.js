@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const accountType = localStorage.getItem('accountType');
     const token = localStorage.getItem('token');
     const UserID = localStorage.getItem('userId'); // Retrieve UserID from local storage
-    const username = localStorage.getItem('username'); // Retrieve username from local storage
-    const email = localStorage.getItem('email'); // Retrieve email from local storage
 
     if (feedbackDetails) {
         const feedbackContainer = document.getElementById('feedback-details');
@@ -25,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const responseText = document.getElementById('response').value;
         const responseType = document.getElementById('response-type').value;
 
+        console.log(feedbackDetails.Fid)
+        console.log()
         const responsePayload = {
             UserID: UserID, // UserID from local storage
             Fid: feedbackDetails.Fid, // Fid from feedbackDetails
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('/notifications', {
+            const notificationResponse = await fetch('/notifications', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,15 +43,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify(responsePayload),
             });
+            const feedbackUpdateResponse = await fetch(`/feedbacks/${feedbackDetails.Fid}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
 
-            if (response.ok) {
-                alert('Response sent successfully!');
+            if (notificationResponse.ok && feedbackUpdateResponse.ok) {
+                alert('Response sent and feedback updated successfully!');
                 window.location.href = 'FeedbackStaff.html'; // Redirect back to feedback list
             } else {
-                console.error('Failed to send response:', response.statusText);
+                console.error('Failed to send response or update feedback:', notificationResponse.statusText, feedbackUpdateResponse.statusText);
             }
         } catch (error) {
-            console.error('Error sending response:', error);
+            console.error('Error sending response or updating feedback:', error);
         }
     });
 });
+

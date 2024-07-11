@@ -48,7 +48,7 @@ class Notifcations {
     static async createNotification(newNotificationData){
         const connection = await sql.connect(dbConfig)
         const sqlQuery = `Insert Into Notifications (UserID, Fid, justification, response, seen, date)
-                         Values (@UserID, @Fid, @jusstification, @response, @seen, @date);
+                         Values (@UserID, @Fid, @justification, @response, @seen, @date);
                          SELECT SCOPE_IDENTITY() AS notification_id;`;
         const request = connection.request();
         request.input("UserID", newNotificationData.UserID);
