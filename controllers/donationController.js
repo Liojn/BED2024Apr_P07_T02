@@ -31,8 +31,19 @@ const getDonationCount = async (req, res) => {
     }
 }
 
+const fetchNonProfitNames = async (req, res) => {
+    try {
+        const nonProfitNames = await Donation.fetchNonProfitNames();
+        res.status(201).json(nonProfitNames);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error getting non-profit names");
+    }
+}
+
 module.exports = {
     getAllDonations,
     createDonation,
     getDonationCount,
+    fetchNonProfitNames,
 };

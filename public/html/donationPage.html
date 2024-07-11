@@ -13,7 +13,7 @@
             <nav>
                 <div class="nav">
                     <a href="homePage.html">Home</a>
-                    <a href="event.html">Event</a>
+                    <a  href="event.html">Event</a>
                     <a id = "currentpage" href="#">Donate</a>
                     <a href="FeedbackResponse.html" id = "contactus">Contact</a>
                     <a href="#">Account</a>
@@ -123,6 +123,11 @@
         const companyName = document.querySelector(".dropdown-toggle").innerText.trim();
         const donationAmount = document.querySelector('input[name="donation"]:checked');
         const selectedDonation = document.querySelector('input[name="donation"]:checked');
+        const username = localStorage.getItem('username'); // Retrieve username from local storage
+        const email = localStorage.getItem('email'); // Retrieve email from local storage
+        const token = localStorage.getItem('token');
+
+
             let donationValue = selectedDonation.value;
 
             if (donationValue === 'custom') {
@@ -147,11 +152,12 @@
         if (donationValue === 'custom'){
             donationValue == donationAmount
         }
-        console.log(donationValue)
-        console.log(currentDateTime)
         //jsonDate for post request
-
+        console.log(username)
+        console.log(email)
         const jsonData = {
+            "username":username,
+            "email":email,
             "company":companyName,
             "amount": donationValue,
             "datetime": currentDateTime,
@@ -160,7 +166,8 @@
         fetch('http://localhost:3000/donations', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Include token in request headers
             },
             body: JSON.stringify(jsonData)
         })
@@ -182,6 +189,8 @@
         const companyName = document.querySelector(".dropdown-toggle").innerText.trim();
         const donationAmount = document.querySelector('input[name="donation"]:checked');
         const customAmount = document.getElementById('customAmountInput').value.trim();
+        const username = localStorage.getItem('username'); // Retrieve username from local storage
+        const email = localStorage.getItem('email'); // Retrieve email from local storage
 
         if (companyName === 'Company Name' || !donationAmount || (donationAmount.value === 'custom' && customAmount === '')) {
             alert('Please fill in all fields before submitting.');
@@ -199,6 +208,8 @@
         //jsonDate for post request
 
         const jsonData = {
+            "Username":username,
+            "Email":email,
             "company":companyName,
             "amount": donationValue,
             "datetime": currentDateTime,
