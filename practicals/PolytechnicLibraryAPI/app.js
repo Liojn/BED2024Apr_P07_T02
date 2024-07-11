@@ -3,6 +3,8 @@ const sql = require("mssql");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
 const bookController = require("./controllers/bookController");
+const userController = require("./controllers/userController");
+const verifyJWT = require("./middlewares/checkAccessAuthorization");
 
  
 const app = express();
@@ -12,8 +14,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Route for API Endpoint
-app.get("/books", bookController.getAllBooks);
-app.get("")
+app.get("/books", verifyJWT, bookController.getAllBooks);
+app.get("/books/:bookId/availability", verifyJWT, bookController.updateBookAvailability);
+app.get("/login", userController.loginUser);
+app.post("/register", userController.registerUser);
 
 // Serve the Swagger UI at a specific route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
