@@ -13,9 +13,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //Route for API Endpoint
 app.get("/books", bookController.getAllBooks);
-app.
+app.get("")
 
-
+// Serve the Swagger UI at a specific route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, async () => {
     try {
