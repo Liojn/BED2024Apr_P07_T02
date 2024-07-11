@@ -7,6 +7,8 @@ const notificationsController = require("./controllers/notificationsController")
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger-output.json"); // Import generated spec
 const { authMiddleware, staffOnly, studentsOnly } = require('./middleware/authMiddleware');
 
 const app = express();
@@ -17,6 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(staticMiddleware);  
 app.use(cors());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // Serve the Swagger UI at a specific route
 
 //Notifications Routes
 app.get("/notifications/userNotif/:id",authMiddleware,notificationsController.getNotificationsByUserId)
