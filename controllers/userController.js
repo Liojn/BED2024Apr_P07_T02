@@ -102,7 +102,16 @@ const loginUser = async (req, res) => {
                 { id: loggingUser.userId, accountType: loggingUser.accountType },
                 process.env.JWT_SECRET
             );
-            res.status(200).json({ message: "User login successful", token });
+            res.status(200).json({ 
+                message: "User login successful", 
+                token, 
+                user: {
+                    userId: loggingUser.userId,
+                    username: loggingUser.username,
+                    email: loggingUser.email,
+                    accountType: loggingUser.accountType
+                }
+            });
         } else {
             res.status(400).json({ message: "Invalid email or password" });
         }

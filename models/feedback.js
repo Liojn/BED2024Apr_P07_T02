@@ -99,7 +99,21 @@ class Feedback {
     
         return this.getFeedbackById(result.recordset[0].Fid);
     }
+
+    static async updateFeedback(Fid) {
+        const connection = await sql.connect(dbConfig);
     
+        const sqlQuery = `UPDATE Feedback SET Verified = 'Y' WHERE Fid = @Fid`; // Parameterized query
+    
+        const request = connection.request();
+        request.input("Fid", Fid);
+    
+        await request.query(sqlQuery);
+    
+        connection.close();
+    
+        return this.getFeedbackById(Fid); // returning the updated book data
+      }
 }
 
 module.exports = Feedback;

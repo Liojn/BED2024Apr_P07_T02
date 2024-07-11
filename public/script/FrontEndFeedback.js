@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    fetchFeedbacks();
+    fetchFeedbacks('N');
 
+    
     function formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -9,11 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const accountType = localStorage.getItem('accountType');
-    console.log(accountType)
+    const token = localStorage.getItem('token');
+    const UserID = localStorage.getItem('userId')
+    const username = localStorage.getItem('username'); // Retrieve username from local storage
+    const email = localStorage.getItem('email'); // Retrieve email from local storage
+
+    console.log(accountType);
     const staffButton = document.getElementById('staffButton');
     
     if (accountType === 'Staff' && staffButton) {
         staffButton.style.display = 'block';
+        staffButton.addEventListener('click', () => {
+            window.location.href = 'FeedbackStaff.html'; 
+        });
     }
 
     const feedbackForm = document.querySelector('.contact-left');
@@ -23,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const formData = new FormData(feedbackForm);
             const feedbackData = {
-                username: formData.get('username'),
-                email: formData.get('email'),
+                username: username, 
+                email: email, 
                 title: formData.get('feedbackTitle'),
                 feedback: formData.get('feedback'),
                 verified: "N",
@@ -36,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` // Include token in request headers
                     },
                     body: JSON.stringify(feedbackData),
                 });
@@ -56,8 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function fetchFeedbacks(filter = 'all') {
     try {
+        const token = localStorage.getItem('token');
         const url = filter === 'all' ? "/feedbacks" : `/feedbacks/verified/${filter}`;
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}` // Include token in request headers
+            }
+        });
         const feedbacks = await response.json();
 
         console.log('Fetched feedbacks:', feedbacks); // Log the fetched feedbacks
@@ -84,7 +99,7 @@ async function fetchFeedbacks(filter = 'all') {
                 <p>${feedback.feedback}</p>
                 <div class="action-buttons">
                     <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-                    <button class="respond-btn" onclick="confirmRespond()">Respond</button>
+                    <button class="respond-btn" onclick="confirmRespond(this)">Respond</button>
                 </div>
             `;
             
@@ -111,10 +126,15 @@ async function deleteFeedback() {
     const feedbackId = modal.dataset.feedbackId;
     closeModal();
     const feedbackBox = document.getElementById(feedbackId);
+    const token = localStorage.getItem('token');
 
     try {
         const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {
             method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Include token in request headers
+            }
         });
 
         if (response.ok) {
@@ -126,6 +146,7 @@ async function deleteFeedback() {
         console.error('Error deleting feedback:', error);
     }
 }
+
 
 function closeModal() {
     const deleteModal = document.getElementById('deleteConfirmationModal');
@@ -140,8 +161,30 @@ function closeModal() {
     }
 }
 
-function confirmRespond() {
-    if (confirm("Do you really want to respond to this feedback?")) {
-        window.location.href = 'FeedbackResponse.html';
-    }
+function confirmRespond(button) {
+    const feedbackBox = button.closest('.feedback-box');
+    const feedbackDetails = {
+        Fid: feedbackBox.Fid,
+        title: feedbackBox.querySelector('h1').innerText.replace('Title: ', ''),
+        username: feedbackBox.querySelector('h2').innerText.replace('Username: ', ''),
+        email: feedbackBox.querySelector('h3').innerText.replace('Email: ', ''),
+        feedback: feedbackBox.querySelector('p').innerText
+    };
+
+    localStorage.setItem('selectedFeedback', JSON.stringify(feedbackDetails));
+
+    const modal = document.getElementById('respondConfirmationModal');
+    modal.style.display = 'block';
+    modal.dataset.feedbackId = feedbackBox.id;
 }
+
+function respondFeedback() {
+    const modal = document.getElementById('respondConfirmationModal');
+    const feedbackId = modal.dataset.feedbackId;
+    closeModal();
+    window.location.href = 'FeedbackResponse.html';
+}
+
+
+
+

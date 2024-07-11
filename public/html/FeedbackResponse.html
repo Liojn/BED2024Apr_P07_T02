@@ -1,31 +1,51 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Staff Response</title>
-        <link rel="stylesheet" href="../css/Feedback.css">
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Response</title>
+    <link rel="stylesheet" href="../css/Response.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header id="logined-nav">
+        <div class="logo">
+            <img src="../assets/website-logo.png" alt="EcoImpact logo">
+        </div> <!--Logo nav page-->
+        <nav class="nav-links">
+            <a href="homePage.html">Home</a>
+            <a href="event-creation.html">Event</a>
+            <a href="#">Donate</a>
+            <a id="currentpage" href="../html/FeedbackUser.html">Contact</a>
+            <a href="#">Account</a>
+        </nav>
+    </header>
 
-    <body>
-        <div id="eventwrapper">
-            <header id="logined-nav">
-                <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
-                <nav>
-                    <div class="nav">
-                        <a href="#">Home</a>
-                        <a id="currentpage" href="#">Event</a>
-                        <a href="#">Donate</a>
-                        <a href="../html/FeedbackStaff.html">Contact</a>
-                        <a href="#">Account</a>
-                    </div>
-                </nav>
-                
-            </header>
+    <!-- Response Container -->
+    <div class="contact-container">
+        <div id="response-wrapper">
+            <div class="response-container" id="feedback-details">
+                <!-- Feedback details will be inserted here by JavaScript -->
+            </div>
+    
+            <!-- Response Form -->
+            <form id="response-form" class="contact-left">
+                <label for="response-type">Justification Type:</label>
+                <select name="response-type" id="response-type" class = "contact-inputs" required>
+                    <option value="" disabled selected>Select Justification</option>
+                    <option value="Positive">Positive Feedback Acknowledgement</option>
+                    <option value="Concerns">Addressing Concerns</option>
+                    <option value="Solutions">Offering Solutions</option>
+                    <option value="Information">Needing More Information</option>
+                    <option value="Others">Others</option>
+                </select>
+    
+                <textarea name="response" id="response" placeholder="Response" class="contact-inputs" required></textarea>
+                <button type="submit">Submit <img src="../assets/arrow_icon.png" alt="Submit"></button>
+            </form>
         </div>
+    </div>
 
-
-        
-        
-        <script src = "FrontEndFeedback.js"></script>
-    </body>
+    <script src="../script/FeedbackResponse.js"></script>
+</body>
 </html>
