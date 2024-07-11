@@ -6,7 +6,7 @@ const feedbackController = require("./controllers/feedbackController");
 const eventController = require("./controllers/eventController");
 const userController = require("./controllers/userController");
 const donationController = require("./controllers/donationController");
-
+const notificationsController = require("./controllers/notificationsController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
 const { authMiddleware, staffOnly, studentsOnly } = require('./middleware/authMiddleware');
@@ -19,19 +19,28 @@ const staticMiddleware = express.static("public");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(staticMiddleware);
+app.use(staticMiddleware);  
 app.use(cors());
+
+//Notifications Routes
+app.get("/notifications/userNotif/:id",authMiddleware,notificationsController.getNotificationsByUserId)
+app.get("/notifications/:id",authMiddleware,notificationsController.getNotificationById)
+app.post("/notifications",authMiddleware,notificationsController.createNotification)
+
 
 // Feedback Routes
 app.get("/feedbacks", authMiddleware, feedbackController.getAllFeedbacks);
 app.get("/feedbacks/:id", authMiddleware, feedbackController.getFeedbackById);
 app.delete("/feedbacks/:id", authMiddleware, staffOnly, feedbackController.deleteFeedback); 
-app.post("/feedbacks", authMiddleware, feedbackController.createFeedback);
+app.post("/feedbacks", feedbackController.createFeedback);
 app.get("/feedbacks/verified/:verified", authMiddleware, feedbackController.getFeedbackByVerified);
+app.put("/feedbacks/:id",authMiddleware,feedbackController.updateFeedback)
 
 // Event Routes
-app.get("/events", authMiddleware, eventController.getAllEvents);
-app.post("/events", authMiddleware, eventController.createEvent);
+app.get("/events", eventController.getAllEvents);
+app.get("/events/:id", eventController.getEventbyId);
+app.post("/events", eventController.createEvent);
+app.put("/events/:id", eventController.updateEvent);
 app.delete("/events/:id", eventController.deleteEvent);
 
 

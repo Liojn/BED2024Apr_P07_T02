@@ -2,6 +2,9 @@ const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+require('dotenv').config();
+
+const your_secret_key = process.env.JWT_SECRET;
 
 class User {
     constructor(user_id, username, passwordHash, role){
@@ -65,7 +68,7 @@ class User {
         } 
     }
 
-    // Method to log in users (Practica)
+    // Method to log in users (Practical)
     static async loginUser(username, password) {
         const existingUser = await this.getUserByUsername(username);
 
@@ -82,7 +85,7 @@ class User {
 
         // Generate JWT token
         const user = { user_id: existingUser.user_id, role: existingUser.role, };
-        const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "3600s" })
+        const token = jwt.sign(user, your_secret_key, { expiresIn: "3600s" })
         return({ token: token });
     }
 }

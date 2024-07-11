@@ -7,9 +7,23 @@ const getAllEvents = async (req, res) => {
         res.json(events);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error retrieving events");
+        res.status(500).send({ message: "Error retrieving events"});
     }
 };
+
+const getEventbyId = async (req, res) => {
+    const eventId = parseInt(req.params.id);
+    try {
+        const event = await Event.getEventbyId(eventId);
+        if (!event) { //null given
+            return res.status(404).send({ message: "Event not found"});
+        }
+        res.json(event).status(200);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Error retrieving events"})
+    }
+}
 
 const createEvent = async (req, res) => {
     const newEvent = req.body;
@@ -18,9 +32,24 @@ const createEvent = async (req, res) => {
         res.status(201).json(createdEvent);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error creating Events");
+        res.status(500).send({ message: "Error creating Events" });
     }
-}
+};
+
+const updateEvent = async (req, res) => {
+    const eventId = parseInt(req.params.id);
+    const updatedEvent = req.body;
+    try {
+        const  successUpdateEvent = await Event.updateEvent(eventId, updatedEvent);
+        if (!successUpdateEvent) {
+            return res.status(404).send({ message: `No such Event with the followinng ID: ${eventId}`});
+        } 
+        res.json(successUpdateEvent);
+    } catch(error) {
+        console.error(error);
+        res.status(500).send({ message: "Error updating Event"});
+    }
+};
 
 const deleteEvent = async (req, res) => {
     const EventId = req.params.id;
@@ -34,10 +63,12 @@ const deleteEvent = async (req, res) => {
         console.error(error);
         res.status(500).send({ message: "Error deleting event" });
     }
-}
+};
 
 module.exports = {
     getAllEvents,
+    getEventbyId,
     createEvent,
+    updateEvent,
     deleteEvent,
 };
