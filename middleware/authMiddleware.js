@@ -25,14 +25,14 @@ const authMiddleware = (req, res, next) => {
 };
 
 const staffOnly = (req, res, next) => {
-    if (req.accountType !== 'staff') {
+    if (req.accountType == 'staff') {
         return res.status(403).json({ message: 'Access denied: Staff only' });
     }
     next();
 };
 
 const studentsOnly = (req, res, next) => {
-    if (req.accountType !== 'student') {
+    if (req.accountType == 'student') {
         return res.status(403).json({ message: 'Access denied: Students only' });
     }
     next();
