@@ -23,6 +23,24 @@ CREATE TABLE Events (
 -- Create Feeback Table
  CREATE TABLE Feedback (
   Fid INT IDENTITY(1,1) PRIMARY KEY,
+  name NVARCHAR(50) NOT NULL, 
+  email NVARCHAR(50) NOT NULL, 
+  title VARCHAR(20) NOT NULL,
+  feedback VARCHAR(300) NOT NULL,
+  verified CHAR(1) NOT NULL,
+); 
+
+--Create Donation table
+CREATE TABLE Donations (
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  Username NVARCHAR(255) NOT NULL, 
+  Email NVARCHAR(255) NOT NULL, 
+  amount int NOT NULL,
+  company VARCHAR(50) NOT NULL,
+  datetime DATE NOT NULL,
+  FOREIGN KEY (Username) REFERENCES Users(Username)
+); 
+=======
   Username NVARCHAR(255) NOT NULL, 
   Email NVARCHAR(255) NOT NULL, 
   Title VARCHAR(20) NOT NULL,
@@ -60,6 +78,7 @@ Select * from Notifications INNER JOIN Feedback ON Notifications.Fid = Feedback.
 
 
 
+-- Insert data into Users table
 INSERT INTO Users (Username, Email, Password, AccountType) 
 VALUES
   ('user2', 'user2@example.com', 'password456', 'Student'),  
@@ -75,6 +94,20 @@ VALUES
 INSERT INTO EventRegistrations (username, eventId, registrationTime)
 VALUES 
   ('user2', 1, GETDATE());
+
+Insert into Feedback (name,email,title,feedback,verified) VALUES
+('ze yu','zy@gmail.com','Bad Customer Service','Customer service was very rude to me','N'),
+('ah ma','am@gmail.com','Ugly','The website design was so badly design my eyes hurt','Y'),
+('blob','b@gmail.com','Confusing','UI confusing not sure where to go','N'),
+('clive','clive@gmail.com','Slow','Website slow response rate','Y')
+
+
+-- Insert data into Donation table
+Insert into Donations(Username, Email, amount, company, datetime)
+VALUES
+('user1', 'user1@example.com','12','Company A', '2023-01-01 10:00:00'),
+('user2', 'user2@example.com', '20', 'Company B', '2023-04-20 11:15:00');
+
 
 Insert Into Notifications (UserID, Fid, justification, response, seen, date)
 Values
