@@ -36,6 +36,7 @@ app.get("/feedbacks/verified/:verified", authMiddleware, feedbackController.getF
 app.put("/feedbacks/:id",authMiddleware,feedbackController.updateFeedback)
 
 // Event Routes
+app.get("/events/search", eventController.searchEvent);
 app.get("/events", eventController.getAllEvents);
 app.get("/events/:id", eventController.getEventbyId);
 app.post("/events", eventController.createEvent);

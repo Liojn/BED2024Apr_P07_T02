@@ -1,7 +1,7 @@
 
 let isFormDirty = false; //default false as form not edited yet
-localStorage.setItem('username', 'user2');
-localStorage.setItem('accountType', 'Student')
+//localStorage.setItem('username', 'user2');
+//localStorage.setItem('accountType', 'Student')
 
 //A function that executes when the button Create new Post is clicked on event.html
 const navigatetoEventForm = (isEdit) => {
@@ -11,12 +11,26 @@ const navigatetoEventForm = (isEdit) => {
     window.location.href = "../html/event-creation.html";
 }
 
+//Function to carry out Search Events and display
+const submitSearchReq = async() => {
+    let query = document.getElementById('search-content').value;
 
-//GET function for ALL events in the event.html
-async function getAllEvents(eventIndicator) {
-    try {
-        const response = await fetch("/events");
+    if (!query) {
+        alert('Submission is blank. Try again later.')
+    }
+    try{
+        const response = await fetch(`/events/search/?searchTerm=${query}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const eventData = await response.json();
+
+        if (eventData.length == 0){ //if there is none found, stop the function
+            alert('Results found: 0 matches');
+            return;
+        }
+        const eventIndicator = document.getElementsByClassName("event-content")[0]; 
+        eventIndicator.innerHTML = ''; //Clears the existing posts
         console.log(eventData); // testing in browser console
 
         //sort eventData by eventId in descending order
@@ -26,7 +40,7 @@ async function getAllEvents(eventIndicator) {
             const eventBox = document.createElement('div');
             eventBox.id = "content";
             eventBox.setAttribute('data-event-id', element.eventId); //Set data-event-id attribute for reference if needed, This is for Edit and Delete, to get their id number
-            const getRole = localStorage.getItem('role');
+            const getRole = localStorage.getItem('accountType');
             const getUsername = localStorage.getItem('username');
 
             //Checking if is admin, can view Edit and Delete Option, OR is the student post
@@ -48,8 +62,8 @@ async function getAllEvents(eventIndicator) {
                         <a onclick="deleteEventConfirm(event, false)" href="#" data-event-id="${element.eventId}">Delete</a>
                     </div>
                     <div class="actions">
-                        <button id="register">Register Interest</button>
-                        <button id="pList">View Participant List</button>
+                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -71,8 +85,82 @@ async function getAllEvents(eventIndicator) {
                         <!-----NO OPTION---->
                     </div>
                     <div class="actions">
-                        <button id="register">Register Interest</button>
-                        <button id="pList">View Participant List</button>
+                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                    </div>
+                    <div id="post-id">id_: ${element.eventId}</div>
+                </div>
+            `;
+            }
+            eventIndicator.appendChild(eventBox);
+        });
+        alert(`Search successful: ${eventData.length}`);
+    }  catch (error){
+        alert(`Could not find Event. Error message: ${error}`)
+    };
+};
+
+//GET function for ALL events in the event.html
+async function getAllEvents(eventIndicator) {
+    try {
+        const response = await fetch("/events");
+        const eventData = await response.json();
+        console.log(eventData); // testing in browser console
+
+        //sort eventData by eventId in descending order
+        eventData.sort((a, b) => b.eventId - a.eventId);
+
+        eventData.forEach(element => {
+            const eventBox = document.createElement('div');
+            eventBox.id = "content";
+            eventBox.setAttribute('data-event-id', element.eventId); //Set data-event-id attribute for reference if needed, This is for Edit and Delete, to get their id number
+            const getRole = localStorage.getItem('accountType');
+            const getUsername = localStorage.getItem('username');
+
+            //Checking if is admin, can view Edit and Delete Option, OR is the student post
+            if (getRole == 'Staff' || getUsername == element.username){
+                eventBox.innerHTML = `
+                <div class="left">
+                    <div id="username">User: ${element.username}</div>
+                    <div id="title">${element.title}</div>
+                    <div id="date">${formatted_date(element.date)}</div>
+                    <div id="location">${element.location}</div>
+                    <div id="info">
+                        <p style="font-weight: 600;">Time: <span>${element.startTime.slice(11, 16)} to ${element.endTime.slice(11, 16)}</span></p>
+                        <p>${element.description}</p>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="optionbar">
+                        <a onclick="navigateToEdit(event, false)" href="#" data-event-id="${element.eventId}">Edit</a> <!---This is for Edit and Delete, to get their id number through storing attributes---->
+                        <a onclick="deleteEventConfirm(event, false)" href="#" data-event-id="${element.eventId}">Delete</a>
+                    </div>
+                    <div class="actions">
+                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                    </div>
+                    <div id="post-id">id_: ${element.eventId}</div>
+                </div>
+            `;
+            } else{
+                eventBox.innerHTML = `
+                <div class="left">
+                    <div id="username">User: ${element.username}</div>
+                    <div id="title">${element.title}</div>
+                    <div id="date">${formatted_date(element.date)}</div>
+                    <div id="location">${element.location}</div>
+                    <div id="info">
+                        <p style="font-weight: 600;">Time: <span>${element.startTime.slice(11, 16)} to ${element.endTime.slice(11, 16)}</span></p>
+                        <p>${element.description}</p>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="optionbar">
+                        <!-----NO OPTION---->
+                    </div>
+                    <div class="actions">
+                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -266,4 +354,10 @@ document.getElementById('eventForm').addEventListener('submit', async function (
     } else {
         alert('Error with Internal System.')
     }
+});
+
+//Function when user clicks for register button
+document.getElementById('register').addEventListener('click', function() {
+    var eventId = this.getAttribute('data-event-id');
+    
 });

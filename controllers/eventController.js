@@ -65,10 +65,23 @@ const deleteEvent = async (req, res) => {
     }
 };
 
+const searchEvent = async (req, res) => {
+    const title = req.query.searchTerm; //Extract search result for the title
+
+    try{
+        const events = await Event.searchEvent(title);
+        res.json(events);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: `Error searching for Event containing '${title}'`});
+    }
+}
+
 module.exports = {
     getAllEvents,
     getEventbyId,
     createEvent,
     updateEvent,
     deleteEvent,
+    searchEvent,
 };
