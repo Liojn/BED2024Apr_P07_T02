@@ -20,6 +20,7 @@ CREATE TABLE Events (
    CONSTRAINT chk_EndTimeAfterStartTime CHECK (StartTime <= EndTime)  -- check constraint
 );
 
+-- Create Feeback Table
  CREATE TABLE Feedback (
   Fid INT IDENTITY(1,1) PRIMARY KEY,
   Username NVARCHAR(255) NOT NULL, 
@@ -31,6 +32,15 @@ CREATE TABLE Events (
   FOREIGN KEY (Username) REFERENCES Users(Username)
 );
 
+-- Create Event Registration
+CREATE TABLE EventRegistrations (
+  registrationId INT PRIMARY KEY IDENTITY(1,1),
+  username NVARCHAR(255) NOT NULL,
+  eventId INT NOT NULL,
+  registrationTime DATETIME NOT NULL,
+  CONSTRAINT fk_Registrations_Users FOREIGN KEY (username) REFERENCES Users(Username),
+  CONSTRAINT fk_Registrations_Events FOREIGN KEY (eventId) REFERENCES Events(eventId)
+);
 
 -- Create Notifcaiton table
 CREATE TABLE Notifications(
@@ -50,21 +60,21 @@ Select * from Notifications INNER JOIN Feedback ON Notifications.Fid = Feedback.
 
 
 
-
-
 INSERT INTO Users (Username, Email, Password, AccountType) 
 VALUES
-  ('user1', 'user1@example.com', 'password123', 'Student'), 
   ('user2', 'user2@example.com', 'password456', 'Student'),  
-  ('msneoERC', 'msneo@example.com', 'password789', 'Staff');
+  ('mrtanERC', 'msneo@example.com', 'password789', 'Staff'),
+  ('user3', 'user3@example.com', 'idkwhatpassowrd', 'Student');
 
 INSERT INTO Events (title, date, startTime, endTime, location, description, username)
 VALUES
-  ('Cleanshore Sembawang', '2024-08-23', '09:00:00', '12:00:00', 'Sembawang Beach', 'Plastic pollution is a major threat to our oceans and marine life. Help us tackle this issue by participating in our coastal cleanup! We will be gathering volunteers to remove plastic waste from a local beach. Every piece of plastic collected makes a difference for the health of our oceans.', 'user1'),  
+  ('Cleanshore Sembawang', '2024-08-23', '09:00:00', '12:00:00', 'Sembawang Beach', 'Plastic pollution is a major threat to our oceans and marine life. Help us tackle this issue by participating in our coastal cleanup! We will be gathering volunteers to remove plastic waste from a local beach. Every piece of plastic collected makes a difference for the health of our oceans.', 'user3'),  
   ('Eco E-Waste Recycling!', '2024-09-14', '18:00:00', '21:00:00', 'NP Convention Centre', 'I am planning to start a movement to gather people to donate their e-waste. Any volunteer would like to help out?', 'user2'),  
   ('Tree Planting Extravaganza', '2024-10-12', '10:00:00', '11:30:00', 'NP Block 68, Outside Aerospace', 'Join us for a fun-filled day of giving back to the environment! We will be planting trees on Earth Day. This is a great opportunity to learn about the importance of trees in our ecosystem, get some exercise in the fresh air, and make a positive impact on your community. S point will be given.', 'msneoERC'); 
 
-
+INSERT INTO EventRegistrations (username, eventId, registrationTime)
+VALUES 
+  ('user2', 1, GETDATE());
 
 Insert Into Notifications (UserID, Fid, justification, response, seen, date)
 Values
