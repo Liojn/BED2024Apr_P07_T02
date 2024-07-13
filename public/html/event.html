@@ -2,7 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Eco Impact Eventpage</title>
+    <title>EcoImpact Eventpage</title>
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
     <link rel="stylesheet" href="../css/event-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
 </head>
@@ -15,7 +16,7 @@
                     <a href="homePage.html">Home</a>
                     <a id="currentpage" href="event.html">Event</a>
                     <a href="#">Donate</a>
-                    <a href="#">Contact</a>
+                    <a href="FeedbackUser.html">Contact</a>
                     <a href="#">Account</a>
                 </div>
             </nav>
@@ -30,15 +31,15 @@
         </section>
 
         <div class="searchbar-event">
-            <input id="search-content" type="text" placeholder="Search by ID...">
-            <button>
+            <input id="search-content" type="text" placeholder="Search by Event Name...">
+            <button onclick="submitSearchReq()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" class="bi bi-search" viewBox="0 0 16 16">
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
                 </svg>
             </button>
         </div>
         <div id="add-new-post">
-            <button onclick="navigatetoEventForm()">
+            <button onclick="navigatetoEventForm(true)">
                 <span>New Post</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-plus-square" viewBox="0 0 16 16">
                     <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
