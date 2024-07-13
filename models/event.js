@@ -136,6 +136,10 @@ class Event {
             await connection.close(); //Enable closing connection after everything
         }
     }
+
+    static async registerEvent(){
+        const connection = await sql.connect(dbConfig);
+    }
 }
 
 
