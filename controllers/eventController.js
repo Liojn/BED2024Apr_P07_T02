@@ -27,6 +27,8 @@ const getEventbyId = async (req, res) => {
 
 const createEvent = async (req, res) => {
     const newEvent = req.body;
+    newEvent.username = req.username; // Add username to newEvent
+
     try {
         const createdEvent = await Event.createEvent(newEvent);
         res.status(201).json(createdEvent);
@@ -39,6 +41,8 @@ const createEvent = async (req, res) => {
 const updateEvent = async (req, res) => {
     const eventId = parseInt(req.params.id);
     const updatedEvent = req.body;
+    updatedEvent.username = req.originalAuthor;
+
     try {
         const  successUpdateEvent = await Event.updateEvent(eventId, updatedEvent);
         if (!successUpdateEvent) {
@@ -66,15 +70,31 @@ const deleteEvent = async (req, res) => {
 };
 
 const searchEvent = async (req, res) => {
-    const title = req.query.searchTerm; //Extract search result for the title
+    const searchTerm = req.query.searchTerm; //Extract search result for the title
 
     try{
-        const events = await Event.searchEvent(title);
+        const events = await Event.searchEvent(searchTerm);
         res.json(events);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: `Error searching for Event containing '${title}'`});
+        res.status(500).json({ message: `Error searching for Event containing '${searchTerm}'`});
     }
+}
+
+const registerEvent = async (req, res) => {
+    const eventId = req.params.id;
+    const username = req.username;
+    console.log(eventId)
+    console.log(username);
+    try{
+        const eventReg = await Event.registerEvent(eventId, username)
+        res.json(eventReg);
+    } catch (error) {
+        console.error(error);
+        const statusCode = error.code || 400; //default to 400 Bad Request if no code is set
+        res.status(statusCode).json({ error: error.message });
+    }
+
 }
 
 module.exports = {
@@ -84,4 +104,5 @@ module.exports = {
     updateEvent,
     deleteEvent,
     searchEvent,
+    registerEvent,
 };

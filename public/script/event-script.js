@@ -8,6 +8,42 @@ let isFormDirty = false; //default false as form not edited yet
 const token = localStorage.getItem("token");
 console.log(token);
 
+//Function to confirm request when user clicks for register button
+const registerEventConfirm = (event) => {
+    const eventId = event.target.getAttribute('data-event-id');
+    event.preventDefault();
+
+    const response = confirm(`Are you sure you want to sign up for this event ID ${eventId}? Action is irreversible, make sure you checked the dates.`);
+    if (response) {
+        registerEvent(eventId);
+    }
+}
+
+const registerEvent = async (eventId) => {
+    try{
+        const response = await fetch(`/events/register/${eventId}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const resJson = await response.json();
+            throw new Error(resJson.error || 'Registration failed');
+        }
+        const resJson = await response.json();
+        const registrationTime = new Date(resJson.registrationTime).toLocaleString();
+
+        alert(`Registration successful!\nRegistration ID: ${resJson.registrationId}\nEvent ID: ${resJson.eventId}\nRegistration Time: ${registrationTime}`);
+    
+    } catch (error){
+        console.error('An error occurred:', error.message);
+        alert(`Error: ${error.message}`);
+    }
+};
+
 //A function that executes when the button Create new Post is clicked on event.html
 const navigatetoEventForm = (isEdit) => {
     if (isEdit) {
@@ -72,7 +108,7 @@ const submitSearchReq = async() => {
                         <a onclick="deleteEventConfirm(event, false)" href="#" data-event-id="${element.eventId}">Delete</a>
                     </div>
                     <div class="actions">
-                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
                         <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
@@ -95,7 +131,7 @@ const submitSearchReq = async() => {
                         <!-----NO OPTION---->
                     </div>
                     <div class="actions">
-                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
                         <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
@@ -104,7 +140,8 @@ const submitSearchReq = async() => {
             }
             eventIndicator.appendChild(eventBox);
         });
-        alert(`Search successful: ${eventData.length}`);
+        alert(`Search successful: ${eventData.length} relevant result found.`);
+
     }  catch (error){
         alert(`Could not find Event. Error message: ${error}`)
     };
@@ -121,8 +158,9 @@ async function getAllEvents(eventIndicator) {
             }
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const eventData = await response.json();
         console.log(eventData); // testing in browser console
 
@@ -155,7 +193,7 @@ async function getAllEvents(eventIndicator) {
                         <a onclick="deleteEventConfirm(event, false)" href="#" data-event-id="${element.eventId}">Delete</a>
                     </div>
                     <div class="actions">
-                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
                         <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
@@ -178,7 +216,7 @@ async function getAllEvents(eventIndicator) {
                         <!-----NO OPTION---->
                     </div>
                     <div class="actions">
-                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
                         <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
@@ -220,6 +258,7 @@ const deleteEvent = async(eventId) => {
     await fetch(`/events/${eventId}/deletion`, {
         method: 'DELETE',
         headers: {
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
     })
@@ -238,7 +277,13 @@ const deleteEvent = async(eventId) => {
 
 //Function for retrieving specific Event Post based on ID, used for editing 
 const getExistingInfo = async(eventId) => {
-    const response = await fetch (`/events/${eventId}`);
+    const response = await fetch(`/events/${eventId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
     if (response.ok) {
         const eventData = await response.json();
         console.log(eventData);
@@ -316,7 +361,7 @@ document.getElementById('eventForm').addEventListener('submit', async function (
     let endTime = document.getElementById('end-time').value;
     let location = document.getElementById('location').value;
     let description = document.getElementById('description').value;
-    let username = localStorage.getItem('username');
+    //let username = localStorage.getItem('username'); handled by token
 
     const jsonData ={
         "title": title,
@@ -325,7 +370,6 @@ document.getElementById('eventForm').addEventListener('submit', async function (
         "endTime": endTime,
         "location": location,
         "description": description,
-        "username": username,
     };
     console.log(jsonData); //test
 
@@ -336,11 +380,17 @@ document.getElementById('eventForm').addEventListener('submit', async function (
         await fetch(`/events/${eventId}/update`, {
             method: 'PUT',
             headers: {
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(jsonData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json()
+        })
         .then(result => {
             // Handle successful form submission
             console.log('Success:', result);
@@ -356,11 +406,17 @@ document.getElementById('eventForm').addEventListener('submit', async function (
         await fetch('/events', {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(jsonData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json()
+        })
         .then(result => {
             //Handle successful form submission
             console.log('Success:', result);
@@ -374,24 +430,4 @@ document.getElementById('eventForm').addEventListener('submit', async function (
     } else {
         alert('Error with Internal System.')
     }
-});
-
-//Function when user clicks for register button
-document.getElementById('register').addEventListener('click', async function() {
-    var eventId = this.getAttribute('data-event-id');
-    
-    //POST into the database, if inside already alert registered before. 
-    try{
-        const response = await fetch(`"register-event/${username}/${eventId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-    
-    } catch (error){
-
-    }
-
-
 });
