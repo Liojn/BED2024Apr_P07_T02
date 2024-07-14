@@ -35,7 +35,7 @@ const authMiddleware = (req, res, next) => {
             "/feedbacks/[0-9]": ["Staff", "Student"], // For get feedback by id
             "/feedbacks/[0-9]": ["Staff"], //For delete feedback
             "/feedbacks" : ["Staff", "Student"],//For creating feedback
-            "/feedbacks/verified/:verified" : ["Staff"], //For filtering feedback
+            "/feedbacks/verified/(Y|N)" : ["Staff"], //For filtering feedback
             "/feedbacks/[0-9]" :["Staff", "Student"], // For updating feedback
 
             //Notification Routes

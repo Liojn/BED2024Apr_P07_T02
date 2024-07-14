@@ -25,19 +25,19 @@ app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // Serve the Swagger UI at a specific route
 
 //Notifications Routes
-app.get("/notifications/userNotif/:id",authMiddleware,notificationsController.getNotificationsByUserId)
-app.get("/notifications/:id",authMiddleware,notificationsController.getNotificationById)
-app.post("/notifications",authMiddleware,notificationsController.createNotification)
-app.delete("/notification/:id",authMiddleware,notificationsController.deleteNotification)
+app.get("/notifications/userNotif/:id",notificationsController.getNotificationsByUserId)
+app.get("/notifications/:id", notificationsController.getNotificationById)
+app.post("/notifications", notificationsController.createNotification)
+app.delete("/notification/:id", notificationsController.deleteNotification)
 
 
 // Feedback Routes
-app.get("/feedbacks", authMiddleware, feedbackController.getAllFeedbacks);
-app.get("/feedbacks/:id", authMiddleware, feedbackController.getFeedbackById);
-//app.delete("/feedbacks/:id", authMiddleware, staffOnly, feedbackController.deleteFeedback); 
-app.post("/feedbacks", feedbackController.createFeedback);
-app.get("/feedbacks/verified/:verified", authMiddleware, feedbackController.getFeedbackByVerified);
-app.put("/feedbacks/:id",authMiddleware,feedbackController.updateFeedback)
+app.get("/feedbacks", authMiddleware,feedbackController.getAllFeedbacks);
+app.get("/feedbacks/:id", authMiddleware,feedbackController.getFeedbackById);
+app.delete("/feedbacks/:id", authMiddleware,feedbackController.deleteFeedback); 
+app.post("/feedbacks", authMiddleware,feedbackController.createFeedback);
+app.get("/feedbacks/verified/:verified", authMiddleware,feedbackController.getFeedbackByVerified);
+app.put("/feedbacks/:id", authMiddleware,feedbackController.updateFeedback)
 
 // Event Routes
 app.get("/events/search", eventController.searchEvent);
