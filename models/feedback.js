@@ -19,7 +19,7 @@ class Feedback {
         const request = connection.request();
         const result = await request.query(sqlQuery);
         connection.close();
-        console.log(result)
+        
     
         return result.recordset.map((row) => {
             const formattedDate = Feedback.formatDate(new Date(row.Date));

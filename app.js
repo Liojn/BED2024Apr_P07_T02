@@ -25,7 +25,7 @@ app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // Serve the Swagger UI at a specific route
 
 //Notifications Routes
-app.get("/notifications/userNotif/:id",notificationsController.getNotificationsByUserId)
+app.get("/notifications/userNotif/:Username",notificationsController.getNotificationsByUsername)
 app.get("/notifications/:id", authMiddleware,notificationsController.getNotificationById)
 app.post("/notifications",authMiddleware, notificationsController.createNotification)
 app.delete("/notification/:id", authMiddleware,notificationsController.deleteNotification)
@@ -55,15 +55,7 @@ app.get('/users/:id', authMiddleware, userController.getUserById);
 app.post('/users/register', userController.addNewUser);
 app.post('/users/login', userController.loginUser);
 
-/* Protect certain routes for staff only
-app.get("/staff-only", authMiddleware, staffOnly, (req, res) => {
-    res.send("Staff only content");
-});
 
-// Protect certain routes for students only
-app.get("/students-only", authMiddleware, studentsOnly, (req, res) => {
-    res.send("Students only content");
-}); */
 
 // Donation routes
 app.get("/donations", donationController.getAllDonations);

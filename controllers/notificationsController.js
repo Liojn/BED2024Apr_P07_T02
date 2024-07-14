@@ -12,17 +12,17 @@ const getAllNotifications = async (req, res) => {
 };
 
 
-const getNotificationsByUserId = async (req, res) => {
-    const UserID = parseInt(req.params.id);
+const getNotificationsByUsername = async (req, res) => {
+    const Username = req.params.Username;
     try {
-        const notif = await Notifications.getNotificationsByUserId(UserID);
+        const notif = await Notifications.getNotificationsByUsername(Username);
         if (!notif ) {
-            return res.status(404).send("Notifications with UserID found not found");
+            return res.status(404).send("Notifications with username found not found");
         }
         res.json(notif);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error retrieving notification with UserID");
+        res.status(500).send("Error retrieving notification with Username");
     }
 };
 
@@ -68,7 +68,7 @@ const deleteNotification = async (req, res) => {
 
 
 module.exports = {
-    getNotificationsByUserId,
+    getNotificationsByUsername,
     getNotificationById,
     createNotification,
     deleteNotification,

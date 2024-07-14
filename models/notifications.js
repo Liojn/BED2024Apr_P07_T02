@@ -25,14 +25,15 @@ class Notifcations {
         });
     }
 
-    static async getNotificationsByUserId(UserID) {
+    static async getNotificationsByUsername(Username) {
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `Select * from Notifications INNER JOIN Feedback ON Notifications.Fid = Feedback.Fid where UserID = @UserID`;
+        const sqlQuery = `Select * from Notifications INNER JOIN Feedback ON Notifications.Fid = Feedback.Fid where Username = @Username`;
         const request = connection.request();
-        request.input("UserID", UserID);
+        request.input("Username", Username);
         const result = await request.query(sqlQuery);
         connection.close();
 
+        console.log(result)
         return result.recordset
     }
 
