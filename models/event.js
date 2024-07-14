@@ -125,13 +125,20 @@ class Event {
         const connection = await sql.connect(dbConfig);
 
         try {
-            const sqlQuery = `SELECT * FROM Events WHERE title LIKE '${title}'`;
+            const sqlQuery = `SELECT * FROM Events WHERE title LIKE '%${title}%'`;
             const request = connection.request();
             const result = await request.query(sqlQuery);
             
-        } catch{
-
+            return result.recordset;
+        } catch (error){
+            throw new Error("Error searching for event. Event does not exist.");
+        } finally {
+            await connection.close(); //Enable closing connection after everything
         }
+    }
+
+    static async registerEvent(){
+        const connection = await sql.connect(dbConfig);
     }
 }
 

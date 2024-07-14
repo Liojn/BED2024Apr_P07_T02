@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Nav Bar</title>
+    <link rel="stylesheet" href="../css/donation.css">
+</head>
+<body>
+    <div id="eventwrapper">
+        <header id="logined-nav">
+            <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
+            <nav>
+                <div class="nav">
+                    <a href="homePage.html">Home</a>
+                    <a  href="event.html">Event</a>
+                    <a id = "currentpage" href="#">Donate</a>
+                    <a href="FeedbackResponse.html" id = "contactus">Contact</a>
+                    <a href="#">Account</a>
+                </div>
+            </nav>
+            
+        </header>
+    </div>
+    <div class = "container">
+        <img src = "Wallpaper.png" class = "Wallpaper1">
+        <div class = "overlay-text">Give to protect the earth</div>
+        <div class = "overlay-text2">Donate Today</div>
+    </div>
+    <div class = "container">
+        <img src = "Rectangle 15.png" class = "Counter">
+        <div class = "donation-overlay">Join our community in donating and be a positive change in the world. With over: </div>
+        <div class = "numbers">120,041+</div>
+        <div class = "donation-overlay2">people already joining</div>
+    </div>
+    <div class = "Donation-form">
+        <img src = "Rectangle 21.png" class = "form-image">
+        <div class="form-container">
+            <img src="Rectangle 20.png" class="form">
+            <div class="overlay-rectangle">
+                <p class = "title">Make A Donation</p>
+                <h3 class = "subtitle">Select your company to donate to:</h3>
+                <form id = "form">
+                <div class="dropdown" id="companyDropdown">
+                    <div class="dropdown-toggle" id="dropdownToggle" onclick="toggleDropdown()">Company Name</div>
+                    <div class="dropdown-content" id="dropdownContent">
+                        <a href="#" onclick="selectCompany('Company A')">Company A</a>
+                        <a href="#" onclick="selectCompany('Company B')">Company B</a>
+                        <a href="#" onclick="selectCompany('Company C')">Company C</a>
+                        <a href="#" onclick="selectCompany('Company D')">Company D</a>
+                    </div>
+                    <form id="donationForm">
+                        <h3 class = "donationSelection">Select a donation amount:</h3>
+                        <label>
+                            <input type="radio" name="donation" value="10">
+                            $10
+                        </label><br>
+                        <label>
+                            <input type="radio" name="donation" value="20">
+                            $20
+                        </label><br>
+                        <label>
+                            <input type="radio" name="donation" value="50">
+                            $50
+                        </label><br>
+                        <label class="custom-amount">
+                            <input type="radio" name="donation" value="custom" id="customAmountRadio">
+                            Other: $
+                            <input type="number" id="customAmountInput" min="1" disabled>
+                        </label><br>
+                    </form>
+                    <div class = "submit-button" onclick="successfulSubmission()">Submit</div>
+                    <div class="overlay" id="overlay"></div>
+                    <div class="popup" id="popup">
+                        <div id = "anotherDonation" onclick="submitAnotherDonation()">Submit Another Donation</div>
+                        <div id = "view">View Your Donations</div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+<script>
+        // Get references to the custom amount radio and input elements
+        const customAmountRadio = document.getElementById('customAmountRadio');
+        const customAmountInput = document.getElementById('customAmountInput');
+        // Add event listeners to the radio buttons
+        const donationRadios = document.querySelectorAll('input[name="donation"]');
+        donationRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    customAmountInput.disabled = false;
+                    customAmountInput.focus();
+                } else {
+                    customAmountInput.disabled = true;
+                }
+            });
+        });
+    function toggleDropdown() {
+    var dropdown = document.getElementById("companyDropdown");
+    dropdown.classList.toggle("active");
+}
+    document.getElementById('contactus').addEventListener('click', function() {
+            window.location.href = "FeedbackUser.html";
+        });
+    document.getElementById('view').addEventListener('click', function() {
+            window.location.href = "viewDonations.html";
+        });
+    function selectCompany(companyName) {
+            event.preventDefault();
+            document.querySelector(".dropdown-toggle").innerText = companyName;
+            toggleDropdown(); // Optionally close the dropdown after selection
+        }
+
+    //function for successful submission button
+    function successfulSubmission() {
+        let value;
+        const now = new Date();
+        const currentDateTime = now.toISOString().slice(0, 19).replace('T', ' '); // Format: YYYY-MM-DD HH:MM:SS
+        const companyName = document.querySelector(".dropdown-toggle").innerText.trim();
+        const donationAmount = document.querySelector('input[name="donation"]:checked');
+        const selectedDonation = document.querySelector('input[name="donation"]:checked');
+        const username = localStorage.getItem('username'); // Retrieve username from local storage
+        const email = localStorage.getItem('email'); // Retrieve email from local storage
+        const token = localStorage.getItem('token');
+
+
+            let donationValue = selectedDonation.value;
+
+            if (donationValue === 'custom') {
+                donationValue = customAmountInput.value;
+            }
+
+
+        // Check if all fields are filled
+        if (companyName === 'Company Name' || !donationAmount || (donationValue === 'custom' && customAmount === '')) {
+            alert('Please fill in all fields before submitting.');
+            return;
+        }
+        updateCounter();
+        document.getElementById('form').reset();
+        document.getElementById('dropdownToggle').innerText = 'Company Name';
+        // Hide the submit button
+        document.querySelector('.submit-button').style.display = 'none';
+
+        // Show the 2 other buttons
+        document.getElementById('anotherDonation').style.display = 'block';
+        document.getElementById('view').style.display = 'block';
+        if (donationValue === 'custom'){
+            donationValue == donationAmount
+        }
+        //jsonDate for post request
+        console.log(username)
+        console.log(email)
+        const jsonData = {
+            "username":username,
+            "email":email,
+            "company":companyName,
+            "amount": donationValue,
+            "datetime": currentDateTime,
+        }
+        console.log(jsonData)
+        fetch('http://localhost:3000/donations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Include token in request headers
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            //Handle successful form submission
+            console.log('Success:', result);
+        })
+        .catch(error => {
+            //Handle errors
+            console.error('Error:', error);
+        });
+
+    }
+
+
+    //function for submit another donation
+    function submitAnotherDonation(){
+        const companyName = document.querySelector(".dropdown-toggle").innerText.trim();
+        const donationAmount = document.querySelector('input[name="donation"]:checked');
+        const customAmount = document.getElementById('customAmountInput').value.trim();
+        const username = localStorage.getItem('username'); // Retrieve username from local storage
+        const email = localStorage.getItem('email'); // Retrieve email from local storage
+
+        if (companyName === 'Company Name' || !donationAmount || (donationAmount.value === 'custom' && customAmount === '')) {
+            alert('Please fill in all fields before submitting.');
+            return;
+        }
+        updateCounter();
+        document.getElementById('dropdownToggle').innerText = 'Company Name';
+        document.getElementById('form').reset();
+        event.preventDefault()
+        if (donationValue === 'custom'){
+            donationValue == donationAmount
+        }
+        console.log(donationValue)
+        console.log(currentDateTime)
+        //jsonDate for post request
+
+        const jsonData = {
+            "Username":username,
+            "Email":email,
+            "company":companyName,
+            "amount": donationValue,
+            "datetime": currentDateTime,
+        }
+        console.log(jsonData)
+        fetch('http://localhost:3000/donations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            //Handle successful form submission
+            console.log('Success:', result);
+        })
+        .catch(error => {
+            //Handle errors
+            console.error('Error:', error);
+        });
+    }
+    
+    function updateCounter() {
+        const counterElement = document.querySelector('.numbers');
+        let currentCount = parseInt(counterElement.textContent.replace(/\D/g, ''), 10);
+        currentCount++;
+        counterElement.textContent = currentCount.toLocaleString() + "+"; // Update the counter display
+    }
+
+    // Back end post function
+
+</script>
+</html>
