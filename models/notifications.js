@@ -12,6 +12,19 @@ class Notifcations {
         this.date = date
     }
 
+    static async getAllNotifications() {
+        console.log("model ")
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `SELECT * FROM Notifications`;
+        const request = connection.request();
+        const result = await request.query(sqlQuery);
+        connection.close();
+        console.log(result)
+        return result.recordset.map((row) => {
+            return new Notifcations(row.notification_id, row.UserID, row.Fid, row.justifcation, row.response, row.seen, row.date);
+        });
+    }
+
     static async getNotificationsByUserId(UserID) {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `Select * from Notifications INNER JOIN Feedback ON Notifications.Fid = Feedback.Fid where UserID = @UserID`;

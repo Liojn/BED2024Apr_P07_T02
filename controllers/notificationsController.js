@@ -1,5 +1,17 @@
 const Notifications = require("../models/notifications")
 
+
+const getAllNotifications = async (req, res) => {
+    try {
+        const notifications = await Notifications.getAllNotifications();
+        res.json(notifications);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving notifications");
+    }
+};
+
+
 const getNotificationsByUserId = async (req, res) => {
     const UserID = parseInt(req.params.id);
     try {
@@ -60,4 +72,5 @@ module.exports = {
     getNotificationById,
     createNotification,
     deleteNotification,
+    getAllNotifications,
 };
