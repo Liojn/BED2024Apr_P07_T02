@@ -26,10 +26,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // Serv
 
 //Notifications Routes
 app.get("/notifications/userNotif/:id",notificationsController.getNotificationsByUserId)
-app.get("/notifications/:id", notificationsController.getNotificationById)
-app.post("/notifications", notificationsController.createNotification)
-app.delete("/notification/:id", notificationsController.deleteNotification)
-
+app.get("/notifications/:id", authMiddleware,notificationsController.getNotificationById)
+app.post("/notifications",authMiddleware, notificationsController.createNotification)
+app.delete("/notification/:id", authMiddleware,notificationsController.deleteNotification)
+app.get("/notifications", notificationsController.getAllNotifications)
 
 // Feedback Routes
 app.get("/feedbacks", authMiddleware,feedbackController.getAllFeedbacks);
@@ -49,7 +49,7 @@ app.delete("/events/:id/deletion", eventController.deleteEvent);
 
 
 // Users Routes
-app.get('/users', authMiddleware, userController.getAllUser);
+app.get('/users', userController.getAllUser);
 app.get('/users/checkUser', userController.checkUser);
 app.get('/users/:id', authMiddleware, userController.getUserById);
 app.post('/users/register', userController.addNewUser);
