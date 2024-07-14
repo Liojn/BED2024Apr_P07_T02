@@ -9,7 +9,6 @@ const donationController = require("./controllers/donationController");
 const notificationsController = require("./controllers/notificationsController");
 const dbConfig = require("./dbConfig");
 const bodyParser = require("body-parser");
-const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json"); // Import generated spec
 
@@ -29,6 +28,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // Serv
 app.get("/notifications/userNotif/:id",authMiddleware,notificationsController.getNotificationsByUserId)
 app.get("/notifications/:id",authMiddleware,notificationsController.getNotificationById)
 app.post("/notifications",authMiddleware,notificationsController.createNotification)
+app.delete("/notification/:id",authMiddleware,notificationsController.deleteNotification)
 
 
 // Feedback Routes

@@ -141,7 +141,16 @@ async function deleteFeedback() {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {
+        const notificationResponse = await fetch(`/notification/${feedbackId.split('-')[1]}`,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            } 
+        }
+    )
+
+        const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {  
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -149,7 +158,7 @@ async function deleteFeedback() {
             }
         });
 
-        if (response.ok) {
+        if (response.ok && notificationResponse.ok) {
             feedbackBox.parentNode.removeChild(feedbackBox);
         } else {
             console.error('Failed to delete feedback:', response.statusText);
