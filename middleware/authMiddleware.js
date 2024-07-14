@@ -29,6 +29,7 @@ const authMiddleware = (req, res, next) => {
             "/events/search" : ["Student", "Staff"], //GET with Search
             "/events/[0-9]+/update": ["Staff", "Student"], //POST
             "/events/[0-9]+/deletion": ["Staff", "Student"], //DELETE
+            "/events/register/[0-9]+": ["Staff", "Student"], //POST register
 
             //Feedback Routes
             "/feedbacks": ["Staff", "Student"], //For get all feedbacks
@@ -59,7 +60,9 @@ const authMiddleware = (req, res, next) => {
             return res.status(403).json({ message: "Forbidden" });
         }
 
-        req.user = decoded.username; //For authorization uses later, attach keyvalue pair to the req   
+        req.username = decoded.username; //For authorization uses later, attach keyvalue pair to the req 
+        req.accountType = userRole;
+        //console.log(req.username);
         next();
     });
 };

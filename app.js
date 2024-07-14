@@ -13,7 +13,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json"); // Import generated spec
 
 const authMiddleware = require('./middleware/authMiddleware');
-
+const eventAuthorizeAction = require("./middleware/eventAuthorization");
 const app = express();
 const port = process.env.PORT || 3000;
 const staticMiddleware = express.static("public");
@@ -39,13 +39,15 @@ app.post("/feedbacks", authMiddleware,feedbackController.createFeedback);
 app.get("/feedbacks/verified/:verified", authMiddleware,feedbackController.getFeedbackByVerified);
 app.put("/feedbacks/:id", authMiddleware,feedbackController.updateFeedback)
 
-// Event Routes
+
+// Event Route
 app.get("/events/search", eventController.searchEvent);
+app.post("/events/register/:id", authMiddleware, eventController.registerEvent);
 app.get("/events", authMiddleware, eventController.getAllEvents);
-app.get("/events/:id", eventController.getEventbyId);
-app.post("/events", eventController.createEvent);
-app.put("/events/:id/update", eventController.updateEvent);
-app.delete("/events/:id/deletion", eventController.deleteEvent);
+app.get("/events/:id", authMiddleware, eventController.getEventbyId);
+app.post("/events", authMiddleware, eventController.createEvent);
+app.put("/events/:id/update", authMiddleware, eventAuthorizeAction, eventController.updateEvent);
+app.delete("/events/:id/deletion", authMiddleware, eventAuthorizeAction, eventController.deleteEvent);
 
 
 // Users Routes
