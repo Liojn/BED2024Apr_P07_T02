@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const username = localStorage.getItem('username'); // Retrieve username from local storage
     const email = localStorage.getItem('email'); // Retrieve email from local storage
 
+    console.log(token)
     console.log(accountType);
     const staffButton = document.getElementById('staffButton');
     
