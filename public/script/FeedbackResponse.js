@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const UserID = localStorage.getItem('userId'); // Retrieve UserID from local storage
 
+    console.log(UserID)
     console.log('Feedback Details:', feedbackDetails);
 
     if (window.location.pathname.endsWith('FeedbackResponse.html')) {
@@ -71,9 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fetch notifications
-    async function fetchNotifications() {
+    function fetchNotifications() {
         try {
-            const response = await fetch(`/notifications/userNotif/${UserID}`, {
+            const response = fetch(`/notifications/userNotif/${UserID}`, {
                 headers: {
                     'Authorization': `Bearer ${token}` // Include token in request headers
                 }
@@ -83,8 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Network response was not ok');
             }
 
-            const notifications = await response.json();
+            const notifications = response.json();
 
+            console.log(notifications)
             // Check if the response is an array
             if (!Array.isArray(notifications)) {
                 throw new Error('Response is not an array');
@@ -114,7 +116,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Check if the current page is NotificationScreen.html
-    if (window.location.pathname.endsWith('NotificationScreen.html')) {
-        fetchNotifications();
-    }
+   fetchNotifications()
 });
