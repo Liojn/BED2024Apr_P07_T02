@@ -105,7 +105,6 @@ async function fetchFeedbacks(filter = 'all') {
             const feedbackBox = document.createElement('div');
             feedbackBox.classList.add('feedback-box');
             feedbackBox.id = `feedback-${feedback.Fid}`; // Set unique id
-
             feedbackBox.innerHTML = `
                 <h1>Title: ${feedback.title}</h1>
                 <h2>Username: ${feedback.username}</h2>
@@ -125,14 +124,12 @@ async function fetchFeedbacks(filter = 'all') {
         console.error('Error fetching feedbacks:', error);
     }
 }
-
-async function updateNotificationCount() {
-    const userID = localStorage.getItem('userId'); // Retrieve user ID from local storage
+async function updateNotificationCount() {  
+    const username = localStorage.getItem('username');
     const token = localStorage.getItem('token'); // Retrieve token from local storage
 
-    console.log(userID)
     try {
-        const response = await fetch(`/notifications/userNotif/${userID}`, {
+        const response = await fetch(`/notifications/userNotif/${username}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -239,7 +236,6 @@ function confirmRespond(button) {
 
 function respondFeedback() {
     const modal = document.getElementById('respondConfirmationModal');
-    const feedbackId = modal.dataset.feedbackId;
     closeModal();
     window.location.href = 'FeedbackResponse.html';
 }

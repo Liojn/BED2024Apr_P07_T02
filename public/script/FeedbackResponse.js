@@ -72,21 +72,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fetch notifications
-    function fetchNotifications() {
+    async function fetchNotifications() {
+        const username = localStorage.getItem('username');
+        const token = localStorage.getItem('token'); // Ensure token is retrieved here if not in global scope
+
+        console.log(username);
+
         try {
-            const response = fetch(`/notifications/userNotif/${UserID}`, {
+            const response = await fetch(`/notifications/userNotif/${username}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}` // Include token in request headers
+                    'Authorization': `Bearer ${token}`, // Include token in request headers
+                    'Content-Type': 'application/json'
                 }
             });
 
+            console.log(response);
+
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error(`Network response was not ok: ${response.statusText}`);
             }
 
-            const notifications = response.json();
+            const notifications = await response.json();
 
-            console.log(notifications)
+            console.log(notifications);
+
             // Check if the response is an array
             if (!Array.isArray(notifications)) {
                 throw new Error('Response is not an array');
@@ -101,11 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 notificationBox.id = `notification-${notification.notification_id}`; // Set unique id
 
                 notificationBox.innerHTML = `
-                    <h1>Justification: ${notification.justification}</h1>
-                    <h2>Date: ${new Date(notification.date).toLocaleDateString()}</h2>
-                    <div class="action-buttons">
-                        <button class="delete-btn" onclick="confirmDelete(${notification.notification_id})">Delete</button>
-                    </div>
+                    <h1>Feedback title: ${notification.Title}</h1>
+                    <h2>Response Justification: ${notification.justification}</h2>
+                    <h3>Date: ${new Date(notification.date).toLocaleDateString()}</h3>
+                    <button class="delete-btn" onclick="confirmDelete(${notification.notification_id})">Delete</button>
                 `;
 
                 notificationContainer.appendChild(notificationBox);
@@ -116,5 +124,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Check if the current page is NotificationScreen.html
-   fetchNotifications()
+    if (window.location.pathname.endsWith('NotificationScreen.html')) {
+        fetchNotifications();
+    }
+
 });
+
+function confirmDelete(notification_id) {
+    if (confirm('Are you sure you want to delete this notification?')) {
+        deleteNotification(notification_id);
+    }
+}
+
+async function deleteNotification(notification_id) {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await fetch(`/notifications/${notification_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`, // Include token in request headers
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            alert('Notification deleted successfully!');
+            document.getElementById(`notification-${notification_id}`).remove(); // Remove notification from DOM
+        } else {
+            throw new Error('Failed to delete notification');
+        }
+    } catch (error) {
+        console.error('Error deleting notification:', error);
+        alert('An error occurred while deleting the notification.');
+    }
+}
