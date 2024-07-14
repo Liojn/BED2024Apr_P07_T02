@@ -1,7 +1,12 @@
 
 let isFormDirty = false; //default false as form not edited yet
+
 //localStorage.setItem('username', 'user2');
 //localStorage.setItem('accountType', 'Student')
+
+//IMPORTANT, for authentication
+const token = localStorage.getItem("token");
+console.log(token);
 
 //A function that executes when the button Create new Post is clicked on event.html
 const navigatetoEventForm = (isEdit) => {
@@ -19,7 +24,12 @@ const submitSearchReq = async() => {
         alert('Submission is blank. Try again later.')
     }
     try{
-        const response = await fetch(`/events/search/?searchTerm=${query}`);
+        const response = await fetch(`/events/search/?searchTerm=${query}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -103,7 +113,16 @@ const submitSearchReq = async() => {
 //GET function for ALL events in the event.html
 async function getAllEvents(eventIndicator) {
     try {
-        const response = await fetch("/events");
+        const response = await fetch("/events", {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
         const eventData = await response.json();
         console.log(eventData); // testing in browser console
 
@@ -171,6 +190,7 @@ async function getAllEvents(eventIndicator) {
 
     } catch (error) { //error handling
         console.log(error);
+        alert(`Error: ${error}`);
     }
 }
 
@@ -197,7 +217,7 @@ const deleteEventConfirm = (event) => {
 }
 
 const deleteEvent = async(eventId) => {
-    await fetch(`/events/${eventId}`, {
+    await fetch(`/events/${eventId}/deletion`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -313,7 +333,7 @@ document.getElementById('eventForm').addEventListener('submit', async function (
         const eventId = sessionStorage.getItem('eventId');
         //delete jsonData.username; //not needed, will be the same user 
 
-        await fetch(`/events/${eventId}`, {
+        await fetch(`/events/${eventId}/update`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -357,7 +377,21 @@ document.getElementById('eventForm').addEventListener('submit', async function (
 });
 
 //Function when user clicks for register button
-document.getElementById('register').addEventListener('click', function() {
+document.getElementById('register').addEventListener('click', async function() {
     var eventId = this.getAttribute('data-event-id');
     
+    //POST into the database, if inside already alert registered before. 
+    try{
+        const response = await fetch(`"register-event/${username}/${eventId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+    
+    } catch (error){
+
+    }
+
+
 });
