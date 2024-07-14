@@ -11,10 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const accountType = localStorage.getItem('accountType');
     const token = localStorage.getItem('token');
-    const UserID = localStorage.getItem('userId')
     const username = localStorage.getItem('username'); // Retrieve username from local storage
     const email = localStorage.getItem('email'); // Retrieve email from local storage
 
+    console.log(token)
     console.log(accountType);
     const staffButton = document.getElementById('staffButton');
     
@@ -67,12 +67,24 @@ document.addEventListener('DOMContentLoaded', () => {
 async function fetchFeedbacks(filter = 'all') {
     try {
         const token = localStorage.getItem('token');
-        const url = filter === 'all' ? "/feedbacks" : `/feedbacks/verified/${filter}`;
+        let url;
+        
+        if (filter === 'all') {
+            url = "/feedbacks";
+        } else {
+            url = `/feedbacks/verified/${filter}`;
+        }
+
         const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}` // Include token in request headers
             }
         });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
         const feedbacks = await response.json();
 
         console.log('Fetched feedbacks:', feedbacks); // Log the fetched feedbacks
@@ -99,7 +111,7 @@ async function fetchFeedbacks(filter = 'all') {
                 <p>${feedback.feedback}</p>
                 <div class="action-buttons">
                     <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-                    <button class="respond-btn" onclick="confirmRespond(this)">Respond</button>
+                    ${feedback.verified === 'N' ? `<button class="respond-btn" onclick="confirmRespond(this)">Respond</button>` : ''}
                 </div>
             `;
             
@@ -109,6 +121,7 @@ async function fetchFeedbacks(filter = 'all') {
         console.error('Error fetching feedbacks:', error);
     }
 }
+
 
 function filterFeedbacks() {
     const filterValue = document.getElementById('filterDropdown').value;
@@ -129,7 +142,16 @@ async function deleteFeedback() {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {
+        const notificationResponse = await fetch(`/notification/${feedbackId.split('-')[1]}`,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            } 
+        }
+    )
+
+        const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {  
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -137,7 +159,7 @@ async function deleteFeedback() {
             }
         });
 
-        if (response.ok) {
+        if (response.ok && notificationResponse.ok) {
             feedbackBox.parentNode.removeChild(feedbackBox);
         } else {
             console.error('Failed to delete feedback:', response.statusText);
@@ -164,7 +186,7 @@ function closeModal() {
 function confirmRespond(button) {
     const feedbackBox = button.closest('.feedback-box');
     const feedbackDetails = {
-        Fid: feedbackBox.Fid,
+        Fid: feedbackBox.id.split('-')[1], // Extract the actual Fid here
         title: feedbackBox.querySelector('h1').innerText.replace('Title: ', ''),
         username: feedbackBox.querySelector('h2').innerText.replace('Username: ', ''),
         email: feedbackBox.querySelector('h3').innerText.replace('Email: ', ''),
@@ -177,6 +199,7 @@ function confirmRespond(button) {
     modal.style.display = 'block';
     modal.dataset.feedbackId = feedbackBox.id;
 }
+
 
 function respondFeedback() {
     const modal = document.getElementById('respondConfirmationModal');
