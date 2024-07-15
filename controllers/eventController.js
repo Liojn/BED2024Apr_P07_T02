@@ -27,7 +27,7 @@ const getEventbyId = async (req, res) => {
 
 const createEvent = async (req, res) => {
     const newEvent = req.body;
-    newEvent.username = req.username; // Add username to newEvent
+    newEvent.username = req.username; //Add username to newEvent
 
     try {
         const createdEvent = await Event.createEvent(newEvent);
@@ -41,7 +41,7 @@ const createEvent = async (req, res) => {
 const updateEvent = async (req, res) => {
     const eventId = parseInt(req.params.id);
     const updatedEvent = req.body;
-    updatedEvent.username = req.originalAuthor;
+    updatedEvent.username = req.originalAuthor; //Add username to updatedEvent
 
     try {
         const  successUpdateEvent = await Event.updateEvent(eventId, updatedEvent);
@@ -84,8 +84,7 @@ const searchEvent = async (req, res) => {
 const registerEvent = async (req, res) => {
     const eventId = req.params.id;
     const username = req.username;
-    console.log(eventId)
-    console.log(username);
+
     try{
         const eventReg = await Event.registerEvent(eventId, username)
         res.json(eventReg);
@@ -97,6 +96,36 @@ const registerEvent = async (req, res) => {
 
 }
 
+const getUsersByEventId = async (req, res) => {
+    const eventId = req.params.id;
+    try {
+        const regList = await Event.getUsersByEventId(eventId);
+        if (!regList || regList.length === 0) { //Check if regList is empty or null
+            return res.status(404).json({ message: "No registrations found for the event" });
+        }
+        res.json(regList).status(200);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Error retrieving list of participants"});
+    }
+}
+
+const getLocation = async (req, res) => {
+    const location = req.query.location;
+    const encodedLocation = encodeURIComponent(location);
+
+    try{
+        const locationResult = await Event.getLocation(encodedLocation);
+        if (locationResult.status === 'error') {
+            return res.status(404).json({ error: locationResult.message });
+        }
+        res.json(locationResult).status(200);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Error retrieving location"});
+    }
+}
+
 module.exports = {
     getAllEvents,
     getEventbyId,
@@ -105,4 +134,6 @@ module.exports = {
     deleteEvent,
     searchEvent,
     registerEvent,
+    getUsersByEventId,
+    getLocation,
 };

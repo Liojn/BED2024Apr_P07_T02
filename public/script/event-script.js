@@ -52,6 +52,123 @@ const navigatetoEventForm = (isEdit) => {
     window.location.href = "../html/event-creation.html";
 }
 
+const navigateToList = (event) => {
+    event.preventDefault();
+    const eventId = event.target.getAttribute('data-event-id');
+    sessionStorage.setItem('eventId', eventId);  // Save event ID for PUT request and displaying 
+
+    window.location.href = "../html/eventParticipantsList.html";
+}
+
+const displayEventOnList = async (eventId) => {
+    const response = await fetch(`/events/${eventId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+    if (response.ok) {
+        const jsonData = await response.json();
+        console.log(jsonData);
+
+        //Formatting of data for display
+        document.getElementById('pTitle').textContent = jsonData.title;
+        const startDate = new Date(jsonData.date);
+        const startTime = new Date(jsonData.startTime);
+        const endTime = new Date(jsonData.endTime);
+        const formattedDateTime = startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' }) + ' - ' + endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+        document.getElementById('p-datetime').innerHTML = '<p>' + formattedDateTime + '</p>';
+        document.getElementById('p-location').innerHTML = '<p>' + jsonData.location + '</p>';
+        const location = jsonData.location;
+        displayParticipants(eventId);
+        embedMapAPI(location);
+    } else {
+        console.error('Failed to fetch event info');
+        alert('Failed to fetch event info');
+    }
+}
+
+const displayParticipants = async(eventId) => {
+    const response = await fetch(`/events/find-participants/${eventId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    // Clear existing participant list if needed
+    const participantList = document.querySelector('.participant-list');
+    participantList.innerHTML = '';
+
+    if (response.status === 404) {
+        console.log('No registrations found for the event');
+        const participantList = document.querySelector('.participant-list');
+        participantList.innerHTML = '<p>No registrations found for this event.</p>';
+        return;
+    }
+
+    if (response.ok) {
+        const participantsData = await response.json();
+        console.log(participantsData);
+
+        //Loop through participantsData and create participant-cards
+        participantsData.forEach(participant => {
+            const participantCard = document.createElement('div');
+            participantCard.classList.add('participant-card');
+
+            const participantInfo = document.createElement('div');
+            participantInfo.classList.add('participant-info');
+
+            const participantName = document.createElement('div');
+            participantName.classList.add('participant-name');
+            participantName.innerHTML = `<span style="font-weight: 700;">Username:</span><br>${participant.username}`;
+
+            const registrationDate = new Date(participant.registrationTime);
+            const formattedDate = registrationDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const participantTime = document.createElement('div');
+            participantTime.classList.add('participant-time');
+            participantTime.innerHTML = `<span style="font-weight: 700;">Registered Date:</span><br>${formattedDate}`;
+
+            participantInfo.appendChild(participantName);
+            participantInfo.appendChild(participantTime);
+
+            participantCard.appendChild(participantInfo);
+            participantList.appendChild(participantCard);
+        });
+    } else {
+        console.error('Failed to fetch participants list;');
+        alert('Failed to fetch participants list');
+    }
+}
+
+//Function which get the google api embed link
+const embedMapAPI = async(location) => {
+    try{
+        const response = await fetch(`/events/get-location?location=${encodeURIComponent(location)}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'text-plain'
+            }
+        });
+        const data = await response.json();
+
+        if (data.status === 'success' || data.status === 'search') {
+            document.getElementById('mapFrame').src = data.mapUrl;
+        
+        } else {
+            alert('Could not load the map. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while loading the map.');
+    }
+
+} 
+
 //Function to carry out Search Events and display
 const submitSearchReq = async() => {
     let query = document.getElementById('search-content').value;
@@ -109,7 +226,7 @@ const submitSearchReq = async() => {
                     </div>
                     <div class="actions">
                         <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
-                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                        <button onclick="navigateToList(event)" id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -132,7 +249,7 @@ const submitSearchReq = async() => {
                     </div>
                     <div class="actions">
                         <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
-                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                        <button onclick="navigateToList(event)" id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -194,7 +311,7 @@ async function getAllEvents(eventIndicator) {
                     </div>
                     <div class="actions">
                         <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
-                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                        <button onclick="navigateToList(event)" id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -217,7 +334,7 @@ async function getAllEvents(eventIndicator) {
                     </div>
                     <div class="actions">
                         <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
-                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                        <button onclick="navigateToList(event)" id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -321,7 +438,13 @@ document.addEventListener("DOMContentLoaded", function () {
     else if (mode === 'create' && isCorrectPage != null) {
         document.getElementById('header-title').textContent = "Create New Post";
     }
-    
+
+    //Indicator checking of Participants Page
+    const pIndicator = document.getElementsByClassName("participantPgContainer");
+    if (pIndicator.length > 0){
+        const eventId = sessionStorage.getItem('eventId');
+        displayEventOnList(eventId);
+    }
 });
 
 //define the formatted_date function to reflect the date nicely

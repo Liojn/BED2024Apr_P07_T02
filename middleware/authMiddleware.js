@@ -23,13 +23,15 @@ const authMiddleware = (req, res, next) => {
         const userRole = decoded.accountType; //For authentication
         
         const authorizedRoles = {
-            //Feedback routes
+            //Event routes
             "/events": ["Staff", "Student"], //For GET all or POST 
             "/events/[0-9]+": ["Student", "Staff"], //GET by ID
             "/events/search" : ["Student", "Staff"], //GET with Search
             "/events/[0-9]+/update": ["Staff", "Student"], //POST
             "/events/[0-9]+/deletion": ["Staff", "Student"], //DELETE
             "/events/register/[0-9]+": ["Staff", "Student"], //POST register
+            "/events/find-participants/[0-9]+": ["Staff", "Student"], //GET find participants
+            "/events/get-location": ["Student", "Staff"], //GET location
 
             //Feedback Routes
             "/feedbacks": ["Staff", "Student"], //For get all feedbacks
