@@ -41,13 +41,16 @@ app.put("/feedbacks/:id", authMiddleware,feedbackController.updateFeedback)
 
 
 // Event Route
+app.get("/events/get-location", eventController.getLocation);
 app.get("/events/search", eventController.searchEvent);
+
 app.post("/events/register/:id", authMiddleware, eventController.registerEvent);
 app.get("/events", authMiddleware, eventController.getAllEvents);
 app.get("/events/:id", authMiddleware, eventController.getEventbyId);
 app.post("/events", authMiddleware, eventController.createEvent);
 app.put("/events/:id/update", authMiddleware, eventAuthorizeAction, eventController.updateEvent);
 app.delete("/events/:id/deletion", authMiddleware, eventAuthorizeAction, eventController.deleteEvent);
+app.get("/events/find-participants/:id", authMiddleware, eventController.getUsersByEventId);
 
 
 // Users Routes

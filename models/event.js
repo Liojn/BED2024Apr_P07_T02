@@ -1,6 +1,10 @@
 
 const dbConfig = require("../dbConfig");
 const sql = require("mssql");
+require('dotenv').config();
+
+const MAP_APIKEY =  process.env.MAPAPIKEY;
+const axios = require("axios");
 
 class Event {
     constructor(eventId, title, date, startTime, endTime, location, description, username){
@@ -175,6 +179,78 @@ class Event {
             connection.close();
         }
     
+    }
+
+    static async getUsersByEventId(eventId){
+        const connection = await sql.connect(dbConfig);
+
+        try {
+            const sqlQuery = `
+              SELECT username, registrationTime FROM EventRegistrations WHERE eventId = @eventId`;
+              
+            const request = connection.request();
+            request.input("eventId", eventId);
+            const result = await request.query(sqlQuery);
+            
+            //Extract username and registrationTime from result.recordset
+            const users = result.recordset.map(record => ({
+                username: record.username,
+                registrationTime: record.registrationTime
+            }));
+
+            return users;
+        } catch (error) {
+            console.error("Error querying database:", error.message);
+            throw error;
+        } finally {
+            connection.close();
+        }
+    }
+
+    static async getLocation(encodedLocation){
+        try{
+            //Get location using the encoded, find first to validate
+            const response = await axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodedLocation}&inputtype=textquery&fields=formatted_address,name,geometry&key=${MAP_APIKEY}`);
+            const data = response.data;
+
+            //a key called status will show OK
+            if (data.status === 'OK') {
+                const candidates = data.candidates;
+
+                if (candidates.length === 1) {
+                    //one place found
+                    const place = candidates[0]; //First item array in case
+                    //use their naming convention
+                    const addressName = place.formatted_address || place.name;
+
+                    const results = {
+                        status: 'success',
+                        mapUrl: `https://www.google.com/maps/embed/v1/place?key=${MAP_APIKEY}&q=${encodeURIComponent(addressName)}`
+                    };
+                    return results;
+                }else { //try to search for places and display with search parameter
+                    const results = {
+                        status: 'search',
+                        mapUrl: `https://www.google.com/maps/embed/v1/search?key=${apiKey}&q=${encodedLocation}`
+                    };
+                    return results;
+                }
+            } else { //No place found, error
+                const error = {
+                    status: 'error',
+                    message: 'Location not found.'
+                };
+                return error;
+            }
+        }
+        catch (error) { //error handling for whatever reasons.
+            const errors = {
+                status: 'error',
+                message: error.message
+            };
+            return errors;
+        } 
+
     }
 }
 
