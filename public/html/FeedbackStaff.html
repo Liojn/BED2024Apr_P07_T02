@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Contact Us Staff</title>
     <link rel="stylesheet" href="../css/Feedback.css">
+    <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="eventwrapper">
@@ -11,6 +12,7 @@
             <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo"> </div> <!--Logo nav page-->
             <nav>
                 <div class="nav">
+                    <a href="#"><i class="fa-regular fa-bell fa-xl"></i></i></a>
                     <a href="homePage.html">Home</a>
                     <a href="event-creation.html">Event</a>
                     <a href="#">Donate</a>
@@ -23,9 +25,9 @@
     <div class="filter-container">
         <label for="filterDropdown">Filter:</label>
         <select id="filterDropdown" onchange="filterFeedbacks()">
-            <option value="all">Unverified</option>
+            <option value="N">Unverified</option>
             <option value="Y">Verified</option>
-            <option value="N">All</option>
+            <option value="all">All</option>
         </select>
     </div>
     <div class="feedback-container" id="feedbackContainer"></div>

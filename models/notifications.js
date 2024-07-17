@@ -2,7 +2,7 @@ const dbConfig = require("../dbConfig");
 const sql = require("mssql");
 
 class Notifcations {
-    constructor(notification_id, UserID, Fid, justifcation, response, seen){
+    constructor(notification_id, UserID, Fid, justifcation, response, seen, date){
         this.notification_id = notification_id,
         this.UserID = UserID,
         this.Fid = Fid,
@@ -25,7 +25,7 @@ class Notifcations {
 
     static async getNotificationById(notification_id){
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `Select * from Notifications where  notificationId = @notification_id`;
+        const sqlQuery = `Select * from Notifications where notification_id = @notification_id`;
         const request = connection.request();
         request.input("notification_id", notification_id);
         const result = await request.query(sqlQuery);
@@ -39,7 +39,7 @@ class Notifcations {
             result.recordset[0].justifcation,
             result.recordset[0].response,
             result.recordset[0].seen,
-            result.recordset[0].Date
+            result.recordset[0].date
         )
         : null;
     }
@@ -53,7 +53,7 @@ class Notifcations {
         const request = connection.request();
         request.input("UserID", newNotificationData.UserID);
         request.input("Fid", newNotificationData.Fid);
-        request.input("justification", newNotificationData.justifcation);
+        request.input("justification", newNotificationData.justification);
         request.input("response", newNotificationData.response);
         request.input("seen", newNotificationData.seen);
         request.input("date", newNotificationData.date);
@@ -63,6 +63,16 @@ class Notifcations {
         console.log("Inserted Notification Result:", result); // Add this line
     
         return this.getNotificationById(result.recordset[0].notification_id);
+    }
+    static async deleteNotification(Fid) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `DELETE FROM Notifications WHERE Fid = @Fid`;
+        const request = connection.request();
+        request.input("Fid", Fid);
+        const result = await request.query(sqlQuery);
+        connection.close();
+
+        return result.rowsAffected > 0;
     }
 }
 

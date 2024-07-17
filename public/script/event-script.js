@@ -8,6 +8,42 @@ let isFormDirty = false; //default false as form not edited yet
 const token = localStorage.getItem("token");
 console.log(token);
 
+//Function to confirm request when user clicks for register button
+const registerEventConfirm = (event) => {
+    const eventId = event.target.getAttribute('data-event-id');
+    event.preventDefault();
+
+    const response = confirm(`Are you sure you want to sign up for this event ID ${eventId}? Action is irreversible, make sure you checked the dates.`);
+    if (response) {
+        registerEvent(eventId);
+    }
+}
+
+const registerEvent = async (eventId) => {
+    try{
+        const response = await fetch(`/events/register/${eventId}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const resJson = await response.json();
+            throw new Error(resJson.error || 'Registration failed');
+        }
+        const resJson = await response.json();
+        const registrationTime = new Date(resJson.registrationTime).toLocaleString();
+
+        alert(`Registration successful!\nRegistration ID: ${resJson.registrationId}\nEvent ID: ${resJson.eventId}\nRegistration Time: ${registrationTime}`);
+    
+    } catch (error){
+        console.error('An error occurred:', error.message);
+        alert(`Error: ${error.message}`);
+    }
+};
+
 //A function that executes when the button Create new Post is clicked on event.html
 const navigatetoEventForm = (isEdit) => {
     if (isEdit) {
@@ -15,6 +51,123 @@ const navigatetoEventForm = (isEdit) => {
     } 
     window.location.href = "../html/event-creation.html";
 }
+
+const navigateToList = (event) => {
+    event.preventDefault();
+    const eventId = event.target.getAttribute('data-event-id');
+    sessionStorage.setItem('eventId', eventId);  // Save event ID for PUT request and displaying 
+
+    window.location.href = "../html/eventParticipantsList.html";
+}
+
+const displayEventOnList = async (eventId) => {
+    const response = await fetch(`/events/${eventId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+    if (response.ok) {
+        const jsonData = await response.json();
+        console.log(jsonData);
+
+        //Formatting of data for display
+        document.getElementById('pTitle').textContent = jsonData.title;
+        const startDate = new Date(jsonData.date);
+        const startTime = new Date(jsonData.startTime);
+        const endTime = new Date(jsonData.endTime);
+        const formattedDateTime = startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' }) + ' - ' + endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+        document.getElementById('p-datetime').innerHTML = '<p>' + formattedDateTime + '</p>';
+        document.getElementById('p-location').innerHTML = '<p>' + jsonData.location + '</p>';
+        const location = jsonData.location;
+        displayParticipants(eventId);
+        embedMapAPI(location);
+    } else {
+        console.error('Failed to fetch event info');
+        alert('Failed to fetch event info');
+    }
+}
+
+const displayParticipants = async(eventId) => {
+    const response = await fetch(`/events/find-participants/${eventId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    // Clear existing participant list if needed
+    const participantList = document.querySelector('.participant-list');
+    participantList.innerHTML = '';
+
+    if (response.status === 404) {
+        console.log('No registrations found for the event');
+        const participantList = document.querySelector('.participant-list');
+        participantList.innerHTML = '<p>No registrations found for this event.</p>';
+        return;
+    }
+
+    if (response.ok) {
+        const participantsData = await response.json();
+        console.log(participantsData);
+
+        //Loop through participantsData and create participant-cards
+        participantsData.forEach(participant => {
+            const participantCard = document.createElement('div');
+            participantCard.classList.add('participant-card');
+
+            const participantInfo = document.createElement('div');
+            participantInfo.classList.add('participant-info');
+
+            const participantName = document.createElement('div');
+            participantName.classList.add('participant-name');
+            participantName.innerHTML = `<span style="font-weight: 700;">Username:</span><br>${participant.username}`;
+
+            const registrationDate = new Date(participant.registrationTime);
+            const formattedDate = registrationDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const participantTime = document.createElement('div');
+            participantTime.classList.add('participant-time');
+            participantTime.innerHTML = `<span style="font-weight: 700;">Registered Date:</span><br>${formattedDate}`;
+
+            participantInfo.appendChild(participantName);
+            participantInfo.appendChild(participantTime);
+
+            participantCard.appendChild(participantInfo);
+            participantList.appendChild(participantCard);
+        });
+    } else {
+        console.error('Failed to fetch participants list;');
+        alert('Failed to fetch participants list');
+    }
+}
+
+//Function which get the google api embed link
+const embedMapAPI = async(location) => {
+    try{
+        const response = await fetch(`/events/get-location?location=${encodeURIComponent(location)}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'text-plain'
+            }
+        });
+        const data = await response.json();
+
+        if (data.status === 'success' || data.status === 'search') {
+            document.getElementById('mapFrame').src = data.mapUrl;
+        
+        } else {
+            alert('Could not load the map. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while loading the map.');
+    }
+
+} 
 
 //Function to carry out Search Events and display
 const submitSearchReq = async() => {
@@ -72,8 +225,8 @@ const submitSearchReq = async() => {
                         <a onclick="deleteEventConfirm(event, false)" href="#" data-event-id="${element.eventId}">Delete</a>
                     </div>
                     <div class="actions">
-                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
-                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                        <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button onclick="navigateToList(event)" id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -95,8 +248,8 @@ const submitSearchReq = async() => {
                         <!-----NO OPTION---->
                     </div>
                     <div class="actions">
-                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
-                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                        <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button onclick="navigateToList(event)" id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -104,7 +257,8 @@ const submitSearchReq = async() => {
             }
             eventIndicator.appendChild(eventBox);
         });
-        alert(`Search successful: ${eventData.length}`);
+        alert(`Search successful: ${eventData.length} relevant result found.`);
+
     }  catch (error){
         alert(`Could not find Event. Error message: ${error}`)
     };
@@ -121,8 +275,9 @@ async function getAllEvents(eventIndicator) {
             }
         });
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const eventData = await response.json();
         console.log(eventData); // testing in browser console
 
@@ -155,8 +310,8 @@ async function getAllEvents(eventIndicator) {
                         <a onclick="deleteEventConfirm(event, false)" href="#" data-event-id="${element.eventId}">Delete</a>
                     </div>
                     <div class="actions">
-                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
-                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                        <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button onclick="navigateToList(event)" id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -178,8 +333,8 @@ async function getAllEvents(eventIndicator) {
                         <!-----NO OPTION---->
                     </div>
                     <div class="actions">
-                        <button id="register" data-event-id="${element.eventId}">Register Interest</button>
-                        <button id="pList" data-event-id="${element.eventId}">View Participant List</button>
+                        <button onclick="registerEventConfirm(event)" id="register" data-event-id="${element.eventId}">Register Interest</button>
+                        <button onclick="navigateToList(event)" id="pList" data-event-id="${element.eventId}">View Participant List</button>
                     </div>
                     <div id="post-id">id_: ${element.eventId}</div>
                 </div>
@@ -220,6 +375,7 @@ const deleteEvent = async(eventId) => {
     await fetch(`/events/${eventId}/deletion`, {
         method: 'DELETE',
         headers: {
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
     })
@@ -238,7 +394,13 @@ const deleteEvent = async(eventId) => {
 
 //Function for retrieving specific Event Post based on ID, used for editing 
 const getExistingInfo = async(eventId) => {
-    const response = await fetch (`/events/${eventId}`);
+    const response = await fetch(`/events/${eventId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
     if (response.ok) {
         const eventData = await response.json();
         console.log(eventData);
@@ -276,7 +438,13 @@ document.addEventListener("DOMContentLoaded", function () {
     else if (mode === 'create' && isCorrectPage != null) {
         document.getElementById('header-title').textContent = "Create New Post";
     }
-    
+
+    //Indicator checking of Participants Page
+    const pIndicator = document.getElementsByClassName("participantPgContainer");
+    if (pIndicator.length > 0){
+        const eventId = sessionStorage.getItem('eventId');
+        displayEventOnList(eventId);
+    }
 });
 
 //define the formatted_date function to reflect the date nicely
@@ -316,7 +484,7 @@ document.getElementById('eventForm').addEventListener('submit', async function (
     let endTime = document.getElementById('end-time').value;
     let location = document.getElementById('location').value;
     let description = document.getElementById('description').value;
-    let username = localStorage.getItem('username');
+    //let username = localStorage.getItem('username'); handled by token
 
     const jsonData ={
         "title": title,
@@ -325,7 +493,6 @@ document.getElementById('eventForm').addEventListener('submit', async function (
         "endTime": endTime,
         "location": location,
         "description": description,
-        "username": username,
     };
     console.log(jsonData); //test
 
@@ -336,11 +503,17 @@ document.getElementById('eventForm').addEventListener('submit', async function (
         await fetch(`/events/${eventId}/update`, {
             method: 'PUT',
             headers: {
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(jsonData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json()
+        })
         .then(result => {
             // Handle successful form submission
             console.log('Success:', result);
@@ -356,11 +529,17 @@ document.getElementById('eventForm').addEventListener('submit', async function (
         await fetch('/events', {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(jsonData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json()
+        })
         .then(result => {
             //Handle successful form submission
             console.log('Success:', result);
@@ -374,24 +553,4 @@ document.getElementById('eventForm').addEventListener('submit', async function (
     } else {
         alert('Error with Internal System.')
     }
-});
-
-//Function when user clicks for register button
-document.getElementById('register').addEventListener('click', async function() {
-    var eventId = this.getAttribute('data-event-id');
-    
-    //POST into the database, if inside already alert registered before. 
-    try{
-        const response = await fetch(`"register-event/${username}/${eventId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-    
-    } catch (error){
-
-    }
-
-
 });

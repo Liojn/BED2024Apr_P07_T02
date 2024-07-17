@@ -23,14 +23,34 @@ const authMiddleware = (req, res, next) => {
         const userRole = decoded.accountType; //For authentication
         
         const authorizedRoles = {
-            //Feedback routes
+            //Event routes
             "/events": ["Staff", "Student"], //For GET all or POST 
             "/events/[0-9]+": ["Student", "Staff"], //GET by ID
             "/events/search" : ["Student", "Staff"], //GET with Search
             "/events/[0-9]+/update": ["Staff", "Student"], //POST
             "/events/[0-9]+/deletion": ["Staff", "Student"], //DELETE
+            "/events/register/[0-9]+": ["Staff", "Student"], //POST register
+            "/events/find-participants/[0-9]+": ["Staff", "Student"], //GET find participants
+            "/events/get-location": ["Student", "Staff"], //GET location
 
-            //Feedback routes
+            //Feedback Routes
+            "/feedbacks": ["Staff", "Student"], //For get all feedbacks
+            "/feedbacks/[0-9]": ["Staff", "Student"], // For get feedback by id
+            "/feedbacks/[0-9]": ["Staff"], //For delete feedback
+            "/feedbacks" : ["Staff", "Student"],//For creating feedback
+            "/feedbacks/verified/(Y|N)" : ["Staff"], //For filtering feedback
+            "/feedbacks/[0-9]" :["Staff", "Student"], // For updating feedback
+
+            //Notification Routes
+            "/notifications/userNotif/[0-9]": ["Staff", "Student"],// For get all notification by user id
+            "/notifications/[0-9]" : ["Staff", "Student"], //For get notification by Id
+            "/notifications" : ["Staff"], // Creating notifications
+            "/notification/[0-9]" : ["Staff", "Student"], // Deleting notification
+
+            //Donation route
+            "/donations/": ["Staff", "Student"],//For get all donations by user
+            "/nonprofits/": ["Staff", "Student"],//Get nonprofit api data"
+            "/donations": ["Staff", "Student"],//Creating donations
 
         }
 
@@ -45,7 +65,9 @@ const authMiddleware = (req, res, next) => {
             return res.status(403).json({ message: "Forbidden" });
         }
 
-        req.user = decoded.username; //For authorization uses later, attach keyvalue pair to the req   
+        req.username = decoded.username; //For authorization uses later, attach keyvalue pair to the req 
+        req.accountType = userRole;
+        //console.log(req.username);
         next();
     });
 };

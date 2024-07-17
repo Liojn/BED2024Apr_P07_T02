@@ -99,7 +99,7 @@ const loginUser = async (req, res) => {
         const loggingUser = await User.loginUser(userLogin);
         if (loggingUser) {
             const token = jwt.sign(
-                { id: loggingUser.userId, accountType: loggingUser.accountType },
+                { id: loggingUser.userId, username: loggingUser.username, accountType: loggingUser.accountType },
                 process.env.JWT_SECRET
             );
             res.status(200).json({ 

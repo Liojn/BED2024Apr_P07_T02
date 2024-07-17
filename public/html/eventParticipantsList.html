@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>EcoImpact Eventpage</title>
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../css/event-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="eventwrapper">
+        <header id="logined-nav">
+            <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
+            <nav>
+                <div class="nav">
+                    <a href="#"><i class="fa-regular fa-bell fa-xl"></i></i></a>
+                    <a href="homePage.html">Home</a>
+                    <a id="currentpage" href="event.html">Event</a>
+                    <a href="#">Donate</a>
+                    <a href="FeedbackUser.html">Contact</a>
+                    <a href="#">Account</a>
+                </div>
+            </nav>
+        </header>
+        <div class="participantPgContainer">
+
+            <div class="participantHeader">
+                <button class="backButton" onclick="window.location.href = '../html/event.html'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+                    </svg>
+                </button>
+                <h1 id="pTitle">Event Title</h1>
+                <button class="download-pdf-button" onclick="alert('Summary downloaded')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-down-fill" viewBox="0 0 16 16">
+                        <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1m-1 4v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 11.293V7.5a.5.5 0 0 1 1 0"/>
+                    </svg>
+                  <span>Download PDF</span>
+                </button>
+              </div>
+              <div class="participant-content">
+                <div id="event-details">
+                  <div>
+                    <p>Date & Time</p>
+                    <div id="p-datetime" style="font-size: 18px; font-weight: 600;"><p>May 10, 2023 at 7:00 PM</p></div>
+                  </div>
+                  <div>
+                    <p>Location</p>
+                    <div id="p-location" style="font-size: 18px; font-weight: 600;"><p>123 Main St, New York, NY</p></div>
+                  </div>
+                  <div class="mapDisplay">
+                    <iframe
+                        id="mapFrame"
+                        width="100%"
+                        height="350"
+                        frameborder="0" style="border:0"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="https://www.google.com/maps/embed/v1/search?key=AIzaSyC2Dp2BMuoZtnTtiS0AlBs4jnTn8RdXmzY&q=484&zoom=15"
+                        allowfullscreen>
+                    </iframe>
+                  </div>
+                </div>
+
+                <div class="participants">
+                  <h2>Registered Participants</h2>
+                  <div class="participant-list">
+                    <div class="participant-card">
+                        <div class="participant-info">
+                            <div class="participant-name"><span style="font-weight: 700;">Username:</span></br>Jon Oh</div>
+                            <div class="participant-time"><span style="font-weight: 700;">Registered Date:</span></br>Jan 1, 2024</div>
+                        </div>
+                    </div>
+                    <div class="participant-card">
+                        <div class="participant-info">
+                            <div class="participant-name"><span style="font-weight: 700;">Username:</span></br>Sarah</div>
+                            <div class="participant-time"><span style="font-weight: 700;">Registered Date:</span></br>July 15, 2024</div>
+                        </div>
+                    </div>
+                    <!-- Repeat for other participants -->
+                  </div>
+                </div>
+              </div>
+
+        </div>
+    </div>
+<script src="../script/event-script.js"></script>
+</body>
