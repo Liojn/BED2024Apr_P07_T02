@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    updateNotificationCount();
     const feedbackDetails = JSON.parse(localStorage.getItem('selectedFeedback'));
     const token = localStorage.getItem('token');
     const UserID = localStorage.getItem('userId'); // Retrieve UserID from local storage
@@ -113,6 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h1>Feedback title: ${notification.Title}</h1>
                     <h2>Response Justification: ${notification.justification}</h2>
                     <h3>Date: ${new Date(notification.date).toLocaleDateString()}</h3>
+                    <hr>
+                    <hr>
                     <button class="delete-btn" onclick="confirmDelete(${notification.notification_id})">Delete</button>
                 `;
 
@@ -156,5 +159,36 @@ async function deleteNotification(notification_id) {
     } catch (error) {
         console.error('Error deleting notification:', error);
         alert('An error occurred while deleting the notification.');
+    }
+}
+
+async function updateNotificationCount() {  
+    const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
+
+    try {
+        const response = await fetch(`/notifications/userNotif/${username}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const notifications = await response.json();
+
+        const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
+
+        const notificationCountElement = document.getElementById('notification-count');
+        if (unseenCount > 0) {
+            notificationCountElement.style.display = 'inline';
+            notificationCountElement.textContent = unseenCount;
+        } else {
+            notificationCountElement.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
     }
 }

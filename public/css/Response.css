@@ -63,6 +63,24 @@ body {
     color: #333;
 }
 
+.notification-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-count {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 12px;
+    display: none; /* Hide by default */
+}
+
+
 .notifications-grid {
     display: flex;
     flex-wrap: wrap;
@@ -76,9 +94,9 @@ body {
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 30px;
     width: 100%;
-    max-width: 300px;
+    max-width: 400px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -87,7 +105,7 @@ body {
     position: relative;
 }
 
-.notification-box h1, .notification-box h2, .notification-box h3 {
+.notification-box h1, .notification-box h2, .notification-box h3{
     margin: 10px 0;
 }
 
@@ -100,6 +118,6 @@ body {
     color: white;
     font-size: 14px;
     position: absolute;
-    bottom: 10px;
-    margin-top: 20px; /* Add margin for spacing */
+    bottom: 5px;
+    margin-top: 50; /* Add margin for spacing */
 }
