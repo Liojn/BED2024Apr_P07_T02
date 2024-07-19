@@ -40,7 +40,7 @@ CREATE TABLE Donations (
   datetime DATE NOT NULL,
   FOREIGN KEY (Username) REFERENCES Users(Username)
 ); 
-=======
+======
   Username NVARCHAR(255) NOT NULL, 
   Email NVARCHAR(255) NOT NULL, 
   Title VARCHAR(20) NOT NULL,
