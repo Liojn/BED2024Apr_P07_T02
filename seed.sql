@@ -57,7 +57,8 @@ CREATE TABLE EventRegistrations (
   eventId INT NOT NULL,
   registrationTime DATETIME NOT NULL,
   CONSTRAINT fk_Registrations_Users FOREIGN KEY (username) REFERENCES Users(Username),
-  CONSTRAINT fk_Registrations_Events FOREIGN KEY (eventId) REFERENCES Events(eventId)
+  CONSTRAINT fk_Registrations_Events FOREIGN KEY (eventId) REFERENCES Events(eventId),
+  CONSTRAINT UQ_UserEvent UNIQUE (username, eventId) 
 );
 
 -- Create Notifcaiton table

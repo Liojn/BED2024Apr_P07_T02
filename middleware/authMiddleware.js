@@ -23,12 +23,15 @@ const authMiddleware = (req, res, next) => {
         const userRole = decoded.accountType; //For authentication
         
         const authorizedRoles = {
-            //Feedback routes
+            //Event routes
             "/events": ["Staff", "Student"], //For GET all or POST 
             "/events/[0-9]+": ["Student", "Staff"], //GET by ID
             "/events/search" : ["Student", "Staff"], //GET with Search
             "/events/[0-9]+/update": ["Staff", "Student"], //POST
             "/events/[0-9]+/deletion": ["Staff", "Student"], //DELETE
+            "/events/register/[0-9]+": ["Staff", "Student"], //POST register
+            "/events/find-participants/[0-9]+": ["Staff", "Student"], //GET find participants
+            "/events/get-location": ["Student", "Staff"], //GET location
 
             //Feedback Routes
             "/feedbacks": ["Staff", "Student"], //For get all feedbacks
@@ -44,6 +47,11 @@ const authMiddleware = (req, res, next) => {
             "/notifications" : ["Staff"], // Creating notifications
             "/notification/[0-9]+" : ["Staff", "Student"] // Deleting notification
 
+            //Donation route
+            "/donations/": ["Staff", "Student"],//For get all donations by user
+            "/nonprofits/": ["Staff", "Student"],//Get nonprofit api data"
+            "/donations": ["Staff", "Student"],//Creating donations
+
         }
 
         const authorizedRole = Object.entries(authorizedRoles).find(
@@ -57,7 +65,9 @@ const authMiddleware = (req, res, next) => {
             return res.status(403).json({ message: "Forbidden" });
         }
 
-        req.user = decoded.username; //For authorization uses later, attach keyvalue pair to the req   
+        req.username = decoded.username; //For authorization uses later, attach keyvalue pair to the req 
+        req.accountType = userRole;
+        //console.log(req.username);
         next();
     });
 };

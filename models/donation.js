@@ -54,7 +54,7 @@ class Donation {
 
         return result.recordset[0].count;
     }
-    static async fetchNonProfitCompanyNames() {
+    static async fetchNonProfitNames() {
         try {
             const response = await axios.get(apiUrl, {
                 params: {
