@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DashboardScreen</title>
+</head>
+<link rel="stylesheet" href="../css/donationStats.css">
+<body>
+    <div id="eventwrapper">
+        <header id="logined-nav">
+            <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
+            <nav>
+                <div class="nav">
+                    <a href="#"><i class="fa-regular fa-bell fa-xl"></i></a>
+                    <a href="homePage.html">Home</a>
+                    <a  href="event.html">Event</a>
+                    <a id = "currentpage" href="#">Donate</a>
+                    <a href="FeedbackResponse.html" id = "contactus">Contact</a>
+                    <a href="#">Account</a>
+                </div>
+            </nav>
+            
+        </header>
+    </div>
+<div style="max-width: 7xl; margin: auto; width: 100%; padding-bottom: 8ch;background-color: rgba(247,248,252,255);border: 0.01px solid transparent;">
+  <!-- Header -->
+  <div style="max-width: 7xl; margin: auto; width: 100%;">
+    <!-- Header -->
+    <div id="header-container">
+        <h2>Donation Statistics</h2>
+    </div>
+    </div>
+    <!-- <div style="display: flex; gap: 0.5rem;">
+      <svg style="height: 1.25rem; width: 1.25rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Jon Oh</span>
+    </div> -->
+
+
+  <!-- Donation Overview -->
+  <div style="background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1.5rem; gap: 1.5rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+        <!-- <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <svg style="height: 2rem; width: 2rem; color: #667eea;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"/><path d="M12 20a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/><path d="M4.93 4.93 19.07 19.07"/></svg>
+            <h3 style="font-size: 1.125rem; font-weight: 600;">Total Donations</h3>
+        </div> -->
+        <!-- <span style="font-size: 1.875rem; font-weight: 700;">$8,500</span> -->
+    </div>
+    <div style="padding: 1.5rem; gap: 5rem;" class = "stat-holder">
+        <div class="stat-card">
+            <span>Number of Donations</span>
+            <span>350</span>
+        </div>
+        <div class="stat-card">
+            <span>Average Donation</span>
+            <span>$24.29</span>
+        </div>
+        <div class="stat-card">
+            <span>Total Donations</span>
+            <span>$8500</span>
+        </div>
+        <div class="stat-card">
+            <span>Largest Single Donation</span>
+            <span>$85</span>
+        </div>
+    </div>
+</div>
+
+  <!-- Donation Charts -->
+  <div style="gap: 1.5rem;">
+    <div style="background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
+      <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Trend</h3>
+      <div style="height: 20rem;">
+        <!-- AreaChart component structure -->
+        <svg>
+          <defs>
+            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stop-color="#667eea" stop-opacity="0.8"/>
+              <stop offset="95%" stop-color="#667eea" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <!-- XAxis and YAxis structure -->
+            <g>
+              <!-- Tooltip structure -->
+              <!-- Area structure -->
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div style="background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
+      <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Sources</h3>
+      <div style="height: 30rem;" >
+        <!-- PieChart component structure -->
+            <canvas id="donationPieChart"></canvas>
+      </div>     
+    </div>
+    <div style="grid-column: span 2; background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
+        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donor Demographics</h3>
+        <div style="height: 16rem;">
+          <!-- LineChart component structure -->
+          <svg>
+            <!-- XAxis and YAxis structure -->
+            <!-- Tooltip structure -->
+            <!-- Line structure -->
+          </svg>
+        </div>
+      </div>
+  </div>
+
+
+  <!-- Recent Donations -->
+  <div style="grid-column: span 2; background-color: white; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);">
+    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E5E7EB; padding: 1rem;">
+      <h3 style="font-size: 1.125rem; font-weight: 600;">Recent Donations</h3>
+      <button style="background-color: #667eea; color: white; padding: 0.3rem 0.75rem; border-radius: 0.375rem; cursor: pointer;">View All</button>
+    </div>
+    <div style="border-top: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
+        <div>
+          <span style="font-size: 0.875rem; color: #6B7280;">4:37 AM</span>
+          <p style="font-size: 0.875rem;">Received $100 donation from John Smith</p>
+          <p style="font-size: 0.875rem; color: #6B7280;">
+            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="7" rx="2" ry="2"/><path d="M16 1v6M8 1v6m-5 9h14a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v0a2 2 0 0 1 2-2z"/></svg> Credit Card</span>
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <p style="font-size: 0.875rem;">John Smith</p>
+          <p style="font-size: 0.875rem;">$100</p>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
+        <div>
+          <span style="font-size: 0.875rem; color: #6B7280;">2:14 AM</span>
+          <p style="font-size: 0.875rem;">Received $50 donation from Lisa Johnson</p>
+          <p style="font-size: 0.875rem; color: #6B7280;">
+            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10.29A15.3 15.3 0 0 1 12 22c-1.38 0-2.71-.18-4-.53"/></svg> Website</span>
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <p style="font-size: 0.875rem;">Lisa Johnson</p>
+          <p style="font-size: 0.875rem;">$50</p>
+        </div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
+        <div>
+          <span style="font-size: 0.875rem; color: #6B7280;">12:59 AM</span>
+          <p style="font-size: 0.875rem;">Received $25 donation from Michael Lee</p>
+          <p style="font-size: 0.875rem; color: #6B7280;">
+            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="6" r="1"/><path d="M12 10v4l2 2"/></svg> Globe</span>
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <p style="font-size: 0.875rem;">Michael Lee</p>
+          <p style="font-size: 0.875rem;">$25</p>
+        </div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
+        <div>
+          <span style="font-size: 0.875rem; color: #6B7280;">Yesterday at 4:37 PM</span>
+          <p style="font-size: 0.875rem;">Received $75 donation from Emily Davis</p>
+          <p style="font-size: 0.875rem; color: #6B7280;">
+            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="7" rx="2" ry="2"/><path d="M16 1v6M8 1v6m-5 9h14a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v0a2 2 0 0 1 2-2z"/></svg> Credit Card</span>
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <p style="font-size: 0.875rem;">Emily Davis</p>
+          <p style="font-size: 0.875rem;">$75</p>
+        </div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
+        <div>
+          <span style="font-size: 0.875rem; color: #6B7280;">Yesterday at 10:22 AM</span>
+          <p style="font-size: 0.875rem;">Received $30 donation from David Wilson</p>
+          <p style="font-size: 0.875rem; color: #6B7280;">
+            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10.29A15.3 15.3 0 0 1 12 22c-1.38 0-2.71-.18-4-.53"/></svg> Website</span>
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <p style="font-size: 0.875rem;">David Wilson</p>
+          <p style="font-size: 0.875rem;">$30</p>
+        </div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem;">
+        <div>
+          <span style="font-size: 0.875rem; color: #6B7280;">June 3</span>
+          <p style="font-size: 0.875rem;">Received $20 donation from Sarah Brown</p>
+          <p style="font-size: 0.875rem; color: #6B7280;">
+            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"/><path d="M12 20a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/><path d="M4.93 4.93 19.07 19.07"/></svg> Gift</span>
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <p style="font-size: 0.875rem;">Sarah Brown</p>
+          <p style="font-size: 0.875rem;">$20</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    fetchDonationData();
+});
+function fetchDonationData() {
+    fetch('http://localhost:3000/donations')
+        .then(response => response.json())
+        .then(data => {
+            const companyNames = data.map(donation => donation.company);
+            const donationAmounts = data.map(donation => donation.amount);
+
+            const companyTotals = {};
+            companyNames.forEach((company, index) => {
+                if (!companyTotals[company]) {
+                    companyTotals[company] = 0;
+                }
+                companyTotals[company] += donationAmounts[index];
+            });
+
+            const labels = Object.keys(companyTotals);
+            const values = Object.values(companyTotals);
+
+            createPieChart(labels, values);
+        })
+        .catch(error => {
+            console.error('Error fetching donation data:', error);
+        });
+}
+function createPieChart(labels, values) {
+    console.log("HI")
+    const ctx = document.getElementById('donationPieChart').getContext('2d');
+    const donationPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            let total = values.reduce((sum, val) => sum + val, 0);
+                            let percentage = ((values[tooltipItem.dataIndex] / total) * 100).toFixed(2);
+                            return `${labels[tooltipItem.dataIndex]}: ${percentage}%`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>
