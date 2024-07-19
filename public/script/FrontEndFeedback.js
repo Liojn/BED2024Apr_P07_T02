@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     fetchFeedbacks('N');
+    updateNotificationCount(); // Call the function to update the notification count
 
-    
     function formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
         staffButton.addEventListener('click', () => {
             window.location.href = 'FeedbackStaff.html'; 
         });
+    }
+    else{
+        staffButton.style.display = 'none'
     }
 
     const feedbackForm = document.querySelector('.contact-left');
@@ -54,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Feedback submitted successfully!');
                     feedbackForm.reset();
                     fetchFeedbacks(); // Update feedback list
+                    await updateNotificationCount(); // Update the notification count
                 } else {
                     console.error('Failed to submit feedback:', response.statusText);
                 }
@@ -101,7 +105,6 @@ async function fetchFeedbacks(filter = 'all') {
             const feedbackBox = document.createElement('div');
             feedbackBox.classList.add('feedback-box');
             feedbackBox.id = `feedback-${feedback.Fid}`; // Set unique id
-
             feedbackBox.innerHTML = `
                 <h1>Title: ${feedback.title}</h1>
                 <h2>Username: ${feedback.username}</h2>
@@ -121,7 +124,36 @@ async function fetchFeedbacks(filter = 'all') {
         console.error('Error fetching feedbacks:', error);
     }
 }
+async function updateNotificationCount() {  
+    const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
 
+    try {
+        const response = await fetch(`/notifications/userNotif/${username}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const notifications = await response.json();
+
+        const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
+
+        const notificationCountElement = document.getElementById('notification-count');
+        if (unseenCount > 0) {
+            notificationCountElement.style.display = 'inline';
+            notificationCountElement.textContent = unseenCount;
+        } else {
+            notificationCountElement.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+    }
+}
 
 function filterFeedbacks() {
     const filterValue = document.getElementById('filterDropdown').value;
@@ -161,6 +193,7 @@ async function deleteFeedback() {
 
         if (response.ok && notificationResponse.ok) {
             feedbackBox.parentNode.removeChild(feedbackBox);
+            await updateNotificationCount(); // Update the notification count after deletion
         } else {
             console.error('Failed to delete feedback:', response.statusText);
         }
@@ -203,11 +236,6 @@ function confirmRespond(button) {
 
 function respondFeedback() {
     const modal = document.getElementById('respondConfirmationModal');
-    const feedbackId = modal.dataset.feedbackId;
     closeModal();
     window.location.href = 'FeedbackResponse.html';
 }
-
-
-
-

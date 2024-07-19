@@ -14,19 +14,27 @@
             <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
             <nav>
                 <div class="nav">
-                    <a href="#" id="currentpage"><i class="fa-regular fa-bell fa-xl"></i></i></a>
-                    <a href="#">Home</a>
-                    <a href="#">Event</a>
+                    <a id="currentpage" href="../html/NotificationScreen.html" class="notification-icon">
+                        <i class="fa-regular fa-bell fa-xl"></i>
+                        <span id="notification-count" class="notification-count"></span>
+                    </a>
+                    <a href="../html/HomePage.html">Home</a>
+                    <a href="../html/event.html">Event</a>
                     <a href="#">Donate</a>
-                    <a href="#" id="contactus">Contact</a>
+                    <a href="../html/FeedbackUser.html">Contact</a>
                     <a href="#">Account</a>
                 </div>
             </nav>
         </header>
     </div>
 
+    <!-- Title -->
+    <div class="page-title">
+        <h1>Notifications</h1>
+    </div>
+
     <!-- Notifications Container -->
-    <div id="notificationContainer"></div>
+    <div id="notificationContainer" class="notifications-grid"></div>
 
     <script src="../script/FeedbackResponse.js"></script>
 </body>
