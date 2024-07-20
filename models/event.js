@@ -4,7 +4,10 @@ const sql = require("mssql");
 require('dotenv').config();
 
 const MAP_APIKEY =  process.env.MAPAPIKEY;
-const axios = require("axios");
+const axios = require("axios"); 
+const PDFDocument = require('pdfkit');
+const path = require('path');
+const { error } = require("console");
 
 class Event {
     constructor(eventId, title, date, startTime, endTime, location, description, username){
@@ -252,6 +255,107 @@ class Event {
         } 
 
     }
+
+    static async printPDFSummary(eventId, res) {
+        let isPeople;
+        let doc;
+        try {
+            const event = await this.getEventbyId(eventId);
+            if (!event) {
+                throw new Error("Can't find event.");
+            }
+            //Database connection
+            const connection = await sql.connect(dbConfig);
+            const request = connection.request();
+            const sqlQuery = `SELECT u.username, u.Email, er.registrationTime FROM EventRegistrations er INNER JOIN Users u ON u.Username = er.username WHERE er.eventId = @eventId;`
+            request.input("eventId", eventId);
+            const result = await request.query(sqlQuery);
+            
+            // Check if any registrations found
+            if (!result.recordset || result.recordset.length === 0) {
+                isPeople = false;
+            } else {
+                isPeople = true;
+            }
+    
+            const templatePath = path.join(__dirname, '..', 'public', 'assets', 'PDF_Template.jpg');
+    
+            //Create new PDF doc
+            doc = new PDFDocument();
+            doc.font('Helvetica');
+                
+            //Set the response headers to indicate a PDF file download
+            res.setHeader('Content-disposition', 'attachment; filename=example.pdf');
+            res.setHeader('Content-type', 'application/pdf');
+    
+            doc.image(templatePath, {
+                fit: [595.28, 841.89], //Fit to A4 size
+                align: 'center',
+                valign: 'center',
+            }); //add image as template
+
+            //Date formatting
+            const formattedDate = formatDate(event.date);
+            const formattedStartTime = formatTime(event.startTime);
+            const formattedEndTime = formatTime(event.endTime);
+    
+            //Self note: 1 inch == 72 points
+            //Print Event details first
+            doc.fontSize(14).text(`${event.eventId}`,113.76, 137.52); //(1.58, 1.91)
+            doc.fontSize(14).text(`${event.title}`, 151.92, 169.92); //(2.11, 2.36)
+            doc.fontSize(14).text(`${event.location}`, 112.32, 219.6); //(1.56, 3.05)
+            doc.fontSize(14).text(`${formattedDate}, ${formattedStartTime} to ${formattedEndTime}`, 138.96, 255.6 ); //(1.93, 3.55);
+
+            //Registration
+            //doc.moveTo(41.76, 382.32) //0.58, 5.31
+            let startY = 382.32; // Initial y position for registrations
+            if (isPeople) {
+                for (let i = 0; i < result.recordset.length; i++){
+                    const record = result.recordset[i]
+                    console.log(`Writing record ${i} to PDF:`, record); //Test
+
+                    doc.fontSize(14).text(`${record.username}`, 41.76, startY);
+                    //doc.x = 203.76 //2.83
+                    doc.fontSize(14).text(`${record.Email}`, 203.76, startY);
+                    //doc.x = 453.6 //6.3
+                    const formattedDate = formatDate(record.registrationTime);
+                    doc.fontSize(14).text(`${formattedDate}`, 453.6, startY);
+                    //doc.x(41.76);
+                    startY += 32; //5.75-5.31
+                }
+            } else {
+                doc.fontSize(18).text("No participants");
+            }
+            // Finalize the PDF and end the response
+            doc.end();
+
+            // Pipe the PDF document to the response
+            doc.pipe(res);
+
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        } finally {
+            if (doc) {
+                // Handle errors during piping
+                doc.on('error', (err) => {
+                    console.error('Error piping PDF document:', err);
+                });
+            } else {
+                console.error('PDF document was not created.'); // Log an error if doc is undefined
+            }
+        }
+    }
+}
+//Formatting functions, for PDF
+function formatDate(date) {
+    const options = { day: '2-digit', month: 'long', year: 'numeric' };
+    return date.toLocaleDateString('en-GB', options);
+}
+  
+// Helper function to format time as HH:mm
+function formatTime(time) {
+    const options = { hour: '2-digit', minute: '2-digit' };
+    return time.toLocaleTimeString('en-US', options);
 }
 
 
