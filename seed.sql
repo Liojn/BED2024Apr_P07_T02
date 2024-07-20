@@ -40,15 +40,6 @@ CREATE TABLE Donations (
   datetime DATE NOT NULL,
   FOREIGN KEY (Username) REFERENCES Users(Username)
 ); 
-======
-  Username NVARCHAR(255) NOT NULL, 
-  Email NVARCHAR(255) NOT NULL, 
-  Title VARCHAR(20) NOT NULL,
-  Feedback VARCHAR(300) NOT NULL,
-  Verified CHAR(1) NOT NULL CHECK (Verified IN ('Y', 'N')),
-  Date DATE NOT NULL,
-  FOREIGN KEY (Username) REFERENCES Users(Username)
-);
 
 -- Create Event Registration
 CREATE TABLE EventRegistrations (
@@ -64,7 +55,7 @@ CREATE TABLE EventRegistrations (
 -- Create Notifcaiton table
 CREATE TABLE Notifications(
 	notification_id INT IDENTITY(1,1) PRIMARY KEY,
-	UserID int NOT NULL,
+	UserID int NOT NULL, --Staff who responded to feedback
 	Fid int NOT NULL,
 	justification VARCHAR(40) NOT NULL,
 	response TEXT NOT NULL,

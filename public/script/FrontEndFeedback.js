@@ -112,6 +112,8 @@ async function fetchFeedbacks(filter = 'all') {
                 <hr>
                 <h3>Description:</h3>
                 <p>${feedback.feedback}</p>
+                <hr>
+                <h4>Date sent: ${feedback.Date}</h4>
                 <div class="action-buttons">
                     <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
                     ${feedback.verified === 'N' ? `<button class="respond-btn" onclick="confirmRespond(this)">Respond</button>` : ''}
@@ -223,7 +225,8 @@ function confirmRespond(button) {
         title: feedbackBox.querySelector('h1').innerText.replace('Title: ', ''),
         username: feedbackBox.querySelector('h2').innerText.replace('Username: ', ''),
         email: feedbackBox.querySelector('h3').innerText.replace('Email: ', ''),
-        feedback: feedbackBox.querySelector('p').innerText
+        feedback: feedbackBox.querySelector('p').innerText,
+        date: feedbackBox.querySelector('h4').innerText
     };
 
     localStorage.setItem('selectedFeedback', JSON.stringify(feedbackDetails));
