@@ -126,6 +126,19 @@ const getLocation = async (req, res) => {
     }
 }
 
+const printPDFSummary = async(req, res) => {
+    const eventId = req.params.id;
+    try {
+        const success = await Event.printPDFSummary(eventId, res);
+        if (!success) {
+            return res.status(404).send({message: "Unable to generate."});
+        }
+        //No need return any res, the PDF is the res itself
+    } catch (error) {
+        return res.status(500).send({message: error.message});
+    }
+}
+
 module.exports = {
     getAllEvents,
     getEventbyId,
@@ -136,4 +149,5 @@ module.exports = {
     registerEvent,
     getUsersByEventId,
     getLocation,
+    printPDFSummary,
 };

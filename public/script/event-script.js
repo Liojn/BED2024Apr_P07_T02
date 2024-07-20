@@ -160,7 +160,7 @@ const embedMapAPI = async(location) => {
             document.getElementById('mapFrame').src = data.mapUrl;
         
         } else {
-            alert('Could not load the map. Please try again.');
+            alert('Could not load the map for requested location. Please try again.');
         }
     } catch (error) {
         console.error('Error:', error);

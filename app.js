@@ -44,6 +44,7 @@ app.put("/feedbacks/:id", authMiddleware,feedbackController.updateFeedback)
 app.get("/events/get-location", eventController.getLocation);
 app.get("/events/search", eventController.searchEvent);
 
+app.get("/events/download/:id", eventController.printPDFSummary);
 app.post("/events/register/:id", authMiddleware, eventController.registerEvent);
 app.get("/events", authMiddleware, eventController.getAllEvents);
 app.get("/events/:id", authMiddleware, eventController.getEventbyId);
