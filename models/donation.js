@@ -19,11 +19,13 @@ class Donation {
         const request = connection.request();
         const result = await request.query(sqlQuery);
         connection.close();
-
-        return result.recordset.map(
-            (row) => new Donation(row.id, row.amount, row.datetime, row.company)
-        );
+    
+        return result.recordset.map(row => {
+            // const datetime = new Date(row.datetime).toLocaleString(); // Format the datetime
+            return new Donation(row.id, row.amount, row.datetime, row.company); // Return a new Donation object with formatted datetime
+        });
     }
+    
 
     static async getDonationByUsername(Username) {
         const connection = await sql.connect(dbConfig);
@@ -87,6 +89,15 @@ class Donation {
             console.error('Error fetching non-profit company names:', error.message);
             return [];
         }
+    }
+    // ORDER BY donation_date DESC LIMIT 10
+    static async getRealTimeDonation(){
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `SELECT amount, datetime FROM Donations`;
+        const request = connection.request();
+        const result = await request.query(sqlQuery);
+        connection.close();
+        return result.recordset
     }
 
 

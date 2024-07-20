@@ -71,7 +71,13 @@
     <div style="background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
       <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Trend</h3>
       <div style="height: 20rem;">
-        <!-- AreaChart component structure -->
+        <select id="timeFilter">
+          <option value="hour">Hour</option>
+          <option value="day">Day</option>
+          <option value="month">Month</option>
+          <option value="year">Year</option>
+      </select>
+        <canvas id="donationLineChart"></canvas>
         <svg>
           <defs>
             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -208,7 +214,16 @@
 <script>
 document.addEventListener('DOMContentLoaded', (event) => {
     fetchDonationData();
+    initializeRealTimeLineChart();
 });
+
+const timeFilter = document.getElementById('timeFilter');
+timeFilter.addEventListener('change', function() {
+    const filter = timeFilter.value;
+    console.log(filter);
+    fetchRealTimeDonationData(filter);
+});
+
 function fetchDonationData() {
     fetch('http://localhost:3000/donations')
         .then(response => response.json())
@@ -233,11 +248,11 @@ function fetchDonationData() {
             console.error('Error fetching donation data:', error);
         });
 }
+
 function createPieChart(labels, values) {
-    console.log("HI")
     const ctx = document.getElementById('donationPieChart').getContext('2d');
-    const donationPieChart = new Chart(ctx, {
-        type: 'pie',
+    new Chart(ctx, {
+        type: 'doughnut',
         data: {
             labels: labels,
             datasets: [{
@@ -261,6 +276,103 @@ function createPieChart(labels, values) {
         }
     });
 }
+
+let donationLineChart;
+
+function initializeRealTimeLineChart() {
+    const ctx = document.getElementById('donationLineChart').getContext('2d');
+    donationLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Donation Amount',
+                data: [],
+                borderColor: '#36A2EB',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                fill: true,
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'hour'
+                    },
+                    adapters: {
+                        date: {
+                            locale: 'en',
+                            timezone: 'UTC'
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    fetchRealTimeDonationData(); // Fetch initial data
+}
+
+function fetchRealTimeDonationData(filter) {
+    fetch('http://localhost:3000/donations')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(donation => new Date(donation.datetime));
+            const amounts = data.map(donation => donation.amount);
+
+            // Update chart data
+            donationLineChart.data.labels = labels;
+            donationLineChart.data.datasets[0].data = amounts;
+
+            // Update chart unit based on filter
+            donationLineChart.options.scales.x.time.unit = getChartUnit(filter);
+            donationLineChart.options.scales.x.time.tooltipFormat = getFormatOptions(filter);
+
+            // Update the chart
+            donationLineChart.update();
+        })
+        .catch(error => {
+            console.error('Error fetching real-time donation data:', error);
+        });
+}
+
+function getFormatOptions(filter) {
+    switch (filter) {
+        case 'day':
+            return { day: '2-digit', month: '2-digit', year: 'numeric' };
+        case 'hour':
+            return { hour: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' };
+        case 'month':
+            return { month: 'short', year: 'numeric' };
+        case 'year':
+            return { year: 'numeric' };
+        default:
+            return { day: '2-digit', month: '2-digit', year: 'numeric' };
+    }
+}
+
+function getChartUnit(filter) {
+    switch (filter) {
+        case 'day':
+            return 'day';
+        case 'hour':
+            return 'hour';
+        case 'month':
+            return 'month';
+        case 'year':
+            return 'year';
+        default:
+            return 'day';
+    }
+}
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
 </body>
 </html>

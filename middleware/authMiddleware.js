@@ -51,7 +51,8 @@ const authMiddleware = (req, res, next) => {
             "/donations": ["Staff", "Student"],//For get all donations if staff
             "/nonprofits": ["Staff", "Student"],//Get nonprofit api data"
             "/donations": ["Staff", "Student"],//Creating donations
-            "/donations/username": ["Staff", "Student"]// For get all donation if student
+            "/donations/username": ["Staff", "Student"],// For get all donation if student
+            "/donations/realtime":["Staff", "Student"],//To get realtime donation for graph
 
         }
 

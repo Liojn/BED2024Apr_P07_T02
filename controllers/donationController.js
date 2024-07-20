@@ -58,10 +58,21 @@ const fetchNonProfitNames = async (req, res) => {
     }
 }
 
+const getRealTimeDonation = async(req,res) => {
+    try {
+        const realTimeDonation = await Donation.getRealTimeDonation();
+        res.status(201).json(realTimeDonation);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error getting real time donations");
+    }
+}
+
 module.exports = {
     getAllDonations,
     getDonationByUsername,
     createDonation,
     getDonationCount,
     fetchNonProfitNames,
+    getRealTimeDonation,
 };

@@ -69,6 +69,7 @@ app.get("/donations", donationController.getAllDonations);
 app.get('/nonprofits', donationController.fetchNonProfitNames);
 app.post("/donations",donationController.createDonation);
 app.get("/donations/:username", donationController.getDonationByUsername);
+app.get("/donations/realtime",donationController.getRealTimeDonation);
 //app.get("/donations",donationController.getDonationCount)
 
 app.listen(port, async () => {

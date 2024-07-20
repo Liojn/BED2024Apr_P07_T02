@@ -37,7 +37,7 @@ CREATE TABLE Donations (
   Email NVARCHAR(255) NOT NULL, 
   amount int NOT NULL,
   company VARCHAR(50) NOT NULL,
-  datetime DATE NOT NULL,
+  datetime DATETIME NOT NULL,
   FOREIGN KEY (Username) REFERENCES Users(Username)
 ); 
 
@@ -97,8 +97,8 @@ Insert into Feedback (name,email,title,feedback,verified) VALUES
 -- Insert data into Donation table
 Insert into Donations(Username, Email, amount, company, datetime)
 VALUES
-('user1', 'user1@example.com','12','Company A', '2023-01-01 10:00:00'),
-('user2', 'user2@example.com', '20', 'Company B', '2023-04-20 11:15:00');
+('user1', 'user1@example.com','12','Lifeline Energy', '2024-05-01 10:00:00'),
+('user2', 'user2@example.com', '20', 'The River Fund', '2024-04-20 11:15:00');
 
 
 Insert Into Notifications (UserID, Fid, justification, response, seen, date)
