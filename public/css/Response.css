@@ -16,14 +16,14 @@ body {
     overflow: hidden;
 }
 
-#logined-nav .logo{
+#logined-nav .logo {
     float: left;
     padding-left: 2%;
     padding-bottom: 15px;
     padding-top: 25px;
 }
 
-#logined-nav .logo img{
+#logined-nav .logo img {
     height: 35px;
     width: 140px;
 }
@@ -80,7 +80,6 @@ body {
     display: none; /* Hide by default */
 }
 
-
 .notifications-grid {
     display: flex;
     flex-wrap: wrap;
@@ -105,7 +104,7 @@ body {
     position: relative;
 }
 
-.notification-box h1, .notification-box h2, .notification-box h3{
+.notification-box h1, .notification-box h2, .notification-box h3 {
     margin: 10px 0;
 }
 
@@ -119,5 +118,88 @@ body {
     font-size: 14px;
     position: absolute;
     bottom: 5px;
-    margin-top: 50; /* Add margin for spacing */
+}
+
+/* Feedback Response Page */
+.contact-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#response-wrapper {
+    width: 100%;
+    max-width: 800px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.response-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.response-container h1,
+.response-container h2,
+.response-container h3,
+.response-container p {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.response-container hr {
+    width: 100%;
+    margin: 20px 0;
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+}
+
+#response-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#response-form label,
+#response-form select,
+#response-form textarea,
+#response-form button {
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 16px;
+}
+
+#response-form select,
+#response-form textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#response-form button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#response-form button img {
+    vertical-align: middle;
+    margin-left: 5px;
 }
