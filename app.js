@@ -14,6 +14,7 @@ const swaggerDocument = require("./swagger-output.json"); // Import generated sp
 
 const authMiddleware = require('./middleware/authMiddleware');
 const eventAuthorizeAction = require("./middleware/eventAuthorization");
+const { getDonationByUsername } = require("./models/donation");
 const app = express();
 const port = process.env.PORT || 3000;
 const staticMiddleware = express.static("public");
@@ -66,6 +67,7 @@ app.post('/users/login', userController.loginUser);
 app.get("/donations", donationController.getAllDonations);
 app.get('/nonprofits', donationController.fetchNonProfitNames);
 app.post("/donations",donationController.createDonation);
+app.get("/donations/:username", donationController.getDonationByUsername);
 //app.get("/donations",donationController.getDonationCount)
 
 app.listen(port, async () => {

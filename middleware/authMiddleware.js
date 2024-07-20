@@ -45,12 +45,13 @@ const authMiddleware = (req, res, next) => {
             "/notifications/userNotif/[0-9]": ["Staff", "Student"],// For get all notification by user id
             "/notifications/[0-9]+" : ["Staff", "Student"], //For get notification by Id
             "/notifications" : ["Staff"], // Creating notifications
-            "/notification/[0-9]+" : ["Staff", "Student"] // Deleting notification
+            "/notification/[0-9]+" : ["Staff", "Student"], // Deleting notification
 
             //Donation route
-            "/donations/": ["Staff", "Student"],//For get all donations by user
-            "/nonprofits/": ["Staff", "Student"],//Get nonprofit api data"
+            "/donations": ["Staff", "Student"],//For get all donations if staff
+            "/nonprofits": ["Staff", "Student"],//Get nonprofit api data"
             "/donations": ["Staff", "Student"],//Creating donations
+            "/donations/username": ["Staff", "Student"]// For get all donation if student
 
         }
 

@@ -55,7 +55,7 @@ CREATE TABLE EventRegistrations (
 -- Create Notifcaiton table
 CREATE TABLE Notifications(
 	notification_id INT IDENTITY(1,1) PRIMARY KEY,
-	UserID int NOT NULL, --Staff who responded to feedback ID
+	UserID int NOT NULL, --Staff who responded to feedback
 	Fid int NOT NULL,
 	justification VARCHAR(40) NOT NULL,
 	response TEXT NOT NULL,
