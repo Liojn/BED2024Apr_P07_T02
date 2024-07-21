@@ -36,19 +36,24 @@ const authMiddleware = (req, res, next) => {
 
             //Feedback Routes
             "/feedbacks": ["Staff", "Student"], //For get all feedbacks
-            "/feedbacks/[0-9]": ["Staff", "Student"], // For get feedback by id
-            "/feedbacks/[0-9]": ["Staff"], //For delete feedback
+            "/feedbacks/[0-9]+": ["Staff", "Student"], // For get feedback by id
+            "/feedbacks/[0-9]+": ["Staff"], //For delete feedback
             "/feedbacks" : ["Staff", "Student"],//For creating feedback
             "/feedbacks/verified/(Y|N)" : ["Staff"], //For filtering feedback
-            "/feedbacks/[0-9]" :["Staff", "Student"], // For updating feedback
+            "/feedbacks/[0-9]+" :["Staff", "Student"], // For updating feedback
 
             //Notification Routes
             "/notifications/userNotif/[0-9]": ["Staff", "Student"],// For get all notification by user id
-            "/notifications/[0-9]" : ["Staff", "Student"], //For get notification by Id
+            "/notifications/[0-9]+" : ["Staff", "Student"], //For get notification by Id
             "/notifications" : ["Staff"], // Creating notifications
-            "/notification/[0-9]" : ["Staff", "Student"] // Deleting notification
+            "/notification/[0-9]+" : ["Staff", "Student"], // Deleting notification
 
-
+            //Donation route
+            "/donations": ["Staff", "Student"],//For get all donations if staff
+            "/nonprofits": ["Staff", "Student"],//Get nonprofit api data"
+            "/donations": ["Staff", "Student"],//Creating donations
+            "/donations/username": ["Staff", "Student"],// For get all donation if student
+            "/donations/realtime":["Staff", "Student"],//To get realtime donation for graph
 
         }
 

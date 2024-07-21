@@ -1,0 +1,144 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Nav Bar Header */
+#logined-nav {
+    overflow: hidden;
+}
+#logined-nav .logo {
+    float: left;
+    padding-left: 2%;
+    /* padding-bottom: 15px; */
+    padding-top: 25px;
+}
+
+#logined-nav .logo img {
+    height: 35px;
+    width: 140px;
+}
+
+#logined-nav nav {
+    float: right;
+}
+
+#logined-nav nav a {
+    float: left;
+    text-align: center;
+    padding-top: 45px;
+    padding-left: 20px;
+    padding-right: 20px;
+        padding-bottom: 12px;
+    text-decoration: none;
+    font-size: 17px;
+    color: black;
+    font-family: "Lato", sans-serif;
+}
+
+#logined-nav nav #currentpage {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#logined-nav nav a:hover {
+    background-color: #4CAF50;
+    color: white;
+    transition: 1s;
+}
+.nav-logo {
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    flex-grow: 1;
+}
+
+.nav-item {
+    color: #fff;
+    text-decoration: none;
+    padding: 14px 80px;
+    display: block;
+}
+
+.nav-item:hover {
+    background-color: #575757;
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.toggle-icon {
+    background-color: #fff;
+    height: 2px;
+    width: 25px;
+    margin: 3px 0;
+}
+.nav-container {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+/* donation statistics text */
+#header-container {
+    text-align: center;
+}
+
+#header-container h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+}
+/* stat cards */
+.stat-card:hover {
+    transform: translateY(-5px); /* Pop up effect on hover */
+}
+.stat-holder{
+    text-align: center;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    justify-content: center;
+}
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 0.375rem;
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    width: 14rem;
+    height: 14rem;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+
+}
+
+.stat-card span:first-child {
+    font-size: 1rem; /* Increased font size */
+    color: #6B7280;
+    font-weight: 600; /* Bold text */
+}
+
+.stat-card span:last-child {
+    font-size: 2.5rem; /* Increased font size */
+    font-weight: 550; /* Thicker text */
+}
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+}
+
