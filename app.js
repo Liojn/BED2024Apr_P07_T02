@@ -32,7 +32,7 @@ app.post("/notifications",authMiddleware, notificationsController.createNotifica
 app.delete("/notification/:id", authMiddleware,notificationsController.deleteNotification)
 app.get("/notifications", notificationsController.getAllNotifications)
 app.get("/notifications/username/:id", authMiddleware,notificationsController.getStaffUsername)
-app.put("/notifications/seen/:seen", authMiddleware, notificationsController.updateNotification)
+app.put("/notifications/seen/:id", authMiddleware, notificationsController.updateNotification)
 
 // Feedback Routes
 app.get("/feedbacks", authMiddleware,feedbackController.getAllFeedbacks);

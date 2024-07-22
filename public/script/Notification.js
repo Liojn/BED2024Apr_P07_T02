@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     updateNotificationCount();
+    
     const NotificationId = localStorage.getItem('notificationId');
     const token = localStorage.getItem('token');
     const UserID = localStorage.getItem('userId');
@@ -12,6 +13,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (window.location.pathname.endsWith('NotificationDetails.html')) {
         console.log('On NotificationDetails page');
+        updateSeen();
+        updateNotificationCount();
+
+        const backButton = document.getElementById('backButton');
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                window.location.href = 'NotificationScreen.html';
+            });
+        }
         const selectedNotification = JSON.parse(localStorage.getItem('selectedNotification'));
         const staffUserId = localStorage.getItem('staffUserId');
         console.log('Selected Notification:', selectedNotification);
@@ -227,3 +237,33 @@ async function fetchStaffUsername(userId) {
         return null;
     }
 }
+
+async function updateSeen() {
+    const NotificationId = localStorage.getItem('notificationId');
+    const token = localStorage.getItem('token');
+
+    if (!NotificationId) {
+        console.error('No notification ID found');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/notifications/updateSeen/${NotificationId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
+
+        const updatedNotification = await response.json();
+        console.log('Notification updated:', updatedNotification);
+    } catch (error) {
+        console.error('Error updating seen status:', error);
+    }
+}
+
