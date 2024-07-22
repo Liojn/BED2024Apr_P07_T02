@@ -1,6 +1,26 @@
 
 let isFormDirty = false; //default false as form not edited yet
 
+//DATE FORMATTING FOR PRINTING, default UTC, as already in SGT stored in MSSQL. 
+const options = {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    timeZone: 'UTC'
+};
+const dateOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC'
+};
+const timeOptions = {
+    hour: 'numeric',
+    minute: 'numeric',
+    timeZone: 'UTC'
+};
+let formatter = new Intl.DateTimeFormat('en-GB', options);
+const dateFormatter = new Intl.DateTimeFormat('en-GB', dateOptions);
+const timeFormatter = new Intl.DateTimeFormat('en-GB', timeOptions);
 //localStorage.setItem('username', 'user2');
 //localStorage.setItem('accountType', 'Student')
 
@@ -64,16 +84,8 @@ const registerEvent = async (eventId) => {
             throw new Error(resJson.error || 'Registration failed');
         }
         const resJson = await response.json();
-        /*const registrationTime = new Date(resJson.registrationTime).toLocaleString({
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-            hour12: true // Use 12-hour format; set to false for 24-hour format
-        });*/
-        alert(`Registration successful!\nRegistration ID: ${resJson.registrationId}\nEvent ID: ${resJson.eventId}\nRegistration Time: ${resJson.registrationTime}`);
+        const registrationTime = new Date(resJson.registrationTime);
+        alert(`Registration successful!\nRegistration ID: ${resJson.registrationId}\nEvent ID: ${resJson.eventId}\nRegistration Time: ${formatter.format(registrationTime)}`);
     
     } catch (error){
         console.error('An error occurred:', error.message);
@@ -114,7 +126,13 @@ const displayEventOnList = async (eventId) => {
         const startDate = new Date(jsonData.date);
         const startTime = new Date(jsonData.startTime);
         const endTime = new Date(jsonData.endTime);
-        const formattedDateTime = startDate.toLocaleDateString('en-SG', { year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + startTime.toLocaleTimeString('en-SG', { hour: 'numeric', minute: 'numeric' }) + ' - ' + endTime.toLocaleTimeString('en-SG', { hour: 'numeric', minute: 'numeric' });
+        
+        const formattedDate = dateFormatter.format(startDate);
+        const formattedStartTime = timeFormatter.format(startTime);
+        const formattedEndTime = timeFormatter.format(endTime);
+        // Combine formatted date and time
+        const formattedDateTime = `${formattedDate} at ${formattedStartTime} - ${formattedEndTime}`;
+        
         document.getElementById('p-datetime').innerHTML = '<p>' + formattedDateTime + '</p>';
         document.getElementById('p-location').innerHTML = '<p>' + jsonData.location + '</p>';
 
@@ -168,8 +186,7 @@ const displayParticipants = async(eventId) => {
             participantName.innerHTML = `<span style="font-weight: 700;">Username:</span><br>${participant.username}`;
 
             const registrationDate = new Date(participant.registrationTime);
-            const formattedDate = registrationDate.toLocaleDateString('en-SG',{ year: 'numeric', month: 'long', day: 'numeric' });
-
+            const formattedDate = formatter.format(registrationDate);
             const participantTime = document.createElement('div');
             participantTime.classList.add('participant-time');
             participantTime.innerHTML = `<span style="font-weight: 700;">Registered Date:</span><br>${formattedDate}`;
@@ -539,61 +556,49 @@ document.getElementById('eventForm').addEventListener('submit', async function (
     };
     console.log(jsonData); //test
 
-    if (mode === 'edit') {  //PUT command 
-        const eventId = sessionStorage.getItem('eventId');
-        //delete jsonData.username; //not needed, will be the same user 
+    try {
+        let response;
+        if (mode === 'edit') {  //PUT command
+            const eventId = sessionStorage.getItem('eventId'); //get the eventId when it is set, being clicked edit
+            response = await fetch(`/events/${eventId}/update`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+        } else if (mode === 'create') {  // POST command
+            response = await fetch('/events', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+        } else {
+            throw new Error('Internal system error.');
+        }
 
-        await fetch(`/events/${eventId}/update`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jsonData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json()
-        })
-        .then(result => {
-            // Handle successful form submission
-            console.log('Success:', result);
-            window.alert("Updated successful!");
-            window.location.href = "../html/event.html";
-        })
-        .catch(error => {
-            // Handle errors
-            console.error('Error:', error);
-        });
+        if (!response.ok) { //not 200
+            const errorData = await response.json(); //Parse the error response as JSON
+            //Create detailed error message string based on validateEvent server side
+            const errorMessage = errorData.errors
+                ? errorData.errors.join('\n') // Join all error messages into a single string
+                : `HTTP error ${response.status}: ${errorData.message || 'Unknown error'}`;
+            
+            throw new Error(errorMessage);        }
 
-    } else if (mode === 'create') {   //POST command 
-        await fetch('/events', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(jsonData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json()
-        })
-        .then(result => {
-            //Handle successful form submission
-            console.log('Success:', result);
-            window.alert("Post successful!");
-            window.location.href = "../html/event.html"
-        })
-        .catch(error => {
-            //Handle errors
-            console.error('Error:', error);
-        });
-    } else {
-        alert('Error with Internal System.')
+        const result = await response.json();
+        // Handle successful form submission
+        console.log('Success:', result);
+        window.alert(mode === 'edit' ? 'Update successful!' : 'Post successful!'); //if is edit, send update successfully
+        window.location.href = "../html/event.html";
+
+    } catch (error) {
+        // Handle errors
+        console.error('Error:', error);
+        window.alert(`Error: ${error.message}`);
     }
 });
