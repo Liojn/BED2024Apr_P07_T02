@@ -46,6 +46,7 @@ const authMiddleware = (req, res, next) => {
             "/notifications/[0-9]+" : ["Staff", "Student"], //For get notification by Id
             "/notifications" : ["Staff"], // Creating notifications
             "/notification/[0-9]+" : ["Staff", "Student"], // Deleting notification
+            "/notifications/username/[0-9]+" : ["Staff", "Student"],// Getting Staff username 
 
             //Donation route
             "/donations": ["Staff", "Student"],//For get all donations if staff

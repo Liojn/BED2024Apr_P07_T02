@@ -88,7 +88,35 @@ class Notifcations {
 
         return result.rowsAffected > 0;
     }
+
+    static async getStaffUsername(staffId){
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `Select * from Notifications Inner Join Users On Notifications.UserID = Users.UserID where Notifications.UserID = @UserID`
+        const request = connection.request()
+        request.input("UserID", staffId)
+        const result = await request.query(sqlQuery)
+        connection.close()
+
+        return result.recordset[0]
+    }
+
+    static async updateNotification(notification_id) {
+        const connection = await sql.connect(dbConfig);
+    
+        const sqlQuery = `UPDATE Notifications SET seen = 'Y' WHERE notification_id = @notification_id`; // Parameterized query
+    
+        const request = connection.request();
+        request.input("notification_id", notification_id);
+    
+        await request.query(sqlQuery);
+    
+        connection.close();
+    
+        return this.getNotificationById(notification_id); // returning the updated book data
+    }
+
 }
+
 
 
 module.exports = Notifcations

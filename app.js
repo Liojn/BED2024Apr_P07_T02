@@ -31,6 +31,7 @@ app.get("/notifications/:id", authMiddleware,notificationsController.getNotifica
 app.post("/notifications",authMiddleware, notificationsController.createNotification)
 app.delete("/notification/:id", authMiddleware,notificationsController.deleteNotification)
 app.get("/notifications", notificationsController.getAllNotifications)
+app.get("/notifications/username/:id", notificationsController.getStaffUsername)
 
 // Feedback Routes
 app.get("/feedbacks", authMiddleware,feedbackController.getAllFeedbacks);

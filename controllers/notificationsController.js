@@ -66,6 +66,20 @@ const deleteNotification = async (req, res) => {
     }
 };
 
+const getStaffUsername = async (req, res) => {
+    const staffId = parseInt(req.params.id);
+    try {
+        const notif = await Notifications.getStaffUsername(staffId);
+        if (!notif) {
+            return res.status(404).send("Username from notification not found");
+        }
+        res.json(notif);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving Username from notification");
+    }
+};
+
 
 module.exports = {
     getNotificationsByUsername,
@@ -73,4 +87,5 @@ module.exports = {
     createNotification,
     deleteNotification,
     getAllNotifications,
+    getStaffUsername,
 };
