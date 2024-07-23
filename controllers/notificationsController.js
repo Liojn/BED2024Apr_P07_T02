@@ -1,16 +1,30 @@
-const Notifications = require("../models/notifications")
+const Notifcations = require("../models/notifications");
+const Notifications = require("../models/notifications");
+const User = require("../models/user");
 
-const getNotificationsByUserId = async (req, res) => {
-    const UserID = parseInt(req.params.id);
+
+const getAllNotifications = async (req, res) => {
     try {
-        const notif = await Notifications.getNotificationsByUserId(UserID);
+        const notifications = await Notifications.getAllNotifications();
+        res.json(notifications);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving notifications");
+    }
+};
+
+
+const getNotificationsByUsername = async (req, res) => {
+    const Username = req.params.Username;
+    try {
+        const notif = await Notifications.getNotificationsByUsername(Username);
         if (!notif ) {
-            return res.status(404).send("Notifications with UserID found not found");
+            return res.status(404).send("Notifications with username found not found");
         }
         res.json(notif);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error retrieving notification with UserID");
+        res.status(500).send("Error retrieving notification with Username");
     }
 };
 
@@ -54,10 +68,60 @@ const deleteNotification = async (req, res) => {
     }
 };
 
+const getStaffUsername = async (req, res) => {
+    const staffId = parseInt(req.params.id);
+    try {
+        const notif = await Notifications.getStaffUsername(staffId);
+        if (!notif) {
+            return res.status(404).send("Username from notification not found");
+        }
+        res.json(notif);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving Username from notification");
+    }
+};
+
+const updateNotification = async (req, res) => {
+    const notification_id = parseInt(req.params.id);
+  
+    try {
+      const updatedNotification = await Notifications.updateNotification(notification_id);
+      if (!updatedNotification) {
+        return res.status(404).send("Notification not found");
+      }
+      res.json(updatedNotification);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error updating Notification");
+    }
+  };
+
+  const getNotificationBySeen = async (req, res) => {
+    console.log(req.params)
+    const seen = req.params.seen;
+    const username = req.params.username
+    console.log(seen, username)
+    try {
+        const seens = await Notifcations.getNotificationBySeen(seen,username);
+        if (!seens) {
+            return res.status(404).send("seen notification not found");
+        }
+        res.json(seens);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving seen notification");
+    }
+};
+
 
 module.exports = {
-    getNotificationsByUserId,
+    getNotificationsByUsername,
     getNotificationById,
     createNotification,
     deleteNotification,
+    getAllNotifications,
+    getStaffUsername,
+    updateNotification,
+    getNotificationBySeen,
 };

@@ -1,5 +1,7 @@
 
 const Event = require("../models/event");
+const fs = require("fs");
+const path = require("path");
 
 const getAllEvents = async (req, res) => {
     try {
@@ -100,6 +102,7 @@ const getUsersByEventId = async (req, res) => {
     const eventId = req.params.id;
     try {
         const regList = await Event.getUsersByEventId(eventId);
+        console.log(regList);
         if (!regList || regList.length === 0) { //Check if regList is empty or null
             return res.status(404).json({ message: "No registrations found for the event" });
         }
@@ -126,6 +129,36 @@ const getLocation = async (req, res) => {
     }
 }
 
+const printPDFSummary = async(req, res) => {
+    const eventId = req.params.id;
+    try {
+        const outputPath = await Event.printPDFSummary(eventId);
+        console.log(outputPath);
+
+        // Send the PDF file as a response
+        res.download(outputPath, (err) => {
+            if (err) {
+                console.error("Error sending PDF:", err);
+                res.status(500).send("Error sending PDF.");
+            } else {
+                //delete the file after sending it in the server
+                fs.unlink(outputPath, (unlinkErr) => {
+                    if (unlinkErr) {
+                        console.error("Error deleting PDF file:", unlinkErr);
+                    }
+                });
+            }
+        });
+
+    } catch (error) {
+        if (error.message === 'No such event.'){
+            return res.status(404).send({message: 'No such event' });
+        }
+        console.log(error);
+        return res.status(500).send({message: error.message});
+    }
+}
+
 module.exports = {
     getAllEvents,
     getEventbyId,
@@ -136,4 +169,5 @@ module.exports = {
     registerEvent,
     getUsersByEventId,
     getLocation,
+    printPDFSummary,
 };

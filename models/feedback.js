@@ -19,6 +19,7 @@ class Feedback {
         const request = connection.request();
         const result = await request.query(sqlQuery);
         connection.close();
+        
     
         return result.recordset.map((row) => {
             const formattedDate = Feedback.formatDate(new Date(row.Date));
@@ -113,7 +114,7 @@ class Feedback {
         connection.close();
     
         return this.getFeedbackById(Fid); // returning the updated book data
-      }
+    }
 }
 
 module.exports = Feedback;

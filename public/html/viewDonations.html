@@ -8,10 +8,6 @@
     <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
     <style>
         /* Inline style for demonstration purpose */
-
- 
-
-
     </style>
 </head>
 <body>
@@ -35,9 +31,13 @@
     <div id = "backButton">Back</div>
 
     <script>
+        const accountType = localStorage.getItem('accountType');
+        const username = localStorage.getItem('username');
+
         document.getElementById('backButton').addEventListener('click', function() {
             window.location.href = "donationPage.html";
         });
+
         function formatDateTime(datetimeStr) {
             const date = new Date(datetimeStr);
             const day = String(date.getDate()).padStart(2, '0');
@@ -52,32 +52,69 @@
             try {
                 const response = await fetch("http://localhost:3000/donations");
                 const donations = await response.json();
-                const donationContainer = document.getElementById('donationContainer');
-                
-                donations.forEach(donation => {
-                    const formattedDateTime = formatDateTime(donation.datetime);
-                    const donationBox = document.createElement('div');
-                    donationBox.classList.add('donation-box');
-                    donationBox.innerHTML = `
-                        <div class="donation-info">
-                            <div class="donation-amount-company">
-                                <div class="donation-amount">$${donation.amount}</div>
-                                <div class="donation-company">to ${donation.company}</div>
+                console.log('All Donations:', donations); // Debugging
+                if (Array.isArray(donations)) {
+                    const donationContainer = document.getElementById('donationContainer');
+                    donations.forEach(donation => {
+                        const formattedDateTime = formatDateTime(donation.datetime);
+                        const donationBox = document.createElement('div');
+                        donationBox.classList.add('donation-box');
+                        donationBox.innerHTML = `
+                            <div class="donation-info">
+                                <div class="donation-amount-company">
+                                    <div class="donation-amount">$${donation.amount}</div>
+                                    <div class="donation-company">to ${donation.company}</div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="donation-datetime">${formattedDateTime}</div>
-                        <div class="view-more-button">View More</div>
-                    `;
-                    donationContainer.appendChild(donationBox);
-                });
+                            <div class="donation-datetime">${formattedDateTime}</div>
+                            <div class="view-more-button">View More</div>
+                        `;
+                        donationContainer.appendChild(donationBox);
+                    });
+                } else {
+                    console.error('Error: Donations data is not an array');
+                }
             } catch (error) {
                 console.error('Error fetching donations:', error);
             }
         }
 
-        window.onload = fetchDonations;
+        async function fetchUserDonations() {
+            try {
+                const response = await fetch(`http://localhost:3000/donations/${username}`);
+                const donations = await response.json();
+                console.log('User Donations:', donations); // Debugging
+                if (Array.isArray(donations)) {
+                    const donationContainer = document.getElementById('donationContainer');
+                    donations.forEach(donation => {
+                        const formattedDateTime = formatDateTime(donation.datetime);
+                        const donationBox = document.createElement('div');
+                        donationBox.classList.add('donation-box');
+                        donationBox.innerHTML = `
+                            <div class="donation-info">
+                                <div class="donation-amount-company">
+                                    <div class="donation-amount">$${donation.amount}</div>
+                                    <div class="donation-company">to ${donation.company}</div>
+                                </div>
+                            </div>
+                            <div class="donation-datetime">${formattedDateTime}</div>
+                            <div class="view-more-button">View More</div>
+                        `;
+                        donationContainer.appendChild(donationBox);
+                    });
+                } else {
+                    console.error('Error: User donations data is not an array');
+                }
+            } catch (error) {
+                console.error('Error fetching donations:', error);
+            }
+        }
+
+        if (accountType === 'Staff') {
+            window.onload = fetchDonations;
+        } else {
+            window.onload = fetchUserDonations;
+        }
     </script>
 </body>
 </html>
-
-

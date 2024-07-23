@@ -1,9 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const feedbackDetails = JSON.parse(localStorage.getItem('selectedFeedback'));
     const token = localStorage.getItem('token');
-    const UserID = localStorage.getItem('userId'); // Retrieve UserID from local storage
-
-    console.log('Feedback Details:', feedbackDetails);
+    const UserID = localStorage.getItem('userId');
 
     if (window.location.pathname.endsWith('FeedbackResponse.html')) {
         if (feedbackDetails) {
@@ -25,19 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const responseText = document.getElementById('response').value;
             const responseType = document.getElementById('response-type').value;
 
-            // Debugging logs
-            console.log('UserID:', UserID);
-            console.log('Fid:', feedbackDetails.Fid);
-            console.log('Justification:', responseType);
-            console.log('Response:', responseText);
-
             const responsePayload = {
-                UserID: UserID, // UserID from local storage
-                Fid: feedbackDetails.Fid, // Directly use Fid from feedbackDetails
-                justification: responseType, // Ensure the justification type is captured correctly
+                UserID: UserID,
+                Fid: feedbackDetails.Fid,
+                justification: responseType,
                 response: responseText,
                 seen: 'N',
-                date: new Date().toISOString().split('T')[0] // Format date to YYYY-MM-DD
+                date: new Date().toISOString().split('T')[0]
             };
 
             try {
@@ -45,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` // Include token in request headers
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(responsePayload),
                 });
@@ -60,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (notificationResponse.ok && feedbackUpdateResponse.ok) {
                     alert('Response sent and feedback updated successfully!');
-                    window.location.href = 'FeedbackStaff.html'; // Redirect back to feedback list
+                    window.location.href = 'FeedbackStaff.html';
                 } else {
                     console.error('Failed to send response or update feedback:', notificationResponse.statusText, feedbackUpdateResponse.statusText);
                 }
@@ -68,53 +60,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error sending response or updating feedback:', error);
             }
         });
-    }
-
-    // Fetch notifications
-    async function fetchNotifications() {
-        try {
-            const response = await fetch(`/notifications/userNotif/${UserID}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}` // Include token in request headers
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const notifications = await response.json();
-
-            // Check if the response is an array
-            if (!Array.isArray(notifications)) {
-                throw new Error('Response is not an array');
-            }
-
-            const notificationContainer = document.getElementById('notificationContainer');
-            notificationContainer.innerHTML = ''; // Clear existing notifications
-
-            notifications.forEach(notification => {
-                const notificationBox = document.createElement('div');
-                notificationBox.classList.add('notification-box');
-                notificationBox.id = `notification-${notification.notification_id}`; // Set unique id
-
-                notificationBox.innerHTML = `
-                    <h1>Justification: ${notification.justification}</h1>
-                    <h2>Date: ${new Date(notification.date).toLocaleDateString()}</h2>
-                    <div class="action-buttons">
-                        <button class="delete-btn" onclick="confirmDelete(${notification.notification_id})">Delete</button>
-                    </div>
-                `;
-
-                notificationContainer.appendChild(notificationBox);
-            });
-        } catch (error) {
-            console.error('Error fetching notifications:', error);
-        }
-    }
-
-    // Check if the current page is NotificationScreen.html
-    if (window.location.pathname.endsWith('NotificationScreen.html')) {
-        fetchNotifications();
     }
 });

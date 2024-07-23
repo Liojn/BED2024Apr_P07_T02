@@ -19,6 +19,36 @@ const registerEventConfirm = (event) => {
     }
 }
 
+const pdfPrint = async (event) => {
+    const eventId = event.target.getAttribute('data-event-id') || event.target.parentElement.getAttribute('data-event-id');
+    console.log(eventId);
+    const response = await fetch(`/events/download/${eventId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/pdf'
+        }
+    });
+
+    // Check if the response is ok
+    if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `event_id${eventId}_summary.pdf`;
+        document.body.appendChild(a); //Append anchor to body
+        a.click(); //Trigger download
+        document.body.removeChild(a); // Remove anchor from body
+        URL.revokeObjectURL(url); //Clean up
+    } else if (response.status === 403) {
+        alert('You do not have the permission. Staff only.')
+    } else {
+        console.error('Failed to fetch PDF');
+        alert('Failed to fetch PDF. Please try again later.');
+    }
+}
+
 const registerEvent = async (eventId) => {
     try{
         const response = await fetch(`/events/register/${eventId}`, {
@@ -34,9 +64,16 @@ const registerEvent = async (eventId) => {
             throw new Error(resJson.error || 'Registration failed');
         }
         const resJson = await response.json();
-        const registrationTime = new Date(resJson.registrationTime).toLocaleString();
-
-        alert(`Registration successful!\nRegistration ID: ${resJson.registrationId}\nEvent ID: ${resJson.eventId}\nRegistration Time: ${registrationTime}`);
+        /*const registrationTime = new Date(resJson.registrationTime).toLocaleString({
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true // Use 12-hour format; set to false for 24-hour format
+        });*/
+        alert(`Registration successful!\nRegistration ID: ${resJson.registrationId}\nEvent ID: ${resJson.eventId}\nRegistration Time: ${resJson.registrationTime}`);
     
     } catch (error){
         console.error('An error occurred:', error.message);
@@ -77,9 +114,14 @@ const displayEventOnList = async (eventId) => {
         const startDate = new Date(jsonData.date);
         const startTime = new Date(jsonData.startTime);
         const endTime = new Date(jsonData.endTime);
-        const formattedDateTime = startDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' }) + ' - ' + endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+        const formattedDateTime = startDate.toLocaleDateString('en-SG', { year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + startTime.toLocaleTimeString('en-SG', { hour: 'numeric', minute: 'numeric' }) + ' - ' + endTime.toLocaleTimeString('en-SG', { hour: 'numeric', minute: 'numeric' });
         document.getElementById('p-datetime').innerHTML = '<p>' + formattedDateTime + '</p>';
         document.getElementById('p-location').innerHTML = '<p>' + jsonData.location + '</p>';
+
+        // Update the data-event-id attribute of the download button
+        const downloadButton = document.querySelector('.download-pdf-button');
+        downloadButton.setAttribute('data-event-id', jsonData.eventId);
+
         const location = jsonData.location;
         displayParticipants(eventId);
         embedMapAPI(location);
@@ -126,7 +168,7 @@ const displayParticipants = async(eventId) => {
             participantName.innerHTML = `<span style="font-weight: 700;">Username:</span><br>${participant.username}`;
 
             const registrationDate = new Date(participant.registrationTime);
-            const formattedDate = registrationDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const formattedDate = registrationDate.toLocaleDateString('en-SG',{ year: 'numeric', month: 'long', day: 'numeric' });
 
             const participantTime = document.createElement('div');
             participantTime.classList.add('participant-time');
@@ -160,7 +202,7 @@ const embedMapAPI = async(location) => {
             document.getElementById('mapFrame').src = data.mapUrl;
         
         } else {
-            alert('Could not load the map. Please try again.');
+            alert('Could not load the map for requested location. Please try again.');
         }
     } catch (error) {
         console.error('Error:', error);
@@ -180,6 +222,7 @@ const submitSearchReq = async() => {
         const response = await fetch(`/events/search/?searchTerm=${query}`, {
             method: 'GET',
             headers: {
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
         });

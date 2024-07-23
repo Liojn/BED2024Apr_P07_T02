@@ -1,3 +1,4 @@
+const { user } = require("../dbConfig");
 const Donation = require("../models/donation");
 
 const getAllDonations = async (req, res) => {
@@ -10,6 +11,22 @@ const getAllDonations = async (req, res) => {
     }
 };
 
+const getDonationByUsername = async (req, res) => {
+    const username = req.params.username;
+    try {
+        const donation = await Donation.getDonationByUsername(username);
+        if (!donation) {
+            return res.status(404).send("Donation not found");
+        }
+        res.json(donation);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving donation");
+    }
+};
+
+
+
 const createDonation = async (req, res) => {
     const newDonation = req.body;
     try {
@@ -19,7 +36,7 @@ const createDonation = async (req, res) => {
         console.error(error);
         res.status(500).send("Error creating donation");
     }
-}
+};
 
 const getDonationCount = async (req, res) => {
     try {
@@ -41,9 +58,21 @@ const fetchNonProfitNames = async (req, res) => {
     }
 }
 
+const getRealTimeDonation = async(req,res) => {
+    try {
+        const realTimeDonation = await Donation.getRealTimeDonation();
+        res.status(201).json(realTimeDonation);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error getting real time donations");
+    }
+}
+
 module.exports = {
     getAllDonations,
+    getDonationByUsername,
     createDonation,
     getDonationCount,
     fetchNonProfitNames,
+    getRealTimeDonation,
 };

@@ -21,45 +21,53 @@ const authMiddleware = (req, res, next) => {
 
         const requestedEndpoint = req.url;
         const userRole = decoded.accountType; //For authentication
-        
         const authorizedRoles = {
             //Event routes
+            "/events/search" : ["Student", "Staff"], //GET with Search
+            "/events/download/[0-9]+": ["Staff"], //GET pdfdownload 
+            "/events/get-location": ["Student", "Staff"], //GET location
             "/events": ["Staff", "Student"], //For GET all or POST 
             "/events/[0-9]+": ["Student", "Staff"], //GET by ID
-            "/events/search" : ["Student", "Staff"], //GET with Search
             "/events/[0-9]+/update": ["Staff", "Student"], //POST
             "/events/[0-9]+/deletion": ["Staff", "Student"], //DELETE
             "/events/register/[0-9]+": ["Staff", "Student"], //POST register
             "/events/find-participants/[0-9]+": ["Staff", "Student"], //GET find participants
-            "/events/get-location": ["Student", "Staff"], //GET location
+
 
             //Feedback Routes
             "/feedbacks": ["Staff", "Student"], //For get all feedbacks
-            "/feedbacks/[0-9]": ["Staff", "Student"], // For get feedback by id
-            "/feedbacks/[0-9]": ["Staff"], //For delete feedback
+            "/feedbacks/[0-9]+": ["Staff", "Student"], // For get feedback by id
+            "/feedbacks/[0-9]+": ["Staff"], //For delete feedback
             "/feedbacks" : ["Staff", "Student"],//For creating feedback
             "/feedbacks/verified/(Y|N)" : ["Staff"], //For filtering feedback
-            "/feedbacks/[0-9]" :["Staff", "Student"], // For updating feedback
+            "/feedbacks/[0-9]+" :["Staff", "Student"], // For updating feedback
 
             //Notification Routes
             "/notifications/userNotif/[0-9]": ["Staff", "Student"],// For get all notification by user id
-            "/notifications/[0-9]" : ["Staff", "Student"], //For get notification by Id
+            "/notifications/[0-9]+" : ["Staff", "Student"], //For get notification by Id
             "/notifications" : ["Staff"], // Creating notifications
-            "/notification/[0-9]" : ["Staff", "Student"], // Deleting notification
-
+            "/notifications/[0-9]+" : ["Staff", "Student"], // Deleting notification
+            "/notifications/username/[0-9]+" : ["Staff", "Student"],// Getting Staff username 
+            "/notifications/seen/[0-9]+" : ["Staff", "Student"],// Updating notification to seen
+            "/notifications/seen/(Y|N)/[a-zA-Z0-9]+": ["Staff", "Student"], //Getting all seen/unseen notification or a user
+            
             //Donation route
-            "/donations/": ["Staff", "Student"],//For get all donations by user
-            "/nonprofits/": ["Staff", "Student"],//Get nonprofit api data"
+            "/donations": ["Staff", "Student"],//For get all donations if staff
+            "/nonprofits": ["Staff", "Student"],//Get nonprofit api data"
             "/donations": ["Staff", "Student"],//Creating donations
+            "/donations/username": ["Staff", "Student"],// For get all donation if student
+            "/donations/realtime":["Staff", "Student"],//To get realtime donation for graph
 
         }
 
+        const pathOnly = requestedEndpoint.split('?')[0]; //exclude query
         const authorizedRole = Object.entries(authorizedRoles).find(
             ([endpoint, roles]) => {
               const regex = new RegExp(`^${endpoint}$`); // Create RegExp from endpoint
-              return regex.test(requestedEndpoint) && roles.includes(userRole);
+              return regex.test(pathOnly) && roles.includes(userRole);
             }
         );
+
 
         if (!authorizedRole) {
             return res.status(403).json({ message: "Forbidden" });
