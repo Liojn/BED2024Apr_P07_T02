@@ -29,10 +29,11 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // Serv
 app.get("/notifications/userNotif/:Username",notificationsController.getNotificationsByUsername)
 app.get("/notifications/:id", authMiddleware,notificationsController.getNotificationById)
 app.post("/notifications",authMiddleware, notificationsController.createNotification)
-app.delete("/notification/:id", authMiddleware,notificationsController.deleteNotification)
+app.delete("/notifications/:id", authMiddleware,notificationsController.deleteNotification)
 app.get("/notifications", notificationsController.getAllNotifications)
 app.get("/notifications/username/:id", authMiddleware,notificationsController.getStaffUsername)
 app.put("/notifications/seen/:id", authMiddleware, notificationsController.updateNotification)
+app.get("/notifications/seen/:seen/:username",authMiddleware,notificationsController.getNotificationBySeen)
 
 // Feedback Routes
 app.get("/feedbacks", authMiddleware,feedbackController.getAllFeedbacks);

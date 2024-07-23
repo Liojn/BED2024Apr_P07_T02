@@ -1,4 +1,6 @@
-const Notifications = require("../models/notifications")
+const Notifcations = require("../models/notifications");
+const Notifications = require("../models/notifications");
+const User = require("../models/user");
 
 
 const getAllNotifications = async (req, res) => {
@@ -95,6 +97,23 @@ const updateNotification = async (req, res) => {
     }
   };
 
+  const getNotificationBySeen = async (req, res) => {
+    console.log(req.params)
+    const seen = req.params.seen;
+    const username = req.params.username
+    console.log(seen, username)
+    try {
+        const seens = await Notifcations.getNotificationBySeen(seen,username);
+        if (!seens) {
+            return res.status(404).send("seen notification not found");
+        }
+        res.json(seens);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving seen notification");
+    }
+};
+
 
 module.exports = {
     getNotificationsByUsername,
@@ -104,4 +123,5 @@ module.exports = {
     getAllNotifications,
     getStaffUsername,
     updateNotification,
+    getNotificationBySeen,
 };
