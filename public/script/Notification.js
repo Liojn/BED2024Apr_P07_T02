@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (window.location.pathname.endsWith('NotificationDetails.html')) {
         console.log('On NotificationDetails page');
-        updateSeen();
+        await updateSeen();
         updateNotificationCount();
 
         const backButton = document.getElementById('backButton');
@@ -74,17 +74,45 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (window.location.pathname.endsWith('NotificationScreen.html')) {
         console.log('Fetching notifications');
-        fetchNotificationsDetails();
+        await fetchNotificationsDetails(null);
+        setupNotificationToggle();
     }
 });
 
-async function fetchNotificationsDetails() {
+function setupNotificationToggle() {
+    const allButton = document.getElementById('showAllNotifications');
+    const unseenButton = document.getElementById('showUnseenNotifications');
+    const seenButton = document.getElementById('showSeenNotifications');
+
+    allButton.addEventListener('click', () => fetchNotificationsDetails(null));
+    unseenButton.addEventListener('click', () => fetchNotificationsDetails('N'));
+    seenButton.addEventListener('click', () => fetchNotificationsDetails('Y'));
+
+    function setActiveButton(button) {
+        [allButton, unseenButton, seenButton].forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+    }
+
+    allButton.addEventListener('click', () => setActiveButton(allButton));
+    unseenButton.addEventListener('click', () => setActiveButton(unseenButton));
+    seenButton.addEventListener('click', () => setActiveButton(seenButton));
+}
+
+async function fetchNotificationsDetails(seenStatus = null) {
     console.log('Inside fetchNotificationsDetails');
+    const UserID = localStorage.getItem('userId');
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
     console.log('Username:', username);
     try {
-        const response = await fetch(`/notifications/userNotif/${username}`, {
+        let url;
+        if (seenStatus === null) {
+            url = `/notifications/userNotif/${username}`;
+        } else {
+            url = `/notifications/seen/${seenStatus}/${username}`;
+        }
+
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -92,7 +120,8 @@ async function fetchNotificationsDetails() {
         });
 
         if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.statusText}`);
+            const errorText = await response.text();
+            throw new Error(`Network response was not ok: ${response.statusText}. Details: ${errorText}`);
         }
 
         const notifications = await response.json();
@@ -108,18 +137,26 @@ async function fetchNotificationsDetails() {
 
         notificationContainer.innerHTML = '';
 
-        notifications.forEach((notification, index) => {
+        if (notifications.length === 0) {
+            notificationContainer.innerHTML = '<p>No notifications found.</p>';
+            return;
+        }
+
+        notifications.forEach((notification) => {
             const notificationBox = document.createElement('div');
             notificationBox.classList.add('notification-box');
             notificationBox.id = `notification-${notification.notification_id}`;
 
             notificationBox.innerHTML = `
-                <h1>Feedback title: ${notification.Title}</h1>
-                <h2>Response Justification: ${notification.justification}</h2>
+                <h1>Feedback title:<br>${notification.Title || 'N/A'}</h1>
+                <h2>Response Justification: ${notification.justification || 'N/A'}</h2>
                 <h3>Date: ${new Date(notification.date).toLocaleDateString()}</h3>
+                <p>Status: ${notification.seen === 'Y' ? 'Seen' : 'Unseen'}</p>
                 <hr>
-                <button class="details-btn" onclick="viewNotificationDetails(${notification.notification_id})">See More Details</button>
-                <button class="delete-btn" onclick="confirmDelete(${notification.notification_id})">Delete</button>
+                <div class="button-container">
+                    <button class="details-btn" onclick="viewNotificationDetails(${notification.notification_id})">See More Details</button>
+                    <button class="delete-btn" onclick="confirmDelete(${notification.notification_id})">Delete</button>
+                </div>
             `;
 
             notificationContainer.appendChild(notificationBox);
@@ -127,9 +164,12 @@ async function fetchNotificationsDetails() {
 
     } catch (error) {
         console.error('Error fetching or processing notifications:', error);
+        const notificationContainer = document.getElementById('notificationContainer');
+        if (notificationContainer) {
+            notificationContainer.innerHTML = `<p>Error loading notifications: ${error.message}</p>`;
+        }
     }
 }
-
 function viewNotificationDetails(notification_id) {
     const notificationsString = localStorage.getItem('notifications');
     
@@ -242,13 +282,15 @@ async function updateSeen() {
     const NotificationId = localStorage.getItem('notificationId');
     const token = localStorage.getItem('token');
 
+    console.log('NotificationId:', NotificationId);
+
     if (!NotificationId) {
         console.error('No notification ID found');
         return;
     }
 
     try {
-        const response = await fetch(`/notifications/updateSeen/${NotificationId}`, {
+        const response = await fetch(`/notifications/seen/${NotificationId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
