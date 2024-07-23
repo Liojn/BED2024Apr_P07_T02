@@ -236,7 +236,7 @@ const submitSearchReq = async() => {
         alert('Submission is blank. Try again later.')
     }
     try{
-        const response = await fetch(`/events/search/?searchTerm=${query}`, {
+        const response = await fetch(`/events/search?searchTerm=${query}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

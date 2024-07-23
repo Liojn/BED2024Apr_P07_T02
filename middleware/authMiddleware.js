@@ -56,8 +56,8 @@ const authMiddleware = (req, res, next) => {
             "/donations/realtime":["Staff", "Student"],//To get realtime donation for graph
 
         }
-
         const pathOnly = requestedEndpoint.split('?')[0]; //exclude query
+        console.log(pathOnly);
         const authorizedRole = Object.entries(authorizedRoles).find(
             ([endpoint, roles]) => {
               const regex = new RegExp(`^${endpoint}$`); // Create RegExp from endpoint
