@@ -2,35 +2,45 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Welcome Page</title>
-    <link rel="stylesheet" href="../css/login-signup-style.css">
-    <script src="../script/login-signup.js"></script>
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="../css/profile.css">
+    <script src="../script/profile.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Itim&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header><span class="modifyText">Eco</span>Impact</header>
-    <div class="profile-container-show">
-        <div class="subheader">Profile</div>
-        <div class="profile-header">
-            <div class="profile-picture-show">
-                <img id="profileImage" alt="Profile Picture">
+    <header id="logined-nav">
+        <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
+        <nav>
+            <div class="nav">
+                <a href="#"><i class="fa-regular fa-bell fa-xl"></i></i></a>
+                <a href="homePage.html">Home</a>
+                <a href="event.html">Event</a>
+                <a href="#">Donate</a>
+                <a href="FeedbackUser.html">Contact</a>
+                <a id="currentpage" href="# ">Account</a>
             </div>
-            <div class="profile-details">
-                <h2>Username</h2>
-                <p>Email</p>
-                <button id="editButton" class="submit_edit_button" onclick="profileEdit.html">Edit Profile</button>
-            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>User Profile</h1>
+        <div class="profile-info">
+            <img id="profilePicture" src="../uploads/default-profile.jpg" alt="Profile Picture">
+            <p><strong>Username:</strong> <span id="username"></span></p>
+            <p><strong>Email:</strong> <span id="email"></span></p>
+            <p><strong>Account Type:</strong> <span id="accountType"></span></p>
         </div>
-        <div class="donation-container">
-            <h3>Donations</h3>
-            <p>Total Amount Donated: $0</p>
+        <div class="buttons">
+            <button id="editProfileBtn">Edit Profile</button>
+            <button id="logoutBtn">Log Out</button>
+            <button id="deleteAccountBtn">Delete Account</button>
         </div>
-        <div class="feedbacks-events-container">
-            <button class="redirect_button" onclick="">Events history</button>
-            <button class="redirect_button" onclick="">Feedbacks</button>
+        <div id="adminPanel" style="display: none;">
+            <h2>Admin Panel</h2>
+            <button id="viewAllUsersBtn">View All Users</button>
         </div>
-        <button id="logOutButton" class="log_out_button" onclick="">Log Out</button>
     </div>
 </body>
 </html>

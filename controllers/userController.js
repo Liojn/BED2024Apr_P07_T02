@@ -121,58 +121,66 @@ const loginUser = async (req, res) => {
     }
 };
 
-//Controller function to update a user 
 const updateUser = async (req, res) => {
-    const { UserID } = req.params;
-    const { Username, Email, Password, AccountType } = req.body;
+    const userId = req.params.id;
+    const { username, email } = req.body;
+    const profilePicture = req.file;
 
-    console.log("Request to update user: ", { UserID, Username, Email, Password, AccountType });
-    
     try {
-        const existingUser = await User.getUserById(UserID);
-        if (!existingUser) {
-            return res.status(404).json({ message: "User not found" });
+        console.log("Received update request for user: ", userId);
+        console.log("Request body: ", req.body);
+
+        const updatedFields = {};
+        if (username) updatedFields.username = username;
+        if (email) updatedFields.email = email;
+
+        console.log("Fields to update: ", updatedFields);
+        
+        let updatedUser;
+        if (Object.keys(updatedFields).length > 0) {
+            updatedUser = await User.updateUser(userId, updatedFields);
+        } else {
+            updatedUser = await User.getUserById(userId);
+        }
+
+        if (!updatedUser) {
+            alert("User not found");
+            window.location.href = "../html/login.html"
+        }
+
+        if (profilePicture) {
+            const picturePath = `../uploads/${profilePicture.filename}`;
+            await User.updateProfilePicture(userId, picturePath);
         }
         
-        const updatedUser = {
-            Username: Username,
-            Email: Email,
-            Password: Password,
-            AccountType: AccountType
-        };
-
-        const result = await User.updateUser(UserID, updatedUser);
-
-        if (result) {
-            console.log("User successfully updated: ", result);
-            res.status(200).json({ message: "User updated successfully", user: result });
-        } else {
-            console.log("User not updated");
-            res.status(400).json({ message: "User information not updated" });
-        }
+        res.status(200).json({
+            message: "User updated successfully",
+            user: updatedUser
+        });
+        
     } catch (error) {
         console.error("Error updating user: ", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Error updating user" });
     }
 };
 
-//Controller function to delete a user 
+
 const deleteUser = async (req, res) => {
-    const { UserID } = req.params;
+    const userId = req.params.id;
 
     try {
-        const success = await User.deleteUser(UserID);
-
-        if (success) {
+        const deleted = await User.deleteUser(userId);
+        if (deleted) {
             res.status(200).json({ message: "User deleted successfully" });
         } else {
-            res.status(400).json({ message: "Error deleting user" });
+            res.status(404).json({ message: "User not found" });
         }
     } catch (error) {
         console.error("Error deleting user: ", error);
-        res.status(500).json({ message: "Server error "});
+        res.status(500).json({ message: "Error deleting user" });
     }
 };
+
  
 // Exporting all controller functions
 module.exports = {

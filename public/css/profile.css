@@ -1,0 +1,126 @@
+/*Nav Bar Header*/
+#logined-nav {
+    overflow: hidden;
+}
+
+#logined-nav .logo{
+    float:left;
+    padding-left: 2%;
+    padding-bottom: 15px;
+    padding-top: 25px;
+}
+
+#logined-nav .logo img{
+    height:35px;
+    width:140px;
+}
+
+#logined-nav nav {
+    float: right;
+}
+
+#logined-nav nav a {
+    float: left;
+    text-align: center;
+    padding-top: 45px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 12px;
+    text-decoration: none;
+    font-size: 17px;
+    color: black;
+    font-family: "Lato", sans-serif;
+}
+
+#logined-nav nav #currentpage {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#logined-nav nav a:hover {
+    background-color: #4CAF50;
+    color: white;
+    transition: 1s;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e2f5e7;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 5, 5, 5, 5;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.profile-info {
+    margin-bottom: 20px;
+}
+
+.profile-info img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#deleteAccountBtn {
+    background-color: #f44336;
+}
+
+#deleteAccountBtn:hover {
+    background-color: #d32f2f;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#adminPanel {
+    margin-top: 30px;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}

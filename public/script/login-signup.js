@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 
                 if (response.status == 201) {
                     alert("Signup Successful! ", result.message);
-                    window.location.href = "#";
+                    window.location.href = "../html/loginPage.html";
                 } else {
                     alert("Signup Failed: ", result.message);
                 }
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                      localStorage.setItem('email', result.user.email);
                      localStorage.setItem('accountType', result.user.accountType);
                     
-                    window.location.href = "../html/Homepage.html";
+                    window.location.href = "../html/homePage.html";
                 } else {
                     alert("Login Failed: " + result.message);
                 }

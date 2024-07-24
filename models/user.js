@@ -3,7 +3,7 @@ const dbConfig = require("../dbConfig");
 const sql = require("mssql");
 const bcrypt = require('bcrypt');
 
- class User {
+class User {
     constructor(userId, username, email, hashedPassword, accountType) {
         this.userId = userId;
         this.username = username;
@@ -141,52 +141,111 @@ const bcrypt = require('bcrypt');
         }
     }
 
-    // Static method to update a user in the database
-    static async updateUser(userId, updatedUser) {
-        const connection = await sql.connect(dbConfig);
+    static async updateUser(userId, updatedFields) {
+        let connection;
         try {
-            if (updatedUser.Password) {
-                const salt = await bcrypt.genSalt(10);
-                updatedUser.Password = await bcrypt.hash(updatedUser.Password, salt);
+            connection = await sql.connect(dbConfig);
+
+            console.log("Updating user: ", userId);
+            console.log("Fields to update: ", updatedFields);
+            
+            if (Object.keys(updatedFields).length === 0) {
+                console.log("No fields to update");
+                return await this.getUserById(userId);
             }
-            const sqlQuery = `UPDATE Users SET Username = @Username, Email = @Email, Password = @Password, AccountType = @AccountType WHERE UserID = @UserID`;
+
+            let updateQuery = 'UPDATE Users SET ';
             const request = connection.request();
-            request.input("UserID", userId);
-            request.input("Username", updatedUser.Username);
-            request.input("Email", updatedUser.Email);
-            request.input("Password", updatedUser.Password);
-            request.input("AccountType", updatedUser.AccountType);
+            
+            Object.keys(updatedFields).forEach((key, index) => {
+                updateQuery += `${key} = @${key}`;
+                request.input(key, updatedFields[key]);
+                if (index < Object.keys(updatedFields).length - 1) {
+                    updateQuery += ', ';
+                }
+            });
+    
+            updateQuery += ' WHERE UserID = @UserID';
+            request.input('UserID', userId);
 
-            const result = await request.query(sqlQuery);
-            connection.close();
-
-            // Checking if the user was successfully created and returning a User Object
-            if (result.rowsAffected && result.rowsAffected[0] > 0) {
-                console.log("User successfully updated: ", updatedUser);
-                return updatedUser;
-            } else { 
-                console.log("User not updated");
-                return null; // Log message and return null if user was not created
+            console.log("Executing query: ", updateQuery);
+            console.log("With parameters: ", request.parameters); 
+    
+            const result = await request.query(updateQuery);
+    
+            console.log("Update result: ", result);
+            
+            if (result.rowsAffected[0] > 0) {
+                return await this.getUserById(userId);
+            } else {
+                return null;
             }
         } catch (error) {
             console.error("Error updating user: ", error);
             throw error;
+        } finally {
+            if (connection) {
+                await connection.close();
+            }
+        }
+    }
+    
+    static async updateProfilePicture(userId, picturePath) {
+        let connection;
+        try {
+            connection = await sql.connect(dbConfig);
+            
+            const checkQuery = 'SELECT id FROM ProfilePictures WHERE userId = @userId';
+            const checkRequest = connection.request();
+            checkRequest.input('userId', sql.Int, userId);
+            const checkResult = await checkRequest.query(checkQuery);
+    
+            let query;
+            const request = connection.request();
+            request.input('userId', sql.Int, userId);
+            request.input('picturePath', sql.NVarChar, picturePath);
+    
+            if (checkResult.recordset.length > 0) {
+                // Update existing profile picture
+                query = 'UPDATE ProfilePictures SET picturePath = @picturePath, updatedAt = GETDATE() WHERE userId = @userId';
+            } else {
+                // Insert new profile picture
+                query = 'INSERT INTO ProfilePictures (userId, picturePath) VALUES (@userId, @picturePath)';
+            }
+    
+            await request.query(query);
+    
+            return true;
+        } catch (error) {
+            console.error("Error updating profile picture: ", error);
+            throw error;
+        } finally {
+            if (connection) {
+                await connection.close();
+            }
         }
     }
 
-    // Static method to delete a user from the database
     static async deleteUser(userId) {
-        const connection = await sql.connect(dbConfig);
-
-        const sqlQuery = `DELETE FROM Users WHERE UserID = @UserID`;
-
-        const request = connection.request();
-        request.input("UserID", userId);
-
-        const result = await request.query(sqlQuery);
-        connection.close();
-
-        return result.rowsAffected[0] > 0;
+        let connection;
+        try {
+            connection = await sql.connect(dbConfig);
+            
+            const deleteQuery = 'DELETE FROM Users WHERE UserID = @UserID';
+            const request = connection.request();
+            request.input('UserID', userId);
+    
+            const result = await request.query(deleteQuery);
+    
+            return result.rowsAffected[0] > 0;
+        } catch (error) {
+            console.error("Error deleting user: ", error);
+            throw error;
+        } finally {
+            if (connection) {
+                await connection.close();
+            }
+        }
     }
 }
 
