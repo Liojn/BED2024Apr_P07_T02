@@ -15,8 +15,16 @@ const authMiddleware = (req, res, next) => {
 
     jwt.verify(token, secret_key, (err, decoded) => {
         if (err) {
-            console.log("Failed to authenticate token", err);
-            return res.status(403).json({ message: "Forbidden." });
+            if (err.name === 'TokenExpiredError') {
+                console.log("Token has expired", err);
+                return res.status(403).json({ message: "Forbidden. Token has expired." });
+            } else if (err.name === 'JsonWebTokenError') {
+                console.log("Invalid token", err);
+                return res.status(403).json({ message: "Forbidden. Invalid token." });
+            } else {
+                console.log("Failed to authenticate token", err);
+                return res.status(403).json({ message: "Forbidden." });
+            }  
         }
 
         const requestedEndpoint = req.url;
