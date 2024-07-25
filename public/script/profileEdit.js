@@ -36,27 +36,41 @@ document.addEventListener('DOMContentLoaded', () => {
     editProfileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('username', usernameInput.value);
-        formData.append('email', emailInput.value);
-        if (profilePictureInput.files[0]) {
-            formData.append('profilePicture', profilePictureInput.files[0]);
-        }
+        const formData = new FormData(e.target);
+        const dataReceived = {}
+        formData.forEach((value, key) => {
+            dataReceived[key] = value;
+        });
+        console.log("Data to send: ", dataReceived);
 
+        if (Object.keys(dataReceived).length === 0) {
+            alert('No changes to update');
+            return;
+        }
+        
         try {
             const response = await fetch(`http://localhost:3000/users/${userId}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${token}`
                 },
-                body: formData
+                body: JSON.stringify(dataReceived)
             });
 
             if (response.ok) {
                 const result = await response.json();
+                console.log("Update successful: ", result);
+                
+                if (result.user) {
+                    usernameInput.textContent = result.user.username;
+                    emailInput.textContent = result.user.email;
+                }
+                
                 alert('Profile updated successfully', result);
                 window.location.href = '../html/profilePage.html';
             } else {
+                console.error("Update failed: ", await response.text());
                 alert('Failed to update profile');
             }
         } catch (error) {

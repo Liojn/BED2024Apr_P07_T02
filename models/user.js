@@ -143,7 +143,7 @@ class User {
 
     static async updateUser(userId, updatedFields) {
         let connection;
-        try {
+        try { 
             connection = await sql.connect(dbConfig);
 
             console.log("Updating user: ", userId);
@@ -158,7 +158,8 @@ class User {
             const request = connection.request();
             
             Object.keys(updatedFields).forEach((key, index) => {
-                updateQuery += `${key} = @${key}`;
+                const dbField = key === 'username' ? 'Username' : (key === 'email' ? 'Email': key);
+                updateQuery += `${dbField} = @${key}`;
                 request.input(key, updatedFields[key]);
                 if (index < Object.keys(updatedFields).length - 1) {
                     updateQuery += ', ';
@@ -174,7 +175,7 @@ class User {
             const result = await request.query(updateQuery);
     
             console.log("Update result: ", result);
-            
+
             if (result.rowsAffected[0] > 0) {
                 return await this.getUserById(userId);
             } else {

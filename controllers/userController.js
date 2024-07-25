@@ -3,6 +3,8 @@ const User = require("../models/user");
 // const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 
 dotenv.config();
 
@@ -129,38 +131,49 @@ const updateUser = async (req, res) => {
     try {
         console.log("Received update request for user: ", userId);
         console.log("Request body: ", req.body);
+        console.log("Profile picture: ", profilePicture);
 
-        const updatedFields = {};
-        if (username) updatedFields.username = username;
-        if (email) updatedFields.email = email;
+        const updatedFields = { username, email };
+        if (username !== undefined && username !== '') {
+            updatedFields.username = username;
+        } 
+        if (email !== undefined && email !== ''){
+            updatedFields.email = email;
+        } 
 
         console.log("Fields to update: ", updatedFields);
+
+        if(Object.keys(updatedFields).length > 0) {
+            const updatedUser = await User.updateUser(userId, updatedFields);
+            console.log("User updated: ", updatedUser);
         
-        let updatedUser;
-        if (Object.keys(updatedFields).length > 0) {
-            updatedUser = await User.updateUser(userId, updatedFields);
+            if (!updatedUser) {
+                alert("User not found");
+                window.location.href = "../html/login.html"
+            }
+            /*
+            if (profilePicture) {
+                const fileExtension = path.extname(profilePicture.originalname);
+                const newFilename = `${userId}_profile${fileExtension}`;
+                const filePath = path.join(_dirname, '..', 'uploads', newFilename);
+                fs.renameSync(profilePicture.path, filePath);
+                const picturePath = `../uploads/${newFilename}`;
+                await User.updateProfilePicture(userId, picturePath);
+                updateUser.profilePicture = picturePath;
+            }*/
+
+            res.status(200).json({
+                message: "User updated successfully", 
+                user: updatedUser
+            });
+        
         } else {
-            updatedUser = await User.getUserById(userId);
+            console.log("No fields to update");
+            res.status(400).json({ message: "No fields to update" });
         }
-
-        if (!updatedUser) {
-            alert("User not found");
-            window.location.href = "../html/login.html"
-        }
-
-        if (profilePicture) {
-            const picturePath = `../uploads/${profilePicture.filename}`;
-            await User.updateProfilePicture(userId, picturePath);
-        }
-        
-        res.status(200).json({
-            message: "User updated successfully",
-            user: updatedUser
-        });
-        
-    } catch (error) {
-        console.error("Error updating user: ", error);
-        res.status(500).json({ message: "Error updating user" });
+    }catch (error) {
+    console.error("Error updating user: ", error);
+    res.status(500).json({ message: "Error updating user", error: error.message });
     }
 };
 
