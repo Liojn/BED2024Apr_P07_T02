@@ -79,11 +79,11 @@ class Notifcations {
     
         return this.getNotificationById(result.recordset[0].notification_id);
     }
-    static async deleteNotification(Fid) {
+    static async deleteNotification(notification_id) {
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `DELETE FROM Notifications WHERE Fid = @Fid`;
+        const sqlQuery = `DELETE FROM Notifications WHERE notification_id = @notification_id`;
         const request = connection.request();
-        request.input("Fid", Fid);
+        request.input("notification_id", notification_id);
         const result = await request.query(sqlQuery);
         connection.close();
 
