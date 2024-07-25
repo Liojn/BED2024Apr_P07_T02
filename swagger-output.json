@@ -560,10 +560,13 @@
                 "Email": {
                   "example": "any"
                 },
-                "Password": {
+                "Company": {
                   "example": "any"
                 },
-                "AccountType": {
+                "Amount": {
+                  "example": "any"
+                },
+                "DateTime": {
                   "example": "any"
                 }
               }
