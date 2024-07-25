@@ -138,7 +138,8 @@ async function updateNotificationCount() {
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         const notifications = await response.json();
@@ -153,7 +154,22 @@ async function updateNotificationCount() {
             notificationCountElement.style.display = 'none';
         }
     } catch (error) {
-        console.error('Error fetching notifications:', error);
+        console.error('Fetch error:', error);
+
+        if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('jwtToken'); // Clear the token
+            window.location.href = '/login'; // Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('jwtToken'); // Clear the token
+            window.location.href = '/login'; // Redirect to login page
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '/'; // Redirect to home page
+        } else {
+            alert(`An error occurred: ${error.message}`);
+        }
     }
 }
 
