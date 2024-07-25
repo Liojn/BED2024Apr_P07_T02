@@ -97,8 +97,10 @@ Insert into Feedback (name,email,title,feedback,verified) VALUES
 -- Insert data into Donation table
 Insert into Donations(Username, Email, amount, company, datetime)
 VALUES
-('user1', 'user1@example.com','12','Lifeline Energy', '2024-05-01 10:00:00'),
-('user2', 'user2@example.com', '20', 'The River Fund', '2024-04-20 11:15:00');
+('user2', 'user2@example.com', '20', 'The River Fund', '2024-04-20 11:15:00'),
+('user1', 'user1@example.com','25','Lifeline Energy', '2024-06-15 11:00:00'),
+('user1', 'user1@example.com','12','Lifeline Energy', '2024-07-01 10:00:00');
+
 
 
 Insert Into Notifications (UserID, Fid, justification, response, seen, date)

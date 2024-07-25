@@ -52,8 +52,7 @@ const authMiddleware = (req, res, next) => {
             "/nonprofits": ["Staff", "Student"],//Get nonprofit api data"
             "/donations": ["Staff", "Student"],//Creating donations
             "/donations/username": ["Staff", "Student"],// For get all donation if student
-            "/donations/realtime":["Staff", "Student"],//To get realtime donation for graph
-
+            "/stats":["Staff","Student"],//To get donation stats
         }
 
         const authorizedRole = Object.entries(authorizedRoles).find(

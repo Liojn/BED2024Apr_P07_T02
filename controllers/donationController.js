@@ -10,6 +10,15 @@ const getAllDonations = async (req, res) => {
         res.status(500).send("Error retrieving donations");
     }
 };
+const getAllStats = async (req, res) => {
+    try {
+        const donations = await Donation.getAllStats();
+        res.json(donations);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving donations");
+    }
+};
 
 const getDonationByUsername = async (req, res) => {
     const username = req.params.username;
@@ -58,21 +67,24 @@ const fetchNonProfitNames = async (req, res) => {
     }
 }
 
-const getRealTimeDonation = async(req,res) => {
+
+const getDonationStatistics = async(req,res) => {
     try {
-        const realTimeDonation = await Donation.getRealTimeDonation();
-        res.status(201).json(realTimeDonation);
+        const donationStatistics = await Donation.getDonationStatistics();
+        console.log(donationStatistics);
+        res.json(donationStatistics);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Error getting real time donations");
+        res.status(500).send("Error getting donation statistics");
     }
 }
 
 module.exports = {
+    getAllStats,
     getAllDonations,
     getDonationByUsername,
     createDonation,
     getDonationCount,
     fetchNonProfitNames,
-    getRealTimeDonation,
+    getDonationStatistics,
 };
