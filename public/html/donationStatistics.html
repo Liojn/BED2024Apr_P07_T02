@@ -27,6 +27,7 @@
   <!-- Header -->
   <div style="max-width: 7xl; margin: auto; width: 100%;">
     <!-- Header -->
+    <div onclick = "back()" class="back-button">Back</div>
     <div id="header-container">
         <h2>Donation Statistics</h2>
     </div>
@@ -46,31 +47,32 @@
         </div> -->
         <!-- <span style="font-size: 1.875rem; font-weight: 700;">$8,500</span> -->
     </div>
-    <div style="padding: 1.5rem; gap: 5rem;" class = "stat-holder">
-        <div class="stat-card">
-            <span>Number of Donations</span>
-            <span>350</span>
-        </div>
-        <div class="stat-card">
-            <span>Average Donation</span>
-            <span>$24.29</span>
-        </div>
-        <div class="stat-card">
-            <span>Total Donations</span>
-            <span>$8500</span>
-        </div>
-        <div class="stat-card">
-            <span>Largest Single Donation</span>
-            <span>$85</span>
-        </div>
+    <div style="padding: 1.5rem; gap: 5rem;" class="stat-holder">
+      <div class="stat-card">
+          <span>Number of Donations</span>
+          <span id="number-of-donations">Loading...</span>
+      </div>
+      <div class="stat-card">
+          <span>Average Donation</span>
+          <span id="average-donation">Loading...</span>
+      </div>
+      <div class="stat-card">
+          <span>Total Donations</span>
+          <span id="total-donations">Loading...</span>
+      </div>
+      <div class="stat-card">
+          <span>Largest Single Donation</span>
+          <span id="largest-single-donation">Loading...</span>
+      </div>
+  </div>
     </div>
 </div>
 
   <!-- Donation Charts -->
   <div style="gap: 1.5rem;">
     <div style="background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
-      <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Trend</h3>
-      <div style="height: 20rem;">
+      <h3 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Trend</h3>
+      <div style="height: 40rem;">
         <select id="timeFilter">
           <option value="hour">Hour</option>
           <option value="day">Day</option>
@@ -97,23 +99,12 @@
     </div>
 
     <div style="background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
-      <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Sources</h3>
+      <h3 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Sources</h3>
       <div style="height: 30rem;" >
         <!-- PieChart component structure -->
             <canvas id="donationPieChart"></canvas>
       </div>     
     </div>
-    <div style="grid-column: span 2; background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donor Demographics</h3>
-        <div style="height: 16rem;">
-          <!-- LineChart component structure -->
-          <svg>
-            <!-- XAxis and YAxis structure -->
-            <!-- Tooltip structure -->
-            <!-- Line structure -->
-          </svg>
-        </div>
-      </div>
   </div>
 
 
@@ -212,9 +203,16 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+//IMPORTANT, for authentication
+const token = localStorage.getItem("token");
+console.log(token);
+function back(){
+  window.location.href = "donationPage.html"
+}
 document.addEventListener('DOMContentLoaded', (event) => {
     fetchDonationData();
     initializeRealTimeLineChart();
+    fetchDonationStatistics();
 });
 
 const timeFilter = document.getElementById('timeFilter');
@@ -223,13 +221,42 @@ timeFilter.addEventListener('change', function() {
     console.log(filter);
     fetchRealTimeDonationData(filter);
 });
+async function fetchDonationStatistics(){
+      const response = await fetch("http://localhost:3000/stats", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    const donations = await response.json();
+    console.log(donations)
+    console.log(donations[0].numberOfDonations)
+    document.getElementById('number-of-donations').textContent = donations[0].numberOfDonations;
+    document.getElementById('average-donation').textContent = `$${donations[0].averageDonation}`;
+    document.getElementById('total-donations').textContent = `$${donations[0].totalDonations}`;
+    document.getElementById('largest-single-donation').textContent = `$${donations[0].largestSingleDonation}`;
 
-function fetchDonationData() {
-    fetch('http://localhost:3000/donations')
-        .then(response => response.json())
-        .then(data => {
-            const companyNames = data.map(donation => donation.company);
-            const donationAmounts = data.map(donation => donation.amount);
+}
+async function fetchDonationData() {
+    try{
+        const response = await fetch("http://localhost:3000/donations", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const donations = await response.json();
+        console.log(donations)
+            const companyNames = donations.map(donation => donation.company);
+            const donationAmounts = donations.map(donation => donation.amount);
 
             const companyTotals = {};
             companyNames.forEach((company, index) => {
@@ -243,10 +270,9 @@ function fetchDonationData() {
             const values = Object.values(companyTotals);
 
             createPieChart(labels, values);
-        })
-        .catch(error => {
+          } catch{
             console.error('Error fetching donation data:', error);
-        });
+          }
 }
 
 function createPieChart(labels, values) {
@@ -298,14 +324,16 @@ function initializeRealTimeLineChart() {
                 x: {
                     type: 'time',
                     time: {
-                        unit: 'hour'
+                        unit: 'day' // Default unit
                     },
                     adapters: {
                         date: {
                             locale: 'en',
                             timezone: 'UTC'
                         }
-                    }
+                    },
+                    min: null,
+                    max: null
                 },
                 y: {
                     beginAtZero: true
@@ -314,21 +342,29 @@ function initializeRealTimeLineChart() {
         }
     });
 
-    fetchRealTimeDonationData(); // Fetch initial data
+    fetchRealTimeDonationData('day'); // Fetch initial data
 }
 
 function fetchRealTimeDonationData(filter) {
     fetch('http://localhost:3000/donations')
         .then(response => response.json())
         .then(data => {
-            const labels = data.map(donation => new Date(donation.datetime));
-            const amounts = data.map(donation => donation.amount);
+            let labels, amounts;
+
+            // Aggregate data based on the filter
+            ({ labels, amounts } = aggregateDataByFilter(data, filter));
 
             // Update chart data
             donationLineChart.data.labels = labels;
             donationLineChart.data.datasets[0].data = amounts;
 
-            // Update chart unit based on filter
+            // Adjust the time range displayed on the x-axis
+            const timeRange = getTimeRangeForFilter(filter);
+            const latestTime = labels[labels.length - 1].getTime();
+            donationLineChart.options.scales.x.min = new Date(latestTime - timeRange);
+            donationLineChart.options.scales.x.max = new Date(latestTime);
+
+            // Update chart unit and format
             donationLineChart.options.scales.x.time.unit = getChartUnit(filter);
             donationLineChart.options.scales.x.time.tooltipFormat = getFormatOptions(filter);
 
@@ -340,27 +376,98 @@ function fetchRealTimeDonationData(filter) {
         });
 }
 
-function getFormatOptions(filter) {
+function aggregateDataByFilter(data, filter) {
+    // Process data differently based on the selected filter (hour, day, month, year)
+    let labels = [];
+    let amounts = [];
+
+    if (filter === 'hour') {
+        // More detailed, frequent data points
+        data.forEach(donation => {
+            labels.push(new Date(donation.datetime));
+            amounts.push(donation.amount);
+        });
+    } else if (filter === 'day') {
+        // Aggregate data by day
+        let dailyData = {};
+        data.forEach(donation => {
+            let date = new Date(donation.datetime);
+            let dayKey = date.toISOString().split('T')[0];
+            if (!dailyData[dayKey]) {
+                dailyData[dayKey] = 0;
+            }
+            dailyData[dayKey] += donation.amount;
+        });
+        labels = Object.keys(dailyData).map(dateStr => new Date(dateStr));
+        amounts = Object.values(dailyData);
+    } else if (filter === 'month') {
+        // Aggregate data by month
+        let monthlyData = {};
+        data.forEach(donation => {
+            let date = new Date(donation.datetime);
+            let monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+            if (!monthlyData[monthKey]) {
+                monthlyData[monthKey] = 0;
+            }
+            monthlyData[monthKey] += donation.amount;
+        });
+        labels = Object.keys(monthlyData).map(monthStr => new Date(monthStr + '-01'));
+        amounts = Object.values(monthlyData);
+    } else if (filter === 'year') {
+        // Aggregate data by year
+        let yearlyData = {};
+        data.forEach(donation => {
+            let date = new Date(donation.datetime);
+            let yearKey = date.getFullYear();
+            if (!yearlyData[yearKey]) {
+                yearlyData[yearKey] = 0;
+            }
+            yearlyData[yearKey] += donation.amount;
+        });
+        labels = Object.keys(yearlyData).map(yearStr => new Date(yearStr + '-01-01'));
+        amounts = Object.values(yearlyData);
+    }
+
+    return { labels, amounts };
+}
+
+function getTimeRangeForFilter(filter) {
     switch (filter) {
-        case 'day':
-            return { day: '2-digit', month: '2-digit', year: 'numeric' };
         case 'hour':
-            return { hour: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' };
+            return 24 * 60 * 60 * 1000; // Last 24 hours
+        case 'day':
+            return 30 * 24 * 60 * 60 * 1000; // Last 30 days
         case 'month':
-            return { month: 'short', year: 'numeric' };
+            return 365 * 24 * 60 * 60 * 1000; // Last 12 months
         case 'year':
-            return { year: 'numeric' };
+            return 10 * 365 * 24 * 60 * 60 * 1000; // Last 10 years
         default:
-            return { day: '2-digit', month: '2-digit', year: 'numeric' };
+            return 30 * 24 * 60 * 60 * 1000; // Default to 30 days
     }
 }
 
+function getFormatOptions(filter) {
+    switch (filter) {
+        case 'hour':
+            return 'MM-DD HH:mm'; 
+        case 'day':
+            return 'DD';       
+        case 'month':
+            return 'DD';         
+        case 'year':
+            return 'YYYY';             
+        default:
+            return 'YYYY-MM-DD';       
+    }
+}
+
+
 function getChartUnit(filter) {
     switch (filter) {
-        case 'day':
-            return 'day';
         case 'hour':
             return 'hour';
+        case 'day':
+            return 'day';
         case 'month':
             return 'month';
         case 'year':
@@ -369,6 +476,9 @@ function getChartUnit(filter) {
             return 'day';
     }
 }
+
+initializeRealTimeLineChart(); // Call this function to initialize the chart
+
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -114,7 +114,7 @@ class Feedback {
         connection.close();
     
         return this.getFeedbackById(Fid); // returning the updated book data
-      }
+    }
 }
 
 module.exports = Feedback;

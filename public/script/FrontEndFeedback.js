@@ -113,7 +113,7 @@ async function fetchFeedbacks(filter = 'all') {
                 <h3>Description:</h3>
                 <p>${feedback.feedback}</p>
                 <hr>
-                <h4>Date sent: ${feedback.Date}</h4>
+                <h4>Date sent: ${feedback.date}</h4>
                 <div class="action-buttons">
                     <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
                     ${feedback.verified === 'N' ? `<button class="respond-btn" onclick="confirmRespond(this)">Respond</button>` : ''}

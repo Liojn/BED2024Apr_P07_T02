@@ -28,6 +28,7 @@
         <img src = "Wallpaper.png" class = "Wallpaper1">
         <div class = "overlay-text">Give to protect the earth</div>
         <div class = "overlay-text2">Donate Today</div>
+        <div onclick = "statistics()" class="join-button">Donation Statistics</div>
     </div>
     <div class = "container">
         <img src = "Rectangle 15.png" class = "Counter">
@@ -99,6 +100,9 @@
             }
         });
     });
+function statistics(){
+    window.location.href = "donationStatistics.html"
+}
 function toggleDropdown() {
 var dropdown = document.getElementById("companyDropdown");
 dropdown.classList.toggle("active");
@@ -218,7 +222,8 @@ function submitAnotherDonation(){
     fetch('http://localhost:3000/donations', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
         },
         body: JSON.stringify(jsonData)
     })

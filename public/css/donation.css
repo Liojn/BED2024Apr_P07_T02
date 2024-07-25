@@ -177,6 +177,19 @@ body {
     border-radius: 5px;
     width:650px;
 }
+.join-button {
+    position: absolute;
+    bottom: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Adjust as needed */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* Adjust as needed */
+
+}
 /*Donation form*/
 
 .Donation-form {

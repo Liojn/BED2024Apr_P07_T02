@@ -108,16 +108,43 @@ body {
     margin: 10px 0;
 }
 
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.notification-box .details-btn,
 .notification-box .delete-btn {
     padding: 8px 12px;
     cursor: pointer;
     border: none;
     border-radius: 5px;
-    background-color: #f44336;
     color: white;
     font-size: 14px;
-    position: absolute;
-    bottom: 5px;
+    flex: 1;
+    margin: 0 5px;
+    height: 36px; /* Set a fixed height for all buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2; /* Adjust line height for better text alignment */
+}
+
+.notification-box .details-btn {
+    background-color: #4CAF50;
+}
+
+.notification-box .delete-btn {
+    background-color: #f44336;
+}
+
+.notification-box .details-btn:hover,
+.notification-box .delete-btn:hover {
+    opacity: 0.8;
 }
 
 /* Feedback Response Page */
@@ -202,4 +229,33 @@ body {
 #response-form button img {
     vertical-align: middle;
     margin-left: 5px;
+}
+
+#notificationToggle {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+#notificationToggle button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#notificationToggle button.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#notificationToggle button:hover {
+    background-color: #e0e0e0;
+}
+
+#notificationToggle button.active:hover {
+    background-color: #45a049;
 }

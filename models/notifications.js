@@ -1,5 +1,6 @@
 const dbConfig = require("../dbConfig");
 const sql = require("mssql");
+const User = require("./user");
 
 class Notifcations {
     constructor(notification_id, UserID, Fid, justifcation, response, seen, date){
@@ -88,7 +89,56 @@ class Notifcations {
 
         return result.rowsAffected > 0;
     }
-}
+
+    static async getStaffUsername(staffId){
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `Select * from Notifications Inner Join Users On Notifications.UserID = Users.UserID where Notifications.UserID = @UserID`
+        const request = connection.request()
+        request.input("UserID", staffId)
+        const result = await request.query(sqlQuery)
+        connection.close()
+
+        return result.recordset[0]
+    }
+
+    static async updateNotification(notification_id) {
+        const connection = await sql.connect(dbConfig);
+    
+        const sqlQuery = `UPDATE Notifications SET seen = 'Y' WHERE notification_id = @notification_id`; // Parameterized query
+    
+        const request = connection.request();
+        request.input("notification_id", notification_id);
+    
+        await request.query(sqlQuery);
+    
+        connection.close();
+    
+        return this.getNotificationById(notification_id); // returning the updated book data
+    }
+
+    static async getNotificationBySeen(seen,username) {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `SELECT * FROM Notifications Inner Join Feedback on Notifications.Fid = Feedback.Fid WHERE Username = @Username  AND seen = @seen`;
+        const request = connection.request();
+        console.log(seen)
+        console.log(username)
+        request.input("seen", seen);
+        request.input("Username", username)
+        const result = await request.query(sqlQuery);
+        connection.close();
+        
+        return result.recordset
+    }
+    static formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}/${month}/${day}`;
+    }
+
+    }
+    
+    
 
 
 module.exports = Notifcations

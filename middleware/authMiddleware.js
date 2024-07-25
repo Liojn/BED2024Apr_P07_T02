@@ -54,15 +54,17 @@ const authMiddleware = (req, res, next) => {
             "/notifications/userNotif/[0-9]": ["Staff", "Student"],// For get all notification by user id
             "/notifications/[0-9]+" : ["Staff", "Student"], //For get notification by Id
             "/notifications" : ["Staff"], // Creating notifications
-            "/notification/[0-9]+" : ["Staff", "Student"], // Deleting notification
-
+            "/notifications/[0-9]+" : ["Staff", "Student"], // Deleting notification
+            "/notifications/username/[0-9]+" : ["Staff", "Student"],// Getting Staff username 
+            "/notifications/seen/[0-9]+" : ["Staff", "Student"],// Updating notification to seen
+            "/notifications/seen/(Y|N)/[a-zA-Z0-9]+": ["Staff", "Student"], //Getting all seen/unseen notification or a user
+            
             //Donation route
             "/donations": ["Staff", "Student"],//For get all donations if staff
             "/nonprofits": ["Staff", "Student"],//Get nonprofit api data"
             "/donations": ["Staff", "Student"],//Creating donations
             "/donations/username": ["Staff", "Student"],// For get all donation if student
-            "/donations/realtime":["Staff", "Student"],//To get realtime donation for graph
-
+            "/stats":["Staff","Student"],//To get donation stats
         }
         const pathOnly = requestedEndpoint.split('?')[0]; //exclude query
         console.log(pathOnly);
