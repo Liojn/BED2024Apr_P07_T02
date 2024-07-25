@@ -13,15 +13,17 @@
             <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
             <nav>
                 <div class="nav">
-                    <a href="#"><i class="fa-regular fa-bell fa-xl"></i></a>
-                    <a href="homePage.html">Home</a>
-                    <a  href="event.html">Event</a>
-                    <a id = "currentpage" href="#">Donate</a>
-                    <a href="FeedbackResponse.html" id = "contactus">Contact</a>
+                    <a href="../html/NotificationScreen.html" class="notification-icon">
+                        <i class="fa-regular fa-bell fa-xl"></i>
+                        <span id="notification-count" class="notification-count"></span>
+                    </a>
+                    <a href="../html/HomePage.html">Home</a>
+                    <a href="../html/event.html">Event</a>
+                    <a href="#">Donate</a>
+                    <a id="currentpage" href="../html/FeedbackUser.html">Contact</a>
                     <a href="#">Account</a>
                 </div>
             </nav>
-            
         </header>
     </div>
     <div class = "container">
@@ -118,7 +120,38 @@ function selectCompany(companyName) {
         document.querySelector(".dropdown-toggle").innerText = companyName;
         toggleDropdown(); // Optionally close the dropdown after selection
     }
+    updateNotificationCount();
 
+async function updateNotificationCount() {  
+    const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
+
+    try {
+        const response = await fetch(`http://localhost:3000/notifications/userNotif/${username}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const notifications = await response.json();
+
+        const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
+
+        const notificationCountElement = document.getElementById('notification-count');
+        if (unseenCount > 0) {
+            notificationCountElement.style.display = 'inline';
+            notificationCountElement.textContent = unseenCount;
+        } else {
+            notificationCountElement.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+    }
+}
 //function for successful submission button
 function successfulSubmission() {
     let value;
@@ -144,15 +177,6 @@ function successfulSubmission() {
         alert('Please fill in all fields before submitting.');
         return;
     }
-    updateCounter();
-    document.getElementById('form').reset();
-    document.getElementById('dropdownToggle').innerText = 'Company Name';
-    // Hide the submit button
-    document.querySelector('.submit-button').style.display = 'none';
-
-    // Show the 2 other buttons
-    document.getElementById('anotherDonation').style.display = 'block';
-    document.getElementById('view').style.display = 'block';
     if (donationValue === 'custom'){
         donationValue == donationAmount
     }
@@ -179,6 +203,15 @@ function successfulSubmission() {
     .then(result => {
         //Handle successful form submission
         console.log('Success:', result);
+        updateCounter();
+        document.getElementById('form').reset();
+        document.getElementById('dropdownToggle').innerText = 'Company Name';
+        // Hide the submit button
+        document.querySelector('.submit-button').style.display = 'none';
+
+        // Show the 2 other buttons
+        document.getElementById('anotherDonation').style.display = 'block';
+        document.getElementById('view').style.display = 'block';
     })
     .catch(error => {
         //Handle errors
@@ -195,6 +228,7 @@ function submitAnotherDonation(){
     const customAmount = document.getElementById('customAmountInput').value.trim();
     const username = localStorage.getItem('username'); // Retrieve username from local storage
     const email = localStorage.getItem('email'); // Retrieve email from local storage
+    const token = localStorage.getItem('token');
 
     if (companyName === 'Company Name' || !donationAmount || (donationAmount.value === 'custom' && customAmount === '')) {
         alert('Please fill in all fields before submitting.');

@@ -7,22 +7,24 @@
 </head>
 <link rel="stylesheet" href="../css/donationStats.css">
 <body>
-    <div id="eventwrapper">
-        <header id="logined-nav">
-            <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
-            <nav>
-                <div class="nav">
-                    <a href="#"><i class="fa-regular fa-bell fa-xl"></i></a>
-                    <a href="homePage.html">Home</a>
-                    <a  href="event.html">Event</a>
-                    <a id = "currentpage" href="#">Donate</a>
-                    <a href="FeedbackResponse.html" id = "contactus">Contact</a>
-                    <a href="#">Account</a>
-                </div>
-            </nav>
-            
-        </header>
-    </div>
+  <div id="eventwrapper">
+    <header id="logined-nav">
+        <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
+        <nav>
+            <div class="nav">
+                <a href="../html/NotificationScreen.html" class="notification-icon">
+                    <i class="fa-regular fa-bell fa-xl"></i>
+                    <span id="notification-count" class="notification-count"></span>
+                </a>
+                <a href="../html/HomePage.html">Home</a>
+                <a href="../html/event.html">Event</a>
+                <a href="#">Donate</a>
+                <a id="currentpage" href="../html/FeedbackUser.html">Contact</a>
+                <a href="#">Account</a>
+            </div>
+        </nav>
+    </header>
+</div>
 <div style="max-width: 7xl; margin: auto; width: 100%; padding-bottom: 8ch;background-color: rgba(247,248,252,255);border: 0.01px solid transparent;">
   <!-- Header -->
   <div style="max-width: 7xl; margin: auto; width: 100%;">
@@ -210,11 +212,43 @@ function back(){
   window.location.href = "donationPage.html"
 }
 document.addEventListener('DOMContentLoaded', (event) => {
+    fetchRealTimeDonationData('day');
     fetchDonationData();
     initializeRealTimeLineChart();
     fetchDonationStatistics();
 });
+//updateNotificationCount();
 
+async function updateNotificationCount() {  
+    const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
+
+    try {
+        const response = await fetch(`http://localhost:3000/notifications/userNotif/${username}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const notifications = await response.json();
+
+        const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
+
+        const notificationCountElement = document.getElementById('notification-count');
+        if (unseenCount > 0) {
+            notificationCountElement.style.display = 'inline';
+            notificationCountElement.textContent = unseenCount;
+        } else {
+            notificationCountElement.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+    }
+}
 const timeFilter = document.getElementById('timeFilter');
 timeFilter.addEventListener('change', function() {
     const filter = timeFilter.value;
@@ -328,6 +362,7 @@ function initializeRealTimeLineChart() {
                     },
                     adapters: {
                         date: {
+                            library: 'luxon',
                             locale: 'en',
                             timezone: 'UTC'
                         }
@@ -342,18 +377,25 @@ function initializeRealTimeLineChart() {
         }
     });
 
-    fetchRealTimeDonationData('day'); // Fetch initial data
 }
 
-function fetchRealTimeDonationData(filter) {
-    fetch('http://localhost:3000/donations')
-        .then(response => response.json())
-        .then(data => {
+async function fetchRealTimeDonationData(filter) {
+    try{
+      console.log("FETCHING REAL TIME")
+        const response = await fetch("http://localhost:3000/donations", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
             let labels, amounts;
-
+            const data = await response.json(); 
             // Aggregate data based on the filter
             ({ labels, amounts } = aggregateDataByFilter(data, filter));
-
             // Update chart data
             donationLineChart.data.labels = labels;
             donationLineChart.data.datasets[0].data = amounts;
@@ -368,12 +410,17 @@ function fetchRealTimeDonationData(filter) {
             donationLineChart.options.scales.x.time.unit = getChartUnit(filter);
             donationLineChart.options.scales.x.time.tooltipFormat = getFormatOptions(filter);
 
+            // Calculate the maximum value for the y-axis
+            const maxAmount = Math.max(...amounts);
+            donationLineChart.options.scales.y.max = maxAmount;
+            
             // Update the chart
+            console.log('UPDATING')
             donationLineChart.update();
-        })
-        .catch(error => {
+        }   
+      catch (error){
             console.error('Error fetching real-time donation data:', error);
-        });
+      }
 }
 
 function aggregateDataByFilter(data, filter) {
@@ -392,7 +439,7 @@ function aggregateDataByFilter(data, filter) {
         let dailyData = {};
         data.forEach(donation => {
             let date = new Date(donation.datetime);
-            let dayKey = date.toISOString().split('T')[0];
+            let dayKey = date;
             if (!dailyData[dayKey]) {
                 dailyData[dayKey] = 0;
             }
@@ -476,9 +523,6 @@ function getChartUnit(filter) {
             return 'day';
     }
 }
-
-initializeRealTimeLineChart(); // Call this function to initialize the chart
-
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

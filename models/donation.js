@@ -1,6 +1,6 @@
 const dbConfig = require("../dbConfig");
 const sql = require("mssql");
-const apiKey = '40c8f517-2100-47ec-9aca-4963466a3b51'
+const apiKey = process.env.NONPROFITAPIKEY;
 const apiUrl = 'https://api.globalgiving.org/api/public/orgservice/all/organizations';
 const axios = require('axios');
 const User = require("./user");

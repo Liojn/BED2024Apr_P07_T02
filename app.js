@@ -69,7 +69,7 @@ app.post('/users/login', userController.loginUser);
 
 
 // Donation routes
-app.get("/donations", donationController.getAllDonations);
+app.get("/donations", authMiddleware, donationController.getAllDonations);
 app.get("/stats",authMiddleware,donationController.getAllStats)
 app.post("/donations",authMiddleware,donationController.createDonation);
 app.get('/nonprofits', donationController.fetchNonProfitNames);
