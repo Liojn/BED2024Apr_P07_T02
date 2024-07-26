@@ -156,15 +156,27 @@ class User {
 
             let updateQuery = 'UPDATE Users SET ';
             const request = connection.request();
-            
-            Object.keys(updatedFields).forEach((key, index) => {
-                const dbField = key === 'username' ? 'Username' : (key === 'email' ? 'Email': key);
+                
+            for (const [key, value] of Object.entries(updatedFields)) {
+                let dbField;
+
+                if (key === 'username') {
+                    dbField = 'Username';
+                } else if (key === 'email') {
+                    dbField = 'Email';
+                } else if (key === 'password') {
+                    dbField = 'Password';
+                } else {
+                    throw new Error(`Unexpected field: ${key}`);
+                }
+
                 updateQuery += `${dbField} = @${key}`;
-                request.input(key, updatedFields[key]);
-                if (index < Object.keys(updatedFields).length - 1) {
+                request.input(key, sql.NVarChar, value);
+
+                if (Object.keys(updatedFields).indexOf(key) < Object.keys(updatedFields).length - 1) {
                     updateQuery += ', ';
                 }
-            });
+            }
     
             updateQuery += ' WHERE UserID = @UserID';
             request.input('UserID', userId);
@@ -190,43 +202,7 @@ class User {
             }
         }
     }
-    
-    static async updateProfilePicture(userId, picturePath) {
-        let connection;
-        try {
-            connection = await sql.connect(dbConfig);
-            
-            const checkQuery = 'SELECT id FROM ProfilePictures WHERE userId = @userId';
-            const checkRequest = connection.request();
-            checkRequest.input('userId', sql.Int, userId);
-            const checkResult = await checkRequest.query(checkQuery);
-    
-            let query;
-            const request = connection.request();
-            request.input('userId', sql.Int, userId);
-            request.input('picturePath', sql.NVarChar, picturePath);
-    
-            if (checkResult.recordset.length > 0) {
-                // Update existing profile picture
-                query = 'UPDATE ProfilePictures SET picturePath = @picturePath, updatedAt = GETDATE() WHERE userId = @userId';
-            } else {
-                // Insert new profile picture
-                query = 'INSERT INTO ProfilePictures (userId, picturePath) VALUES (@userId, @picturePath)';
-            }
-    
-            await request.query(query);
-    
-            return true;
-        } catch (error) {
-            console.error("Error updating profile picture: ", error);
-            throw error;
-        } finally {
-            if (connection) {
-                await connection.close();
-            }
-        }
-    }
-
+ 
     static async deleteUser(userId) {
         let connection;
         try {

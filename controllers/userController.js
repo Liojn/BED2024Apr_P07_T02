@@ -1,11 +1,8 @@
 // Imports
 const User = require("../models/user");
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-const fs = require('fs');
-const path = require('path');
-
 dotenv.config();
 
 
@@ -125,21 +122,23 @@ const loginUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const userId = req.params.id;
-    const { username, email } = req.body;
-    const profilePicture = req.file;
+    const { username, email, password } = req.body;
 
     try {
         console.log("Received update request for user: ", userId);
         console.log("Request body: ", req.body);
-        console.log("Profile picture: ", profilePicture);
 
-        const updatedFields = { username, email };
+        const updatedFields = { username, email, password };
         if (username !== undefined && username !== '') {
             updatedFields.username = username;
         } 
         if (email !== undefined && email !== ''){
             updatedFields.email = email;
         } 
+        if (password) {
+            const hashedNewPassword = await bcrypt.hash(password, 10);
+            updatedFields.password = hashedNewPassword;
+        }
 
         console.log("Fields to update: ", updatedFields);
 
@@ -151,16 +150,6 @@ const updateUser = async (req, res) => {
                 alert("User not found");
                 window.location.href = "../html/login.html"
             }
-            /*
-            if (profilePicture) {
-                const fileExtension = path.extname(profilePicture.originalname);
-                const newFilename = `${userId}_profile${fileExtension}`;
-                const filePath = path.join(_dirname, '..', 'uploads', newFilename);
-                fs.renameSync(profilePicture.path, filePath);
-                const picturePath = `../uploads/${newFilename}`;
-                await User.updateProfilePicture(userId, picturePath);
-                updateUser.profilePicture = picturePath;
-            }*/
 
             res.status(200).json({
                 message: "User updated successfully", 
@@ -191,6 +180,14 @@ const deleteUser = async (req, res) => {
     } catch (error) {
         console.error("Error deleting user: ", error);
         res.status(500).json({ message: "Error deleting user" });
+    }
+};
+
+exports.isStaff = (req, res, next) => {
+    if (req.user && req.user.accountType === 'Staff') {
+        next();
+    } else {
+        res.status(403).json({ message: 'Access denied. Staff only.' });
     }
 };
 

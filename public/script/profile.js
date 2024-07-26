@@ -46,12 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchUserData();
 
     editProfileBtn.addEventListener('click', () => {
-        window.location.href = 'profileEdit.html';
+        window.location.href = '../html/profileEdit.html';
     });
 
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('token');
-        window.location.href = 'loginPage.html';
+        window.location.href = '../html/loginPage.html';
     });
 
     deleteAccountBtn.addEventListener('click', async () => {
@@ -60,13 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`http://localhost:3000/users/${userId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${token}`
                     }
                 });
                 if (response.ok) {
                     alert('Account deleted successfully');
                     localStorage.removeItem('token');
-                    window.location.href = 'loginPage.html';
+                    window.location.href = '../html/loginPage.html';
                 } else {
                     alert('Failed to delete account');
                 }
@@ -77,7 +77,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    viewAllUsersBtn.addEventListener('click', () => {
-        window.location.href = 'adminUsers.html';
+    if (localStorage.getItem('accountType') === "Staff") {
+        adminPanel.style.display = 'block';
+        viewAllUsersBtn.addEventListener('click', () => {
+            window.location.href = 'adminUsers.html';
+        });
+    } else {
+        document.getElementById('errorMessage').textContent = 'Access denied. Staff only.';
+    }
+
+    document.getElementById('backToProfileBtn').addEventListener('click', function() {
+        window.location.href = 'profilePage.html';
     });
+    
 });
