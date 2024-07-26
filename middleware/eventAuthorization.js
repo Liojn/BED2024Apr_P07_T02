@@ -13,7 +13,7 @@ const eventAuthorizeAction = async(req, res, next) => {
         if (!event) {
             return res.status(404).json({ message: "Selected event for modification is not found" });
         }
-
+        //If you are not a Staff (Student), anf you are also not the publisher
         if (req.accountType !== "Staff" && event.username !== usernameFromToken) {
             return res.status(403).json({ message: "Unauthorized action. You are not authorized to perform this action." });
         }

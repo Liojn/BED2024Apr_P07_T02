@@ -14,6 +14,7 @@ const swaggerDocument = require("./swagger-output.json"); // Import generated sp
 
 const authMiddleware = require('./middleware/authMiddleware');
 const eventAuthorizeAction = require("./middleware/eventAuthorization");
+const validateEvent = require("./middleware/eventFormMiddleware");
 const { getDonationByUsername } = require("./models/donation");
 const { getDonationStatistics }= require("./models/donation");
 const app = express();
@@ -53,8 +54,8 @@ app.get("/events/download/:id", authMiddleware, eventController.printPDFSummary)
 app.post("/events/register/:id", authMiddleware, eventController.registerEvent);
 app.get("/events", authMiddleware, eventController.getAllEvents);
 app.get("/events/:id", authMiddleware, eventController.getEventbyId);
-app.post("/events", authMiddleware, eventController.createEvent);
-app.put("/events/:id/update", authMiddleware, eventAuthorizeAction, eventController.updateEvent);
+app.post("/events", authMiddleware, validateEvent, eventController.createEvent);
+app.put("/events/:id/update", authMiddleware, eventAuthorizeAction, validateEvent, eventController.updateEvent);
 app.delete("/events/:id/deletion", authMiddleware, eventAuthorizeAction, eventController.deleteEvent);
 app.get("/events/find-participants/:id", authMiddleware, eventController.getUsersByEventId);
 
