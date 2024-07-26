@@ -95,17 +95,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     
             if (error.message.includes('Token has expired')) {
                 alert('Session expired. Please log in again.');
-                localStorage.removeItem('jwtToken'); // Clear the token
-                window.location.href = '/login'; // Redirect to login page
+                localStorage.removeItem('token'); // Clear the token
+                window.location.href = '../Index.html'; // Redirect to login page
             } else if (error.message.includes('Invalid token')) {
                 alert('Invalid token. Please log in again.');
-                localStorage.removeItem('jwtToken'); // Clear the token
-                window.location.href = '/login'; // Redirect to login page
+                localStorage.removeItem('token'); // Clear the token
+                window.location.href = '../Index.html'; // Redirect to login page
             } else if (error.message.includes('Forbidden')) {
                 alert('You do not have permission to access this resource.');
-                window.location.href = '/'; // Redirect to home page
+                window.location.href = '../html/homePage.html'; // Redirect to home page
             } else {
-                alert(`An error occurred: ${error.message}`);
+                alert(`An error occurred: ${error.message} `);
             }
         }
     }

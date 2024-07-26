@@ -618,8 +618,58 @@ const getExistingInfo = async(eventId) => {
     }
 }
 
+
+async function updateNotificationCount() {  
+    const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
+
+    try {
+        const response = await fetch(`/notifications/userNotif/${username}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const notifications = await response.json();
+
+        const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
+
+        const notificationCountElement = document.getElementById('notification-count');
+        if (unseenCount > 0) {
+            notificationCountElement.style.display = 'inline';
+            notificationCountElement.textContent = unseenCount;
+        } else {
+            notificationCountElement.style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('Fetch error:', error);
+
+        if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../html/homePage.html'; // Redirect to home page
+        } else {
+            alert(`An error occurred: ${error.message} `);
+        }
+    }
+}
+
 //Indicator to check wheteher to execute getAllEvents, if at the correct site using the .class tag
 document.addEventListener("DOMContentLoaded", function () {
+    updateNotificationCount();
     const eventIndicator = document.getElementsByClassName("event-content"); //check if at the corresponding page
     if (eventIndicator.length > 0) {
         getAllEvents(eventIndicator);

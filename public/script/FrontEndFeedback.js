@@ -35,12 +35,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const formData = new FormData(feedbackForm);
             const feedbackData = {
-                username: username, 
-                email: email, 
-                title: formData.get('feedbackTitle'),
-                feedback: formData.get('feedback'),
-                verified: "N",
-                date: formatDate(new Date())
+                Username: username, 
+                Email: email, 
+                Title: formData.get('feedbackTitle'),
+                Feedback: formData.get('feedback'),
+                Verified: "N",
+                Date: formatDate(new Date())
             };
 
             try {
@@ -158,17 +158,17 @@ async function updateNotificationCount() {
 
         if (error.message.includes('Token has expired')) {
             alert('Session expired. Please log in again.');
-            localStorage.removeItem('jwtToken'); // Clear the token
-            window.location.href = '/login'; // Redirect to login page
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Invalid token')) {
             alert('Invalid token. Please log in again.');
-            localStorage.removeItem('jwtToken'); // Clear the token
-            window.location.href = '/login'; // Redirect to login page
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Forbidden')) {
             alert('You do not have permission to access this resource.');
-            window.location.href = '/'; // Redirect to home page
+            window.location.href = '../html/homePage.html'; // Redirect to home page
         } else {
-            alert(`An error occurred: ${error.message}`);
+            alert(`An error occurred: ${error.message} `);
         }
     }
 }

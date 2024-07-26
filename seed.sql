@@ -26,7 +26,7 @@ CREATE TABLE Feedback (
   Fid INT IDENTITY(1,1) PRIMARY KEY,
   Username NVARCHAR(255) NOT NULL, 
   Email NVARCHAR(255) NOT NULL, 
-  Title VARCHAR(20) NOT NULL,
+  Title VARCHAR(100) NOT NULL,
   Feedback VARCHAR(300) NOT NULL,
   Verified CHAR(1) NOT NULL CHECK (Verified IN ('Y', 'N')),
   Date DATE NOT NULL,
@@ -92,7 +92,7 @@ VALUES
 INSERT INTO EventRegistrations (username, eventId, registrationTime)
 VALUES 
   ('user2', 1, GETDATE()),
-  ('user2', 1, GETDATE()),
+  ('user1', 1, GETDATE()),
   ('user5', 1, GETDATE()),
   ('user5', 3, GETDATE());
 
@@ -114,7 +114,11 @@ VALUES
 
 
 
-Select * from Feedback
-Drop Table Users
+/*The order of deleting database*/
+Drop Table EventRegistrations
 Drop Table Events
+Drop Table Notifications
 Drop Table Feedback
+Drop Table Donations
+Drop Table Users
+
