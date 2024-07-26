@@ -64,7 +64,20 @@ const authMiddleware = (req, res, next) => {
             "/nonprofits": ["Staff", "Student"],//Get nonprofit api data"
             "/donations": ["Staff", "Student"],//Creating donations
             "/donations/username": ["Staff", "Student"],// For get all donation if student
+            "/donations/realtime":["Staff", "Student"],//To get realtime donation for graph
             "/stats":["Staff","Student"],//To get donation stats
+          
+            // Users route 
+            "/users": ["Staff"], // GET all users (staff only)
+            "/users/checkUser": ["Public"], // GET check if user exists (public access)
+            "/users/[0-9]+": ["Student", "Staff"], // GET user by ID
+            "/users/register": ["Public"], // POST register new user (public access)
+            "/users/login": ["Public"], // POST login user (public access)
+            "/users/[0-9]+/update": ["Student", "Staff"], // PUT update user
+            "/users/[0-9]+/delete": ["Student", "Staff"], // DELETE user (own account)
+            "/users/[0-9]+/admin/delete": ["Staff"], // DELETE any user (staff only)
+
+            
         }
         const pathOnly = requestedEndpoint.split('?')[0]; //exclude query
         console.log(pathOnly);
@@ -87,5 +100,4 @@ const authMiddleware = (req, res, next) => {
     });
 };
 
-
-module.exports = authMiddleware;
+module.exports = { authMiddleware };

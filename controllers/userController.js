@@ -1,9 +1,8 @@
 // Imports
 const User = require("../models/user");
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-
 dotenv.config();
 
 
@@ -121,6 +120,69 @@ const loginUser = async (req, res) => {
     }
 };
 
+const updateUser = async (req, res) => {
+    const userId = req.params.id;
+    const { username, email, password } = req.body;
+
+    try {
+        console.log("Received update request for user: ", userId);
+        console.log("Request body: ", req.body);
+
+        const updatedFields = { username, email, password };
+        if (username !== undefined && username !== '') {
+            updatedFields.username = username;
+        } 
+        if (email !== undefined && email !== ''){
+            updatedFields.email = email;
+        } 
+        if (password) {
+            const hashedNewPassword = await bcrypt.hash(password, 10);
+            updatedFields.password = hashedNewPassword;
+        }
+
+        console.log("Fields to update: ", updatedFields);
+
+        if(Object.keys(updatedFields).length > 0) {
+            const updatedUser = await User.updateUser(userId, updatedFields);
+            console.log("User updated: ", updatedUser);
+        
+            if (!updatedUser) {
+                alert("User not found");
+                window.location.href = "../html/login.html"
+            }
+
+            res.status(200).json({
+                message: "User updated successfully", 
+                user: updatedUser
+            });
+        
+        } else {
+            console.log("No fields to update");
+            res.status(400).json({ message: "No fields to update" });
+        }
+    }catch (error) {
+    console.error("Error updating user: ", error);
+    res.status(500).json({ message: "Error updating user", error: error.message });
+    }
+};
+
+
+const deleteUser = async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const deleted = await User.deleteUser(userId);
+        if (deleted) {
+            res.status(200).json({ message: "User deleted successfully" });
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
+    } catch (error) {
+        console.error("Error deleting user: ", error);
+        res.status(500).json({ message: "Error deleting user" });
+    }
+};
+
  
 // Exporting all controller functions
 module.exports = {
@@ -129,4 +191,6 @@ module.exports = {
     getUserById,
     addNewUser,
     loginUser,
+    updateUser,
+    deleteUser,
 }
