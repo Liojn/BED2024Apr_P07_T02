@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     await updateNotificationCount(); // Update the notification count
                 } else {
                     console.error('Failed to submit feedback:', response.statusText);
+                    alert("Character limit exceeded!")
                 }
             } catch (error) {
                 console.error('Error submitting feedback:', error);
