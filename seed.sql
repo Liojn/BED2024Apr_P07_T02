@@ -111,7 +111,11 @@ VALUES
 ('user1', 'user1@example.com','25','Lifeline Energy', '2024-06-15 11:00:00'),
 ('user1', 'user1@example.com','12','Lifeline Energy', '2024-07-01 10:00:00');
 
-
+Insert Into Notifications (UserID, Fid, justification, response, seen, date)
+Values
+	('3', '1', 'Addressing Concerns','We have re-trained our workers','N', '2024-09-30'),
+	('3','2','Needing More Information','Which part of the design sucks?','N', '2023-10-13'),
+	('3','4','Others','test','N','2025-01-01')
 
 
 /*The order of deleting database*/

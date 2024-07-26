@@ -219,7 +219,6 @@ async function fetchDonationData() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const donations = await response.json();
-        console.log(donations)
             const companyNames = donations.map(donation => donation.company);
             const donationAmounts = donations.map(donation => donation.amount);
 
@@ -236,8 +235,23 @@ async function fetchDonationData() {
 
             createPieChart(labels, values);
           } catch{
-            console.error('Error fetching donation data:', error);
-          }
+            console.log(error);
+        if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); 
+            window.location.href = '../Index.html';
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../Index.html'; // Redirect to home page
+        } else {
+            alert('An error occurred: ${error.message}');
+        }
+      }
+          
 }
 
 function createPieChart(labels, values) {
@@ -327,7 +341,7 @@ async function fetchRecentDonations() {
         const donations = await response.json();
         updateRecentDonationsUI(donations);
     } catch (error) {
-
+      console.log(error);
         if (error.message.includes('Token has expired')) {
             alert('Session expired. Please log in again.');
             localStorage.removeItem('token'); // Clear the token
@@ -344,6 +358,7 @@ async function fetchRecentDonations() {
         }
     }
 }
+  
 function updateRecentDonationsUI(donations) {
     const container = document.getElementById('recentDonationContainer'); // Adjust selector as needed
     container.innerHTML = '';
@@ -411,6 +426,7 @@ async function fetchRealTimeDonationData(filter) {
 
             // Update the chart
             console.log('UPDATING')
+            console.log(data)
             donationLineChart.update();
         }   
       catch (error){
@@ -506,13 +522,13 @@ function getTimeRangeForFilter(filter) {
 function getFormatOptions(filter) {
     switch (filter) {
         case 'hour':
-            return 'MM-DD HH:mm'; 
+            return 'MM-DD'; 
         case 'day':
             return 'DD';       
         case 'month':
-            return 'DD';         
+            return 'MMMM yyyy';         
         case 'year':
-            return 'YYYY';             
+            return 'yyyy';             
         default:
             return 'YYYY-MM-DD';       
     }
