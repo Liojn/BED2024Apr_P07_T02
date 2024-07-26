@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require('cors');
 const axios = require('axios');
 const sql = require("mssql");
+const multer = require('multer');
+const path = require('path');
 const feedbackController = require("./controllers/feedbackController");
 const eventController = require("./controllers/eventController");
 const userController = require("./controllers/userController");
@@ -13,18 +15,21 @@ const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json"); // Import generated spec
 
-const authMiddleware = require('./middleware/authMiddleware');
+const { authMiddleware } = require('./middleware/authMiddleware');
 const eventAuthorizeAction = require("./middleware/eventAuthorization");
 const { getDonationByUsername } = require("./models/donation");
+const staffAuthMiddleware = require('./middleware/staffMiddleware');
 const app = express();
 const port = process.env.PORT || 3000;
 const staticMiddleware = express.static("public");
+
 const feedbackFormMiddleware = require("./middleware/feedbackFormMiddleware");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(staticMiddleware);  
 app.use(cors());
+app.use('public/uploads', express.static('uploads'));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // Serve the Swagger UI at a specific route
 
 //Notifications Routes
@@ -53,26 +58,29 @@ app.get("/events/search", eventController.searchEvent);
 app.post("/events/register/:id", authMiddleware, eventController.registerEvent);
 app.get("/events", authMiddleware, eventController.getAllEvents);
 app.get("/events/:id", authMiddleware, eventController.getEventbyId);
-app.post("/events", authMiddleware, eventController.createEvent);
-app.put("/events/:id/update", authMiddleware, eventAuthorizeAction, eventController.updateEvent);
+app.post("/events", authMiddleware, validateEvent, eventController.createEvent);
+app.put("/events/:id/update", authMiddleware, eventAuthorizeAction, validateEvent, eventController.updateEvent);
 app.delete("/events/:id/deletion", authMiddleware, eventAuthorizeAction, eventController.deleteEvent);
 app.get("/events/find-participants/:id", authMiddleware, eventController.getUsersByEventId);
 
 
 // Users Routes
-app.get('/users', userController.getAllUser);
+app.get('/users', authMiddleware, staffAuthMiddleware, userController.getAllUser);
 app.get('/users/checkUser', userController.checkUser);
 app.get('/users/:id', authMiddleware, userController.getUserById);
 app.post('/users/register', userController.addNewUser);
 app.post('/users/login', userController.loginUser);
-
+app.put('/users/:id', userController.updateUser);
+app.put('/users', authMiddleware, upload.single('profilePicture'), userController.updateUser);
+app.delete('/users/:id', authMiddleware, userController.deleteUser);
+app.delete('/users/id/staff', staffAuthMiddleware, userController.deleteUser);
 
 
 // Donation routes
 app.get("/donations", donationController.getAllDonations);
 app.get('/nonprofits', donationController.fetchNonProfitNames);
 app.post("/donations",donationController.createDonation);
-app.get("/donations/:username", authMiddleware,donationController.getDonationByUsername);
+app.get("/donations/:username", authMiddleware, donationController.getDonationByUsername);
 app.get("/stats",authMiddleware,donationController.getDonationStatistics)
 //donationController.getDonationStatistics()
 //app.get("/donations",donationController.getDonationCount)

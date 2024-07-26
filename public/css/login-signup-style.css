@@ -88,6 +88,14 @@ header .modifyText {
     bottom: 0;
 }    
 
+.swagger {
+    align-self: baseline;
+    font-size: 12px;
+    bottom: 10px;
+    text-align: center;
+    width: 100%;
+}
+
 .subheader {
     display: flex;
     flex-direction: column;

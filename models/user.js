@@ -141,6 +141,89 @@ class User {
         }
     }
 
+    static async updateUser(userId, updatedFields) {
+        let connection;
+        try { 
+            connection = await sql.connect(dbConfig);
+
+            console.log("Updating user: ", userId);
+            console.log("Fields to update: ", updatedFields);
+            
+            if (Object.keys(updatedFields).length === 0) {
+                console.log("No fields to update");
+                return await this.getUserById(userId);
+            }
+
+            let updateQuery = 'UPDATE Users SET ';
+            const request = connection.request();
+                
+            for (const [key, value] of Object.entries(updatedFields)) {
+                let dbField;
+
+                if (key === 'username') {
+                    dbField = 'Username';
+                } else if (key === 'email') {
+                    dbField = 'Email';
+                } else if (key === 'password') {
+                    dbField = 'Password';
+                } else {
+                    throw new Error(`Unexpected field: ${key}`);
+                }
+
+                updateQuery += `${dbField} = @${key}`;
+                request.input(key, sql.NVarChar, value);
+
+                if (Object.keys(updatedFields).indexOf(key) < Object.keys(updatedFields).length - 1) {
+                    updateQuery += ', ';
+                }
+            }
+    
+            updateQuery += ' WHERE UserID = @UserID';
+            request.input('UserID', userId);
+
+            console.log("Executing query: ", updateQuery);
+            console.log("With parameters: ", request.parameters); 
+    
+            const result = await request.query(updateQuery);
+    
+            console.log("Update result: ", result);
+
+            if (result.rowsAffected[0] > 0) {
+                return await this.getUserById(userId);
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.error("Error updating user: ", error);
+            throw error;
+        } finally {
+            if (connection) {
+                await connection.close();
+            }
+        }
+    }
+ 
+    static async deleteUser(userId) {
+        let connection;
+        try {
+            connection = await sql.connect(dbConfig);
+            
+            const deleteQuery = 'DELETE FROM Users WHERE UserID = @UserID';
+            const request = connection.request();
+            request.input('UserID', userId);
+    
+            const result = await request.query(deleteQuery);
+    
+            return result.rowsAffected[0] > 0;
+        } catch (error) {
+            console.error("Error deleting user: ", error);
+            throw error;
+        } finally {
+            if (connection) {
+                await connection.close();
+            }
+        }
+    }
 }
 
 module.exports = User;
