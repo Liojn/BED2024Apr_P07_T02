@@ -200,7 +200,6 @@ async function fetchDonationData() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const donations = await response.json();
-        console.log(donations)
             const companyNames = donations.map(donation => donation.company);
             const donationAmounts = donations.map(donation => donation.amount);
 
@@ -376,6 +375,7 @@ async function fetchRealTimeDonationData(filter) {
 
             // Update the chart
             console.log('UPDATING')
+            console.log(data)
             donationLineChart.update();
         }   
       catch (error){
@@ -456,13 +456,13 @@ function getTimeRangeForFilter(filter) {
 function getFormatOptions(filter) {
     switch (filter) {
         case 'hour':
-            return 'MM-DD HH:mm'; 
+            return 'MM-DD'; 
         case 'day':
             return 'DD';       
         case 'month':
-            return 'DD';         
+            return 'MMMM yyyy';         
         case 'year':
-            return 'YYYY';             
+            return 'yyyy';             
         default:
             return 'YYYY-MM-DD';       
     }

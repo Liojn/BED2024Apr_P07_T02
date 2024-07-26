@@ -8,6 +8,7 @@
     <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
     <style>
         /* Inline style for demonstration purpose */
+        /* <div class="view-more-button">View More</div> */
     </style>
 </head>
 <body>
@@ -29,7 +30,7 @@
     <div id = "title">My Donations</div>
     <div id="donationContainer"></div>
     <div id = "backButton">Back</div>
-
+    <!-- <div class="view-more-button">View More</div> -->
     <script>
         const accountType = localStorage.getItem('accountType');
         const username = localStorage.getItem('username');
@@ -73,7 +74,6 @@
                                 </div>
                             </div>
                             <div class="donation-datetime">${formattedDateTime}</div>
-                            <div class="view-more-button">View More</div>
                         `;
                         donationContainer.appendChild(donationBox);
                     });
@@ -110,7 +110,6 @@
                                 </div>
                             </div>
                             <div class="donation-datetime">${formattedDateTime}</div>
-                            <div class="view-more-button">View More</div>
                         `;
                         donationContainer.appendChild(donationBox);
                     });
@@ -123,7 +122,7 @@
         }
 
         if (accountType === 'Staff') {
-            window.onload = fetchDonations;
+            window.onload = fetchUserDonations;
         } else {
             window.onload = fetchUserDonations;
         }

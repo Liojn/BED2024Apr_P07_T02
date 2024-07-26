@@ -30,7 +30,7 @@
         <img src = "Wallpaper.png" class = "Wallpaper1">
         <div class = "overlay-text">Give to protect the earth</div>
         <div class = "overlay-text2">Donate Today</div>
-        <div onclick = "statistics()" class="join-button">Donation Statistics</div>
+        <div onclick = "statistics()" class="join-button" id = "join-button">Donation Statistics</div>
     </div>
     <div class = "container">
         <img src = "Rectangle 15.png" class = "Counter">
@@ -87,6 +87,7 @@
     </div>
 </body>
 <script>
+    const accountType = localStorage.getItem('accountType');
     // Get references to the custom amount radio and input elements
     const customAmountRadio = document.getElementById('customAmountRadio');
     const customAmountInput = document.getElementById('customAmountInput');
@@ -308,7 +309,11 @@ function displayNonProfitNames(names) {
         dropdownContent.appendChild(link);
     });
 }
-
+    if (accountType === 'Staff') {
+                document.getElementById('join-button').style.display = 'block';
+            } else {
+                document.getElementById('join-button').style.display = 'none';
+            }
     document.addEventListener('DOMContentLoaded', () => {
         fetchNonProfitNames();
     });
