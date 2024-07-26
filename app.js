@@ -72,7 +72,9 @@ app.post('/users/login', userController.loginUser);
 app.get("/donations", donationController.getAllDonations);
 app.get('/nonprofits', donationController.fetchNonProfitNames);
 app.post("/donations",donationController.createDonation);
-app.get("/donations/:username", donationController.getDonationByUsername);
+app.get("/donations/:username", authMiddleware,donationController.getDonationByUsername);
+app.get("/stats",authMiddleware,donationController.getDonationStatistics)
+//donationController.getDonationStatistics()
 //app.get("/donations",donationController.getDonationCount)
 
 app.listen(port, async () => {
