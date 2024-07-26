@@ -74,7 +74,7 @@ app.get("/donations", authMiddleware, donationController.getAllDonations);
 app.get("/stats",authMiddleware,donationController.getAllStats)
 app.post("/donations",authMiddleware,donationController.createDonation);
 app.get('/nonprofits', donationController.fetchNonProfitNames);
-app.get("/donations/:username", donationController.getDonationByUsername);
+app.get("/donations/:username", authMiddleware,donationController.getDonationByUsername);
 app.get("/stats",authMiddleware,donationController.getDonationStatistics)
 //donationController.getDonationStatistics()
 //app.get("/donations",donationController.getDonationCount)
