@@ -78,13 +78,15 @@ header .modifyText {
     color:white;
 }
 
-.credits {
-    font-size: 12px;
-    position: absolute;
-    bottom: 10px;
-    text-align: center;
+.footer {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
     width: 100%;
-}
+    position: absolute;
+    bottom: 0;
+}    
 
 .subheader {
     display: flex;
