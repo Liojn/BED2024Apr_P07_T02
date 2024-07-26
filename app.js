@@ -28,7 +28,7 @@ app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // Serve the Swagger UI at a specific route
 
 //Notifications Routes
-app.get("/notifications/userNotif/:Username",authMiddleware,notificationsController.getNotificationsByUsername)
+app.get("/notifications/userNotif/:Username", authMiddleware, notificationsController.getNotificationsByUsername)
 app.get("/notifications/:id", authMiddleware,notificationsController.getNotificationById)
 app.post("/notifications",authMiddleware, notificationsController.createNotification)
 app.delete("/notifications/:id", authMiddleware,notificationsController.deleteNotification)

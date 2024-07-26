@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Nav Bar</title>
+    <title>EcoImpact Donation Page</title>
     <link rel="icon" type="image/png" href="../assets/favicon.png">
     <link rel="stylesheet" href="../css/donation.css">
-        <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="eventwrapper">
@@ -20,8 +20,8 @@
                     </a>
                     <a href="../html/HomePage.html">Home</a>
                     <a href="../html/event.html">Event</a>
-                    <a href="#">Donate</a>
-                    <a id="currentpage" href="../html/FeedbackUser.html">Contact</a>
+                    <a id="currentpage" href="../html/donationPage.html">Donate</a>
+                    <a href="../html/FeedbackUser.html">Contact</a>
                     <a href="#">Account</a>
                 </div>
             </nav>
@@ -124,19 +124,20 @@ function selectCompany(companyName) {
     }
     updateNotificationCount();
 
-async function updateNotificationCount() {  
+    async function updateNotificationCount() {  
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token'); // Retrieve token from local storage
 
     try {
-        const response = await fetch(`http://localhost:3000/notifications/userNotif/${username}`, {
+        const response = await fetch(`/notifications/userNotif/${username}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         const notifications = await response.json();
@@ -151,20 +152,21 @@ async function updateNotificationCount() {
             notificationCountElement.style.display = 'none';
         }
     } catch (error) {
-        console.log(error);
+        console.error('Fetch error:', error);
+
         if (error.message.includes('Token has expired')) {
             alert('Session expired. Please log in again.');
-            localStorage.removeItem('token'); //Clear token
-            window.location.href = '../Index.html'; //Redirect to login page
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Invalid token')) {
             alert('Invalid token. Please log in again.');
-            localStorage.removeItem('token'); 
-            window.location.href = '../Index.html';
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Forbidden')) {
             alert('You do not have permission to access this resource.');
-            window.location.href = '../Index.html'; // Redirect to home page
+            window.location.href = '../html/homePage.html'; // Redirect to home page
         } else {
-            alert('An error occurred: ${error.message}');
+            alert(`An error occurred: ${error.message} `);
         }
     }
 }

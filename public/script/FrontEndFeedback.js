@@ -41,12 +41,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Collect form data and prepare the feedback object
             const formData = new FormData(feedbackForm);
             const feedbackData = {
-                username: username, 
-                email: email, 
-                title: formData.get('feedbackTitle'),
-                feedback: formData.get('feedback'),
-                verified: "N",
-                date: formatDate(new Date())
+                Username: username, 
+                Email: email, 
+                Title: formData.get('feedbackTitle'),
+                Feedback: formData.get('feedback'),
+                Verified: "N",
+                Date: formatDate(new Date())
             };
 
             try {

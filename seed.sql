@@ -92,7 +92,7 @@ VALUES
 INSERT INTO EventRegistrations (username, eventId, registrationTime)
 VALUES 
   ('user2', 1, GETDATE()),
-  ('user2', 1, GETDATE()),
+  ('user1', 1, GETDATE()),
   ('user5', 1, GETDATE()),
   ('user5', 3, GETDATE());
 
@@ -118,7 +118,11 @@ Values
 	('3','4','Others','test','N','2025-01-01')
 
 
-Select * from Feedback
-Drop Table Users
+/*The order of deleting database*/
+Drop Table EventRegistrations
 Drop Table Events
+Drop Table Notifications
 Drop Table Feedback
+Drop Table Donations
+Drop Table Users
+
