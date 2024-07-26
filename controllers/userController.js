@@ -183,14 +183,6 @@ const deleteUser = async (req, res) => {
     }
 };
 
-exports.isStaff = (req, res, next) => {
-    if (req.user && req.user.accountType === 'Staff') {
-        next();
-    } else {
-        res.status(403).json({ message: 'Access denied. Staff only.' });
-    }
-};
-
  
 // Exporting all controller functions
 module.exports = {

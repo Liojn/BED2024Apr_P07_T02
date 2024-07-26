@@ -25,11 +25,6 @@ h1 {
     font-family: 'Itim', cursive;
 }
 
-#errorMessage {
-    color: #d32f2f;
-    font-weight: bold;
-}
-
 table {
     width: 100%;
     border-collapse: collapse;

@@ -14,9 +14,10 @@ const bodyParser = require("body-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json"); // Import generated spec
 
-const { authMiddleware, staffAuthMiddleware } = require('./middleware/authMiddleware');
+const { authMiddleware } = require('./middleware/authMiddleware');
 const eventAuthorizeAction = require("./middleware/eventAuthorization");
 const { getDonationByUsername } = require("./models/donation");
+const staffAuthMiddleware = require('./middleware/staffMiddleware');
 const app = express();
 const port = process.env.PORT || 3000;
 const staticMiddleware = express.static("public");
@@ -73,7 +74,7 @@ app.get("/events/find-participants/:id", authMiddleware, eventController.getUser
 
 
 // Users Routes
-app.get('/users', staffAuthMiddleware, userController.getAllUser);
+app.get('/users', authMiddleware, staffAuthMiddleware, userController.getAllUser);
 app.get('/users/checkUser', userController.checkUser);
 app.get('/users/:id', authMiddleware, userController.getUserById);
 app.post('/users/register', userController.addNewUser);

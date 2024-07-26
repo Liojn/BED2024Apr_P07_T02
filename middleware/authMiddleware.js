@@ -89,15 +89,4 @@ const authMiddleware = (req, res, next) => {
     });
 };
 
-const staffAuthMiddleware = (req, res, next) => {
-    authMiddleware(req, res, () => {
-        if (req.user && req.user.accountType === "Staff"){
-            next();
-        } else {
-            res.status(403).json({ message: "Access denied. Staff only. "});
-        }
-    });
-};
-
-
-module.exports = { authMiddleware, staffAuthMiddleware };
+module.exports = { authMiddleware };

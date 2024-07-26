@@ -1,21 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
-    const accountType = localStorage.getItem('accountType');
-    const usersTable = document.getElementById('usersTable').getElementsByTagName('tbody')[0];
-    const backToProfileBtn = document.getElementById('backToProfileBtn');
-
-    if (!token || accountType !== 'Staff') {
-        document.getElementById('errorMessage').textContent = 'Access denied. Staff only.';
-        document.getElementById('loadingMessage').style.display = 'none';
-        return;
-    }
-
-    fetchUsers();
-
-    backToProfileBtn.addEventListener('click', function() {
-        window.location.href = '../html/profilePage.html'
-    });
-});
+const token = localStorage.getItem('token');
+const accountType = localStorage.getItem('accountType');
 
 const fetchUsers = async () => {
     try {
@@ -35,6 +19,18 @@ const fetchUsers = async () => {
         console.error('Error:', error);
     }
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    const usersTable = document.getElementById('usersTable').getElementsByTagName('tbody')[0];
+    const backToProfileBtn = document.getElementById('backToProfileBtn');
+
+    fetchUsers();
+    
+    backToProfileBtn.addEventListener('click', function() {
+        window.location.href = '../html/profilePage.html'
+    });
+});
+
 
 function displayUsers(users) {
     const tbody = document.querySelector('#usersTable tbody');
