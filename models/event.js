@@ -349,7 +349,7 @@ class Event {
             }
 
             doc.end(); //finalize document
-            //Checks if the file exists after writing and resolves with the file path if it does.
+            //Check if the file exists after writing & resolves with the file path if it does.
             //Rejects promise if there's an error writing the PDF or if the file doesn't exist.
             return new Promise((resolve, reject) => {
                 writeStream.on('finish', () => {

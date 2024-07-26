@@ -18,14 +18,14 @@ const timeOptions = {
     minute: 'numeric',
     timeZone: 'UTC'
 };
-let formatter = new Intl.DateTimeFormat('en-GB', options);
+const formatter = new Intl.DateTimeFormat('en-GB', options);
 const dateFormatter = new Intl.DateTimeFormat('en-GB', dateOptions);
 const timeFormatter = new Intl.DateTimeFormat('en-GB', timeOptions);
-//localStorage.setItem('username', 'user2');
-//localStorage.setItem('accountType', 'Student')
 
-//IMPORTANT, for authentication
-const token = localStorage.getItem("token");
+
+//IMPORTANT, for authentication throughout the website
+const token = localStorage.getItem("token") || ''; //set as empty if needed.
+
 console.log(token);
 
 //Function to confirm request when user clicks for register button
@@ -40,33 +40,53 @@ const registerEventConfirm = (event) => {
 }
 
 const pdfPrint = async (event) => {
-    const eventId = event.target.getAttribute('data-event-id') || event.target.parentElement.getAttribute('data-event-id');
-    console.log(eventId);
-    const response = await fetch(`/events/download/${eventId}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/pdf'
+    try {
+        const eventId = event.target.getAttribute('data-event-id') || event.target.parentElement.getAttribute('data-event-id');
+        console.log(eventId);
+        const response = await fetch(`/events/download/${eventId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/pdf'
+            }
+        });
+    
+        // Check if the response is ok
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `event_id${eventId}_summary.pdf`;
+            document.body.appendChild(a); //Append anchor to body
+            a.click(); //Trigger download
+            document.body.removeChild(a); // Remove anchor from body
+            URL.revokeObjectURL(url); //Clean up
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-    });
-
-    // Check if the response is ok
-    if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `event_id${eventId}_summary.pdf`;
-        document.body.appendChild(a); //Append anchor to body
-        a.click(); //Trigger download
-        document.body.removeChild(a); // Remove anchor from body
-        URL.revokeObjectURL(url); //Clean up
-    } else if (response.status === 403) {
-        alert('You do not have the permission. Staff only.')
-    } else {
-        console.error('Failed to fetch PDF');
-        alert('Failed to fetch PDF. Please try again later.');
+    } catch (error) {
+        console.log(error);
+        if (error.message.includes('Unauthorized')){
+            alert('You are not authorized to access, please log in if you have a valid account.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Forbidden')) { //Incorrect role
+            alert('You do not have permission to access this resource.');
+        } else {
+            alert(`Failed to fetch PDF: ${error.message}`);
+        }
     }
+
 }
 
 const registerEvent = async (eventId) => {
@@ -88,8 +108,26 @@ const registerEvent = async (eventId) => {
         alert(`Registration successful!\nRegistration ID: ${resJson.registrationId}\nEvent ID: ${resJson.eventId}\nRegistration Time: ${formatter.format(registrationTime)}`);
     
     } catch (error){
-        console.error('An error occurred:', error.message);
-        alert(`Error: ${error.message}`);
+        console.log('An error occurred:', error.message);
+        if (error.message.includes('Unauthorized')){
+            alert('You are not authorized to access, please log in if you have a valid account.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+        } else if (error.message === 'Registration failed') {
+            alert('Registration failed. Please try again later.');
+        } else {
+            alert(`Error: ${error.message}`);
+        }
     }
 };
 
@@ -109,27 +147,35 @@ const navigateToList = (event) => {
     window.location.href = "../html/eventParticipantsList.html";
 }
 
+//The endpoint which will be call first when view participant page, or more information
 const displayEventOnList = async (eventId) => {
-    const response = await fetch(`/events/${eventId}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+    try {
+        const response = await fetch(`/events/${eventId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-    });
-    if (response.ok) {
+        //proceed as plan
         const jsonData = await response.json();
         console.log(jsonData);
 
-        //Formatting of data for display
+        // Formatting of data for display
         document.getElementById('pTitle').textContent = jsonData.title;
         const startDate = new Date(jsonData.date);
         const startTime = new Date(jsonData.startTime);
         const endTime = new Date(jsonData.endTime);
-        
+
         const formattedDate = dateFormatter.format(startDate);
         const formattedStartTime = timeFormatter.format(startTime);
         const formattedEndTime = timeFormatter.format(endTime);
+        
         // Combine formatted date and time
         const formattedDateTime = `${formattedDate} at ${formattedStartTime} - ${formattedEndTime}`;
         
@@ -143,9 +189,28 @@ const displayEventOnList = async (eventId) => {
         const location = jsonData.location;
         displayParticipants(eventId);
         embedMapAPI(location);
-    } else {
-        console.error('Failed to fetch event info');
-        alert('Failed to fetch event info');
+    } catch (error) {
+        console.log('An error occurred:', error.message);
+
+        if (error.message.includes('Unauthorized')){
+            alert('You are not authorized to access, please log in if you have a valid account.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../html/homePage.html'; //Redirect to home page
+        } else {
+            alert(`Error: ${error.message}`);
+            window.location.href = '../html/homePage.html'; //Redirect to home page
+        }
     }
 }
 
@@ -244,7 +309,8 @@ const submitSearchReq = async() => {
             }
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
         const eventData = await response.json();
 
@@ -320,11 +386,28 @@ const submitSearchReq = async() => {
         alert(`Search successful: ${eventData.length} relevant result found.`);
 
     }  catch (error){
-        alert(`Could not find Event. Error message: ${error}`)
+        if (error.message.includes('Unauthorized')){
+            alert('You are not authorized to access, please log in if you have a valid account.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); 
+            window.location.href = '../Index.html';
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../html/homePage.html'; //Redirect to home page
+        } else {
+            alert(`Could not find Event. Error message: ${error}`);
+        }
     };
 };
 
-//GET function for ALL events in the event.html
+//GET function for ALL events in the event.html, endpoint that calls for my MAIN event page
 async function getAllEvents(eventIndicator) {
     try {
         const response = await fetch("/events", {
@@ -335,7 +418,8 @@ async function getAllEvents(eventIndicator) {
             }
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         const eventData = await response.json();
@@ -348,7 +432,7 @@ async function getAllEvents(eventIndicator) {
             const eventBox = document.createElement('div');
             eventBox.id = "content";
             eventBox.setAttribute('data-event-id', element.eventId); //Set data-event-id attribute for reference if needed, This is for Edit and Delete, to get their id number
-            const getRole = localStorage.getItem('accountType');
+            const getRole = localStorage.getItem('accountType'); //Set from login, use it here
             const getUsername = localStorage.getItem('username');
 
             //Checking if is admin, can view Edit and Delete Option, OR is the student post
@@ -405,7 +489,23 @@ async function getAllEvents(eventIndicator) {
 
     } catch (error) { //error handling
         console.log(error);
-        alert(`Error: ${error}`);
+        if (error.message.includes('Unauthorized')){
+            alert('You are not authorized to access, please log in if you have a valid account.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); 
+            window.location.href = '../Index.html';
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+        } else {
+            alert(`An error occurred: ${error.message}`);
+        }
     }
 }
 
@@ -432,36 +532,59 @@ const deleteEventConfirm = (event) => {
 }
 
 const deleteEvent = async(eventId) => {
-    await fetch(`/events/${eventId}/deletion`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-    })
-    .then(response => {
+    try {
+        const response = await fetch(`/events/${eventId}/deletion`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+        });
+
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Network response was not ok');
         }
         window.alert("Event deleted successfully!");
         window.location.href = "../html/event.html";
-    })
-    .catch(error => {
+    } catch (error) {
         console.error('Error:', error);
-        window.alert("Error deleting event. Please try again later.")
-    });
+        if (error.message.includes('Unauthorized')){
+            alert('You are not authorized to access, please log in if you have a valid account.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); 
+            window.location.href = '../Index.html';
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+        } else {
+            alert(`Error deleting event: ${error.message}`);
+        }
+    }
 }
 
 //Function for retrieving specific Event Post based on ID, used for editing 
 const getExistingInfo = async(eventId) => {
-    const response = await fetch(`/events/${eventId}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+    try {
+        const response = await fetch(`/events/${eventId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-    });
-    if (response.ok) {
+
         const eventData = await response.json();
         console.log(eventData);
 
@@ -472,9 +595,26 @@ const getExistingInfo = async(eventId) => {
         document.getElementById('end-time').value = eventData.endTime.split('T')[1].substring(0, 5);
         document.getElementById('location').value = eventData.location;
         document.getElementById('description').value = eventData.description;
-    } else {
-        console.error('Failed to fetch event info');
-        alert('Failed to fetch event info');
+    } catch (error) {
+        console.error('An error occurred:', error.message);
+        if (error.message.includes('Unauthorized')){
+            alert('You are not authorized to access, please log in if you have a valid account.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); 
+            window.location.href = '../Index.html';
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../html/homePage.html'; //Redirect to home page
+        } else {
+            alert('Failed to fetch event info. Please try again later.');
+        }
     }
 }
 
@@ -507,7 +647,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-//define the formatted_date function to reflect the date nicely
+//define the formatted_date function to reflect the date nicely for EVENTS POST 
 function formatted_date(dateString) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -583,6 +723,14 @@ document.getElementById('eventForm').addEventListener('submit', async function (
 
         if (!response.ok) { //not 200
             const errorData = await response.json(); //Parse the error response as JSON
+
+            // Handle middleware errors first
+            if (response.status === 401) {
+                throw new Error('Unauthorized: No token');
+            } else if (response.status === 403) {
+                throw new Error('Forbidden: Token expired or invalid.');
+            }
+
             //Create detailed error message string based on validateEvent server side
             const errorMessage = errorData.errors
                 ? errorData.errors.join('\n') // Join all error messages into a single string
@@ -598,7 +746,18 @@ document.getElementById('eventForm').addEventListener('submit', async function (
 
     } catch (error) {
         // Handle errors
-        console.error('Error:', error);
-        window.alert(`Error: ${error.message}`);
+
+        if (error.message.includes('Unauthorized')){
+            alert('You are not authorized to access, please log in if you have a valid account.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Token has expired') || error.message.includes('Forbidden')) {
+            alert('Session expired or invalid token. Please log in again.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else {
+            console.error('Error:', error);
+            alert(`Error: ${error.message}`);
+        }
     }
 });

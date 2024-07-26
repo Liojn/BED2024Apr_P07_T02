@@ -46,6 +46,7 @@ CREATE TABLE Notifications(
 	FOREIGN KEY(Fid) REFERENCES Feedback(Fid),
 	FOREIGN KEY(UserID) REFERENCES Users(UserID),
 )
+
 --Create Donation table
 CREATE TABLE Donations (
   id INT IDENTITY(1,1) PRIMARY KEY,
@@ -79,6 +80,7 @@ VALUES
   ('user3', 'user3@example.com', 'idkwhatpassowrd', 'Student'),
   ('user5', 'user5@example.com', 'notsurelol', 'Student');
 
+-- Insert data into Events table
 INSERT INTO Events (title, date, startTime, endTime, location, description, username)
 VALUES
   ('Cleanshore Pasir Ris', '2024-07-23', '09:00:00', '12:00:00', 'Pasir Ris Park 519639', 'Plastic pollution is a major threat to our oceans and marine life. Help us tackle this issue by participating in our coastal cleanup! We will be gathering volunteers to remove plastic waste from a local beach. Every piece of plastic collected makes a difference for the health of our oceans.', 'msneoERC'),  
@@ -93,15 +95,6 @@ VALUES
   ('user2', 1, GETDATE()),
   ('user5', 1, GETDATE()),
   ('user5', 3, GETDATE());
-
-
-
--- Insert data into Events table
-INSERT INTO Events (title, date, startTime, endTime, location, description, username)
-VALUES
-  ('Cleanshore Sembawang', '2024-08-23', '09:00:00', '12:00:00', 'Sembawang Beach', 'Plastic pollution is a major threat to our oceans and marine life. Help us tackle this issue by participating in our coastal cleanup! We will be gathering volunteers to remove plastic waste from a local beach. Every piece of plastic collected makes a difference for the health of our oceans.', 'user1'),  
-  ('Eco E-Waste Recycling!', '2024-09-14', '18:00:00', '21:00:00', 'NP Convention Centre', 'I am planning to start a movement to gather people to donate their e-waste. Any volunteer would like to help out?', 'user2'),  
-  ('Tree Planting Extravaganza', '2024-10-12', '10:00:00', '11:30:00', 'NP Block 68, Outside Aerospace', 'Join us for a fun-filled day of giving back to the environment! We will be planting trees on Earth Day. This is a great opportunity to learn about the importance of trees in our ecosystem, get some exercise in the fresh air, and make a positive impact on your community. S point will be given.', 'msneoERC'); 
 
 -- Insert data into Feedback table
 INSERT INTO Feedback (Username, Email, Title, Feedback, Verified, Date) 
