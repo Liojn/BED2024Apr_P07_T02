@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 notificationCountElement.style.display = 'none';
             }
+            
         } catch (error) {
             console.error('Fetch error:', error);
     
