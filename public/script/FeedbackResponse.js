@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const feedbackDetails = JSON.parse(localStorage.getItem('selectedFeedback'));
     const token = localStorage.getItem('token');
     const UserID = localStorage.getItem('userId');
+    updateNotificationCount()
 
     if (window.location.pathname.endsWith('FeedbackResponse.html')) {
         if (feedbackDetails) {
@@ -60,5 +61,52 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.error('Error sending response or updating feedback:', error);
             }
         });
+    }
+
+    async function updateNotificationCount() {  
+        const username = localStorage.getItem('username');
+        const token = localStorage.getItem('token'); // Retrieve token from local storage
+    
+        try {
+            const response = await fetch(`/notifications/userNotif/${username}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+    
+            const notifications = await response.json();
+    
+            const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
+    
+            const notificationCountElement = document.getElementById('notification-count');
+            if (unseenCount > 0) {
+                notificationCountElement.style.display = 'inline';
+                notificationCountElement.textContent = unseenCount;
+            } else {
+                notificationCountElement.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+    
+            if (error.message.includes('Token has expired')) {
+                alert('Session expired. Please log in again.');
+                localStorage.removeItem('jwtToken'); // Clear the token
+                window.location.href = '/login'; // Redirect to login page
+            } else if (error.message.includes('Invalid token')) {
+                alert('Invalid token. Please log in again.');
+                localStorage.removeItem('jwtToken'); // Clear the token
+                window.location.href = '/login'; // Redirect to login page
+            } else if (error.message.includes('Forbidden')) {
+                alert('You do not have permission to access this resource.');
+                window.location.href = '/'; // Redirect to home page
+            } else {
+                alert(`An error occurred: ${error.message}`);
+            }
+        }
     }
 });

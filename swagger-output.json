@@ -908,6 +908,48 @@
           }
         }
       }
+    },
+    "/donations": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Username": {
+                  "example": "any"
+                },
+                "Email": {
+                  "example": "any"
+                },
+                "Company": {
+                  "example": "any"
+                },
+                "Amount": {
+                  "example": "any"
+                },
+                "DateTime": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   }
 }

@@ -34,7 +34,7 @@
     <script>
         const accountType = localStorage.getItem('accountType');
         const username = localStorage.getItem('username');
-
+        const token = localStorage.getItem('token');
         document.getElementById('backButton').addEventListener('click', function() {
             window.location.href = "donationPage.html";
         });
@@ -51,7 +51,13 @@
 
         async function fetchDonations() {
             try {
-                const response = await fetch("http://localhost:3000/donations");
+                const response = await fetch(`http://localhost:3000/donations`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+            });
                 const donations = await response.json();
                 console.log('All Donations:', donations); // Debugging
                 if (Array.isArray(donations)) {
@@ -80,9 +86,15 @@
             }
         }
 
-        async function fetchUserDonations() {
-            try {
-                const response = await fetch(`http://localhost:3000/donations/${username}`);
+        async function fetchUserDonations() {  
+            try{ 
+            const response = await fetch(`http://localhost:3000/donations/${username}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+            });
                 const donations = await response.json();
                 console.log('User Donations:', donations); // Debugging
                 if (Array.isArray(donations)) {

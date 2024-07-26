@@ -10,19 +10,24 @@
 </head>
 <body>
     <!-- Navbar -->
-    <header id="logined-nav">
-        <div class="logo">
-            <img src="../assets/website-logo.png" alt="EcoImpact logo">
-        </div>
-        <nav class="nav-links">
-            <a href="#"><i class="fa-regular fa-bell fa-xl"></i></i></a>
-            <a href="homePage.html">Home</a>
-            <a href="event-creation.html">Event</a>
-            <a href="#">Donate</a>
-            <a id="currentpage" href="../html/FeedbackUser.html">Contact</a>
-            <a href="#">Account</a>
-        </nav>
-    </header>
+    <div id="eventwrapper">
+        <header id="logined-nav">
+            <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
+            <nav>
+                <div class="nav">
+                    <a href="../html/NotificationScreen.html" class="notification-icon">
+                        <i class="fa-regular fa-bell fa-xl"></i>
+                        <span id="notification-count" class="notification-count"></span>
+                    </a>
+                    <a href="../html/HomePage.html">Home</a>
+                    <a href="../html/event.html">Event</a>
+                    <a href="#">Donate</a>
+                    <a id="currentpage" href="../html/FeedbackUser.html">Contact</a>
+                    <a href="#">Account</a>
+                </div>
+            </nav>
+        </header>
+    </div>
 
     <!-- Response Container -->
     <div class="contact-container">
