@@ -21,7 +21,7 @@ const getAllStats = async (req, res) => {
 };
 
 const getDonationByUsername = async (req, res) => {
-    const username = req.params.username;
+    const username = req.query.username;
     try {
         const donation = await Donation.getDonationByUsername(username);
         if (!donation) {

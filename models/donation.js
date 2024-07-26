@@ -32,7 +32,7 @@ class Donation {
                AVG(amount) as averageDonation, 
                SUM(amount) as totalDonations, 
                MAX(amount) as largestSingleDonation 
-        FROM donations;`;
+        FROM Donations;`;
         const request = connection.request();
         const result = await request.query(sqlQuery);
         connection.close();

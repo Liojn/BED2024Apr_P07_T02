@@ -53,7 +53,7 @@ app.put("/feedbacks/:id", authMiddleware,feedbackController.updateFeedback)
 // Event Route
 app.get("/events/get-location", eventController.getLocation);
 app.get("/events/search", eventController.searchEvent);
-
+app.get("/events/download/:id", authMiddleware, eventController.printPDFSummary);
 app.post("/events/register/:id", authMiddleware, eventController.registerEvent);
 app.get("/events", authMiddleware, eventController.getAllEvents);
 app.get("/events/:id", authMiddleware, eventController.getEventbyId);
@@ -78,8 +78,8 @@ app.delete('/users/:id/staff', staffAuthMiddleware, userController.deleteUser);
 app.get("/donations", donationController.getAllDonations);
 app.get('/nonprofits', donationController.fetchNonProfitNames);
 app.post("/donations",donationController.createDonation);
-app.get("/donations/:username", authMiddleware, donationController.getDonationByUsername);
-app.get("/stats",authMiddleware,donationController.getDonationStatistics)
+app.get("/donations/username", authMiddleware, donationController.getDonationByUsername);
+app.get("/stats",authMiddleware, donationController.getAllStats);
 //donationController.getDonationStatistics()
 //app.get("/donations",donationController.getDonationCount)
 
