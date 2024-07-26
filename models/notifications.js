@@ -75,7 +75,7 @@ class Notifcations {
         const result = await request.query(sqlQuery);
         connection.close();
 
-        console.log("Inserted Notification Result:", result); // Add this line
+        console.log("Inserted Notification Result:", result);
     
         return this.getNotificationById(result.recordset[0].notification_id);
     }
@@ -113,7 +113,7 @@ class Notifcations {
     
         connection.close();
     
-        return this.getNotificationById(notification_id); // returning the updated book data
+        return this.getNotificationById(notification_id); 
     }
 
     static async getNotificationBySeen(seen,username) {
