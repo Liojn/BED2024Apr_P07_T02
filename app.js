@@ -2,8 +2,7 @@ const express = require("express");
 const cors = require('cors');
 const axios = require('axios');
 const sql = require("mssql");
-const multer = require('multer');
-const path = require('path');
+
 const feedbackController = require("./controllers/feedbackController");
 const eventController = require("./controllers/eventController");
 const userController = require("./controllers/userController");
@@ -71,9 +70,8 @@ app.get('/users/:id', authMiddleware, userController.getUserById);
 app.post('/users/register', userController.addNewUser);
 app.post('/users/login', userController.loginUser);
 app.put('/users/:id', userController.updateUser);
-app.put('/users', authMiddleware, upload.single('profilePicture'), userController.updateUser);
 app.delete('/users/:id', authMiddleware, userController.deleteUser);
-app.delete('/users/id/staff', staffAuthMiddleware, userController.deleteUser);
+app.delete('/users/:id/staff', staffAuthMiddleware, userController.deleteUser);
 
 
 // Donation routes
