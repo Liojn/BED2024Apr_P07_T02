@@ -1,4 +1,3 @@
-// DOMContentLoaded event listener ensures the script runs after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', async () => {
     // Fetch initial feedbacks and update notification count on page load
     fetchFeedbacks('N');
@@ -171,17 +170,17 @@ async function updateNotificationCount() {
 
         if (error.message.includes('Token has expired')) {
             alert('Session expired. Please log in again.');
-            localStorage.removeItem('jwtToken'); 
-            window.location.href = '/login'; 
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Invalid token')) {
             alert('Invalid token. Please log in again.');
-            localStorage.removeItem('jwtToken'); 
-            window.location.href = '/login'; 
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Forbidden')) {
             alert('You do not have permission to access this resource.');
-            window.location.href = '/'; 
+            window.location.href = '../html/homePage.html'; // Redirect to home page
         } else {
-            alert(`An error occurred: ${error.message}`);
+            alert(`An error occurred: ${error.message} `);
         }
     }
 }
