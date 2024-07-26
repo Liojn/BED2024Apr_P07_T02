@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     alert('Response sent and feedback updated successfully!');
                     window.location.href = 'FeedbackStaff.html';
                 } else {
+                    alert("Character limited exceeded.")
                     console.error('Failed to send response or update feedback:', notificationResponse.statusText, feedbackUpdateResponse.statusText);
                 }
             } catch (error) {

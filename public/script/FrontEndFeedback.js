@@ -1,7 +1,10 @@
+// DOMContentLoaded event listener ensures the script runs after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', async () => {
+    // Fetch initial feedbacks and update notification count on page load
     fetchFeedbacks('N');
-    updateNotificationCount(); // Call the function to update the notification count
+    updateNotificationCount(); 
 
+    // Helper function to format date in YYYY/MM/DD format
     function formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -9,30 +12,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         return `${year}/${month}/${day}`;
     }
 
+    // Retrieve account details from localStorage
     const accountType = localStorage.getItem('accountType');
     const token = localStorage.getItem('token');
-    const username = localStorage.getItem('username'); // Retrieve username from local storage
-    const email = localStorage.getItem('email'); // Retrieve email from local storage
+    const username = localStorage.getItem('username'); 
+    const email = localStorage.getItem('email'); 
 
-    console.log(token)
+    console.log(token);
     console.log(accountType);
+
     const staffButton = document.getElementById('staffButton');
     
+    // Show staff button if account type is 'Staff', otherwise hide it
     if (accountType === 'Staff' && staffButton) {
         staffButton.style.display = 'block';
         staffButton.addEventListener('click', () => {
             window.location.href = 'FeedbackStaff.html'; 
         });
-    }
-    else{
-        staffButton.style.display = 'none'
+    } else {
+        staffButton.style.display = 'none';
     }
 
+    // Handle feedback form submission
     const feedbackForm = document.querySelector('.contact-left');
     if (feedbackForm) {
         feedbackForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
+            // Collect form data and prepare the feedback object
             const formData = new FormData(feedbackForm);
             const feedbackData = {
                 username: username, 
@@ -44,11 +51,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
 
             try {
+                // Send feedback data to the server
                 const response = await fetch('/feedbacks', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` // Include token in request headers
+                        'Authorization': `Bearer ${token}` 
                     },
                     body: JSON.stringify(feedbackData),
                 });
@@ -69,11 +77,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// Fetch feedbacks from the server and update the feedback container
 async function fetchFeedbacks(filter = 'all') {
     try {
         const token = localStorage.getItem('token');
         let url;
         
+        // Determine URL based on filter
         if (filter === 'all') {
             url = "/feedbacks";
         } else {
@@ -82,7 +92,7 @@ async function fetchFeedbacks(filter = 'all') {
 
         const response = await fetch(url, {
             headers: {
-                'Authorization': `Bearer ${token}` // Include token in request headers
+                'Authorization': `Bearer ${token}`
             }
         });
 
@@ -92,7 +102,7 @@ async function fetchFeedbacks(filter = 'all') {
 
         const feedbacks = await response.json();
 
-        console.log('Fetched feedbacks:', feedbacks); // Log the fetched feedbacks
+        console.log('Fetched feedbacks:', feedbacks);
 
         // Check if the response is an array
         if (!Array.isArray(feedbacks)) {
@@ -102,6 +112,7 @@ async function fetchFeedbacks(filter = 'all') {
         const feedbackContainer = document.getElementById('feedbackContainer');
         feedbackContainer.innerHTML = ''; // Clear existing feedbacks
 
+        // Append each feedback to the container
         feedbacks.forEach(feedback => {
             const feedbackBox = document.createElement('div');
             feedbackBox.classList.add('feedback-box');
@@ -120,16 +131,17 @@ async function fetchFeedbacks(filter = 'all') {
                     ${feedback.verified === 'N' ? `<button class="respond-btn" onclick="confirmRespond(this)">Respond</button>` : ''}
                 </div>
             `;
-            
             feedbackContainer.appendChild(feedbackBox);
         });
     } catch (error) {
         console.error('Error fetching feedbacks:', error);
     }
 }
+
+// Update the notification count based on unseen notifications
 async function updateNotificationCount() {  
     const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token'); // Retrieve token from local storage
+    const token = localStorage.getItem('token'); 
 
     try {
         const response = await fetch(`/notifications/userNotif/${username}`, {
@@ -159,32 +171,35 @@ async function updateNotificationCount() {
 
         if (error.message.includes('Token has expired')) {
             alert('Session expired. Please log in again.');
-            localStorage.removeItem('jwtToken'); // Clear the token
-            window.location.href = '/login'; // Redirect to login page
+            localStorage.removeItem('jwtToken'); 
+            window.location.href = '/login'; 
         } else if (error.message.includes('Invalid token')) {
             alert('Invalid token. Please log in again.');
-            localStorage.removeItem('jwtToken'); // Clear the token
-            window.location.href = '/login'; // Redirect to login page
+            localStorage.removeItem('jwtToken'); 
+            window.location.href = '/login'; 
         } else if (error.message.includes('Forbidden')) {
             alert('You do not have permission to access this resource.');
-            window.location.href = '/'; // Redirect to home page
+            window.location.href = '/'; 
         } else {
             alert(`An error occurred: ${error.message}`);
         }
     }
 }
 
+// Filter feedbacks based on the selected filter value
 function filterFeedbacks() {
     const filterValue = document.getElementById('filterDropdown').value;
     fetchFeedbacks(filterValue);
 }
 
+// Display delete confirmation modal and store the feedback ID to be deleted
 function confirmDelete(button) {
     const modal = document.getElementById('deleteConfirmationModal');
     modal.style.display = 'block';
     modal.dataset.feedbackId = button.closest('.feedback-box').id;
 }
 
+// Delete the feedback and its associated notification from the server
 async function deleteFeedback() {
     const modal = document.getElementById('deleteConfirmationModal');
     const feedbackId = modal.dataset.feedbackId;
@@ -193,20 +208,21 @@ async function deleteFeedback() {
     const token = localStorage.getItem('token');
 
     try {
-        const notificationResponse = await fetch(`/notification/${feedbackId.split('-')[1]}`,{
+        // Delete notification associated with the feedback
+        const notificationResponse = await fetch(`/notification/${feedbackId.split('-')[1]}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            } 
-        }
-    )
+            }
+        });
 
+        // Delete feedback from the server
         const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {  
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Include token in request headers
+                'Authorization': `Bearer ${token}`
             }
         });
 
@@ -221,7 +237,7 @@ async function deleteFeedback() {
     }
 }
 
-
+// Close the modal for delete or respond actions
 function closeModal() {
     const deleteModal = document.getElementById('deleteConfirmationModal');
     const respondModal = document.getElementById('respondConfirmationModal');
@@ -235,6 +251,7 @@ function closeModal() {
     }
 }
 
+// Display respond confirmation modal and store the feedback details to be responded to
 function confirmRespond(button) {
     const feedbackBox = button.closest('.feedback-box');
     const feedbackDetails = {
@@ -253,9 +270,8 @@ function confirmRespond(button) {
     modal.dataset.feedbackId = feedbackBox.id;
 }
 
-
+// Navigate to the respond page after confirming the respond action
 function respondFeedback() {
-    const modal = document.getElementById('respondConfirmationModal');
     closeModal();
     window.location.href = 'FeedbackResponse.html';
 }
