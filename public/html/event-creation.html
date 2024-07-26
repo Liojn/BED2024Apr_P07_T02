@@ -14,7 +14,10 @@
             <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
             <nav>
                 <div class="nav">
-                    <a href="#"><i class="fa-regular fa-bell fa-xl"></i></i></a>
+                    <a href="../html/NotificationScreen.html" class="notification-icon">
+                        <i class="fa-regular fa-bell fa-xl"></i>
+                        <span id="notification-count" class="notification-count"></span>
+                    </a>
                     <a href="homePage.html">Home</a>
                     <a id="currentpage" href="event.html">Event</a>
                     <a href="#">Donate</a>
@@ -36,22 +39,22 @@
             </div>
             <form id="eventForm">
                 <label for="title">Post Title:</label>
-                <input type="text" id="title" name="title" required>
+                <input type="text" id="title" name="title" placeholder="Minimum 3 characters, Max 250 characters" required >
             
-                <label for="date">Date:</label>
+                <label for="date">Date: (cannot be earlier than today's date)</label>
                 <input type="date" id="date" name="date" required>
             
                 <label for="start-time">Start Time:</label>
                 <input type="time" id="start-time" name="start-time"  required>
             
-                <label for="end-time">End Time:</label>
+                <label for="end-time">End Time: (cannot be eariler than Start Time)</label>
                 <input type="time" id="end-time" name="end-time" required>
             
                 <label for="location">Location:</label>
                 <input type="text" id="location" name="location" placeholder="Include Address Name, followed by Postal Code. (Eg. Ngee Ann Poly 650535)" required>
             
                 <label for="description">Post Description:</label>
-                <textarea id="description" name="description" required></textarea>
+                <textarea id="description" name="description" placeholder="Minimum 10 characters, Maximum 800 characters" required></textarea>
             
                 <button type="submit">Publish</button>
             </form>

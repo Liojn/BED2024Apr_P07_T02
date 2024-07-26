@@ -8,7 +8,7 @@ const axios = require("axios"); //making http req
 const PDFDocument = require('pdfkit'); //pdf creation
 const path = require('path'); //for joining paths
 const fs = require('fs'); //for file system
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 
 class Event {
@@ -147,27 +147,25 @@ class Event {
     }
 
     static async registerEvent(eventId, username){
-        const connection = await sql.connect(dbConfig);
-        
+        const event = await this.getEventbyId(eventId);
+
+        const connection = await sql.connect(dbConfig); 
         try{
-            const event = await this.getEventbyId(eventId);
-            const eventDate = event.date;
-            if (!event){
+            if (!event) {
                 const eventNotFoundError = new Error("Event does not exist.");
                 eventNotFoundError.code = 404; //Not Found
                 throw eventNotFoundError;
+            } else {
+                // Check if current date/time is after the event date
+                const currentDateTime = new Date();
+                const eventDateTime = new Date(event.date);
+
+                if (currentDateTime > eventDateTime) {
+                    const registrationClosedError = new Error("Registration for this event is closed.");
+                    registrationClosedError.code = 403; // Forbidden
+                    throw registrationClosedError;
+                }
             }
-
-            // Check if current date/time is after the event date
-            const currentDateTime = new Date();
-            const eventDateTime = new Date(eventDate);
-
-            if (currentDateTime > eventDateTime) {
-                const registrationClosedError = new Error("Registration for this event is closed.");
-                registrationClosedError.code = 403; // Forbidden
-                throw registrationClosedError;
-            }
-
             const sqlQuery = "INSERT INTO EventRegistrations (username, eventId, registrationTime) VALUES (@username, @eventId, GETDATE()); SELECT SCOPE_IDENTITY() AS registrationId, @eventId AS eventId, GETDATE() AS registrationTime;"
 
             const request = connection.request();
@@ -187,12 +185,8 @@ class Event {
         }
         catch (error) { 
             console.error("Database error:", error);
-            if (error.code === 404) {
-                // Event does not exist
-                throw error;
-            } else if (error.code === 403) {
-                // Registration closed
-                throw error;
+            if (error.code === 404 || error.code === 403) {
+                throw error; 
             } else if (error.originalError && error.originalError.info && error.originalError.info.number === 2627) {
                 //Duplicate key error, username and eventId is unique pair
                 const duplicateError = new Error("User is already registered for this event.");
@@ -200,12 +194,13 @@ class Event {
                 throw duplicateError;
             } else {
                 //Other errors
+                console.log(error);
                 const serverError = new Error("An error occurred during registration.");
                 serverError.code = 500; // Internal Server Error
                 throw serverError;
             };
         } finally {
-            connection.close();
+            await connection.close();
         }
     
     }
@@ -354,7 +349,7 @@ class Event {
             }
 
             doc.end(); //finalize document
-            //Checks if the file exists after writing and resolves with the file path if it does.
+            //Check if the file exists after writing & resolves with the file path if it does.
             //Rejects promise if there's an error writing the PDF or if the file doesn't exist.
             return new Promise((resolve, reject) => {
                 writeStream.on('finish', () => {
@@ -383,21 +378,18 @@ class Event {
 
 //formatting functions, for PDF Event Details
 function formatDate(date) {
-    return moment(date).format('DD MMMM YYYY');
+    return moment.utc(date).format('DD MMMM YYYY'); //use UTC due to unwanted conversion from DB, alr in SGT
 }
+
   
-//function to format time as HH:mm
+//Format time as hh:mm A (12-hour)
 function formatTime(time) {
-    //return moment(time).format('HH:mm'); // For 24-hour format
-    return moment(time).format('hh:mm A'); // For 12-hour format with AM/PM
+    //return moment.utc(time).format('HH:mm');
+    return moment.utc(time).format('hh:mm A');
 }
 
-//function for registration timing uses
 function formatDateTime(dateString) {
-    // Parse the date string with moment
-    const date = moment(dateString, 'YYYY-MM-DD HH:mm:ss.SSS');
-
-    // Format date and time
+    const date = moment.utc(dateString, 'YYYY-MM-DD HH:mm:ss.SSS');
     return date.format('DD MMMM YYYY hh:mm:ss A');
 }
 

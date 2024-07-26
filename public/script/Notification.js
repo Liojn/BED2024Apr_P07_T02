@@ -201,6 +201,7 @@ function confirmDelete(notification_id) {
 }
 
 async function deleteNotification(notification_id) {
+    console.log(notification_id)
     const token = localStorage.getItem('token');
     try {
         const response = await fetch(`/notifications/${notification_id}`, {
@@ -210,7 +211,7 @@ async function deleteNotification(notification_id) {
                 'Content-Type': 'application/json'
             }
         });
-
+        console.log(response)
         if (response.ok) {
             alert('Notification deleted successfully!');
             document.getElementById(`notification-${notification_id}`).remove();
@@ -225,7 +226,7 @@ async function deleteNotification(notification_id) {
 
 async function updateNotificationCount() {  
     const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
 
     try {
         const response = await fetch(`/notifications/userNotif/${username}`, {
@@ -235,7 +236,8 @@ async function updateNotificationCount() {
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         const notifications = await response.json();
@@ -250,10 +252,24 @@ async function updateNotificationCount() {
             notificationCountElement.style.display = 'none';
         }
     } catch (error) {
-        console.error('Error fetching notifications:', error);
+        console.error('Fetch error:', error);
+
+        if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../html/homePage.html'; // Redirect to home page
+        } else {
+            alert(`An error occurred: ${error.message} `);
+        }
     }
 }
-
 async function fetchStaffUsername(userId) {
     console.log("hi");
     const token = localStorage.getItem('token');

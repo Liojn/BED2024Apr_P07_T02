@@ -1,6 +1,6 @@
 const dbConfig = require("../dbConfig");
 const sql = require("mssql");
-const apiKey = '40c8f517-2100-47ec-9aca-4963466a3b51'
+const apiKey = process.env.NONPROFITAPIKEY;
 const apiUrl = 'https://api.globalgiving.org/api/public/orgservice/all/organizations';
 const axios = require('axios');
 const User = require("./user");
@@ -19,11 +19,29 @@ class Donation {
         const request = connection.request();
         const result = await request.query(sqlQuery);
         connection.close();
-    
-        return result.recordset.map(row => {
-            // const datetime = new Date(row.datetime).toLocaleString(); // Format the datetime
-            return new Donation(row.id, row.amount, row.datetime, row.company); // Return a new Donation object with formatted datetime
-        });
+        console.log(result)
+        return result.recordset;
+        // return result.recordset.map(row => {
+        //     // const datetime = new Date(row.datetime).toLocaleString(); // Format the datetime
+        //     return new Donation(row.id, row.amount, row.datetime, row.company); // Return a new Donation object with formatted datetime
+        // });
+    }
+    static async getAllStats() {
+        const connection = await sql.connect(dbConfig);
+        const sqlQuery = `SELECT COUNT(*) as numberOfDonations, 
+               AVG(amount) as averageDonation, 
+               SUM(amount) as totalDonations, 
+               MAX(amount) as largestSingleDonation 
+        FROM donations;`;
+        const request = connection.request();
+        const result = await request.query(sqlQuery);
+        connection.close();
+        //console.log(result)
+        return result.recordset;
+        // return result.recordset.map(row => {
+        //     // const datetime = new Date(row.datetime).toLocaleString(); // Format the datetime
+        //     return new Donation(row.id, row.amount, row.datetime, row.company); // Return a new Donation object with formatted datetime
+        // });
     }
     
 
@@ -34,7 +52,7 @@ class Donation {
         const request = connection.request();
         request.input("Username", Username);
         const result = await request.query(sqlQuery);
-        console.log(result)
+        //console.log(result)
         connection.close();
         return result.recordset
     }
@@ -54,7 +72,7 @@ class Donation {
         request.input("company", donationData.company);
     
         const result = await request.query(sqlQuery);
-        console.log(result); // Log the entire result
+        //console.log(result); // Log the entire result
     
         connection.close();
     
@@ -67,12 +85,16 @@ class Donation {
     
     static async getCount() {
         const connection = await sql.connect(dbConfig);
-        const sqlQuery = `SELECT COUNT(*) FROM DONATIONS`;
+        const sqlQuery = `SELECT COUNT(*) as numberOfDonations FROM DONATIONS`;
         const request = connection.request();
         const result = await request.query(sqlQuery);
         connection.close();
 
-        return result.recordset[0].count;
+        if (result.recordset && result.recordset.length > 0) {
+            return {
+                count: result.recordset[0].count,
+            };
+        };
     }
     static async fetchNonProfitNames() {
         try {
@@ -84,25 +106,19 @@ class Donation {
             });
     
             const organizations = response.data.organizations.organization;
+            //console.log(organizations)
             return organizations.map(org => org.name);
         } catch (error) {
             console.error('Error fetching non-profit company names:', error.message);
             return [];
         }
     }
-    // ORDER BY donation_date DESC LIMIT 10
-    static async getRealTimeDonation(){
-        const connection = await sql.connect(dbConfig);
-        const sqlQuery = `SELECT amount, datetime FROM Donations`;
-        const request = connection.request();
-        const result = await request.query(sqlQuery);
-        connection.close();
-        return result.recordset
-    }
+
+
+
 
 
 
     
 }
-
 module.exports = Donation;

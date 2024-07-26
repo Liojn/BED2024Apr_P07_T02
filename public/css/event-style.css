@@ -1,3 +1,22 @@
+/*For Kiefer NOTIFICATION BELL CSS*/
+.notification-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-count {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 12px;
+    display: none; /* Hide by default */
+}
+
+
 /*Nav Bar Header*/
 #logined-nav {
     overflow: hidden;

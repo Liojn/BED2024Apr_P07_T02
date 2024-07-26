@@ -15,8 +15,16 @@ const authMiddleware = (req, res, next) => {
 
     jwt.verify(token, secret_key, (err, decoded) => {
         if (err) {
-            console.log("Failed to authenticate token", err);
-            return res.status(403).json({ message: "Forbidden." });
+            if (err.name === 'TokenExpiredError') {
+                console.log("Token has expired", err);
+                return res.status(403).json({ message: "Forbidden. Token has expired." });
+            } else if (err.name === 'JsonWebTokenError') {
+                console.log("Invalid token", err);
+                return res.status(403).json({ message: "Forbidden. Invalid token." });
+            } else {
+                console.log("Failed to authenticate token", err);
+                return res.status(403).json({ message: "Forbidden." });
+            }  
         }
 
         const requestedEndpoint = req.url;
@@ -43,7 +51,7 @@ const authMiddleware = (req, res, next) => {
             "/feedbacks/[0-9]+" :["Staff", "Student"], // For updating feedback
 
             //Notification Routes
-            "/notifications/userNotif/[0-9]": ["Staff", "Student"],// For get all notification by user id
+            "/notifications/userNotif/[a-zA-Z0-9]+": ["Staff", "Student"],// For get all notification by user id
             "/notifications/[0-9]+" : ["Staff", "Student"], //For get notification by Id
             "/notifications" : ["Staff"], // Creating notifications
             "/notifications/[0-9]+" : ["Staff", "Student"], // Deleting notification
@@ -57,7 +65,8 @@ const authMiddleware = (req, res, next) => {
             "/donations": ["Staff", "Student"],//Creating donations
             "/donations/username": ["Staff", "Student"],// For get all donation if student
             "/donations/realtime":["Staff", "Student"],//To get realtime donation for graph
-
+            "/stats":["Staff","Student"],//To get donation stats
+          
             // Users route 
             "/users": ["Staff"], // GET all users (staff only)
             "/users/checkUser": ["Public"], // GET check if user exists (public access)
@@ -67,9 +76,11 @@ const authMiddleware = (req, res, next) => {
             "/users/[0-9]+/update": ["Student", "Staff"], // PUT update user
             "/users/[0-9]+/delete": ["Student", "Staff"], // DELETE user (own account)
             "/users/[0-9]+/admin/delete": ["Staff"], // DELETE any user (staff only)
-        }
 
+            
+        }
         const pathOnly = requestedEndpoint.split('?')[0]; //exclude query
+        console.log(pathOnly);
         const authorizedRole = Object.entries(authorizedRoles).find(
             ([endpoint, roles]) => {
               const regex = new RegExp(`^${endpoint}$`); // Create RegExp from endpoint

@@ -4,29 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DashboardScreen</title>
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
 </head>
 <link rel="stylesheet" href="../css/donationStats.css">
 <body>
-    <div id="eventwrapper">
-        <header id="logined-nav">
-            <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
-            <nav>
-                <div class="nav">
-                    <a href="#"><i class="fa-regular fa-bell fa-xl"></i></a>
-                    <a href="homePage.html">Home</a>
-                    <a  href="event.html">Event</a>
-                    <a id = "currentpage" href="#">Donate</a>
-                    <a href="FeedbackResponse.html" id = "contactus">Contact</a>
-                    <a href="profilePage.html">Account</a>
-                </div>
-            </nav>
-            
-        </header>
-    </div>
+  <div id="eventwrapper">
+    <header id="logined-nav">
+        <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
+        <nav>
+            <div class="nav">
+                <a href="../html/NotificationScreen.html" class="notification-icon">
+                    <i class="fa-regular fa-bell fa-xl"></i>
+                    <span id="notification-count" class="notification-count"></span>
+                </a>
+                <a href="../html/HomePage.html">Home</a>
+                <a href="../html/event.html">Event</a>
+                <a href="#">Donate</a>
+                <a id="currentpage" href="../html/FeedbackUser.html">Contact</a>
+                <a href="#">Account</a>
+            </div>
+        </nav>
+    </header>
+</div>
 <div style="max-width: 7xl; margin: auto; width: 100%; padding-bottom: 8ch;background-color: rgba(247,248,252,255);border: 0.01px solid transparent;">
   <!-- Header -->
   <div style="max-width: 7xl; margin: auto; width: 100%;">
     <!-- Header -->
+    <div onclick = "back()" class="back-button">Back</div>
     <div id="header-container">
         <h2>Donation Statistics</h2>
     </div>
@@ -46,31 +51,32 @@
         </div> -->
         <!-- <span style="font-size: 1.875rem; font-weight: 700;">$8,500</span> -->
     </div>
-    <div style="padding: 1.5rem; gap: 5rem;" class = "stat-holder">
-        <div class="stat-card">
-            <span>Number of Donations</span>
-            <span>350</span>
-        </div>
-        <div class="stat-card">
-            <span>Average Donation</span>
-            <span>$24.29</span>
-        </div>
-        <div class="stat-card">
-            <span>Total Donations</span>
-            <span>$8500</span>
-        </div>
-        <div class="stat-card">
-            <span>Largest Single Donation</span>
-            <span>$85</span>
-        </div>
+    <div style="padding: 1.5rem; gap: 5rem;" class="stat-holder">
+      <div class="stat-card">
+          <span>Number of Donations</span>
+          <span id="number-of-donations">Loading...</span>
+      </div>
+      <div class="stat-card">
+          <span>Average Donation</span>
+          <span id="average-donation">Loading...</span>
+      </div>
+      <div class="stat-card">
+          <span>Total Donations</span>
+          <span id="total-donations">Loading...</span>
+      </div>
+      <div class="stat-card">
+          <span>Largest Single Donation</span>
+          <span id="largest-single-donation">Loading...</span>
+      </div>
+  </div>
     </div>
 </div>
 
   <!-- Donation Charts -->
   <div style="gap: 1.5rem;">
     <div style="background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
-      <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Trend</h3>
-      <div style="height: 20rem;">
+      <h3 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Trend</h3>
+      <div style="height: 40rem;">
         <select id="timeFilter">
           <option value="hour">Hour</option>
           <option value="day">Day</option>
@@ -97,125 +103,82 @@
     </div>
 
     <div style="background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
-      <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Sources</h3>
+      <h3 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Sources</h3>
       <div style="height: 30rem;" >
         <!-- PieChart component structure -->
             <canvas id="donationPieChart"></canvas>
       </div>     
     </div>
-    <div style="grid-column: span 2; background-color: rgba(247,248,252,255); border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); padding: 1rem; gap: 1rem;">
-        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem;">Donor Demographics</h3>
-        <div style="height: 16rem;">
-          <!-- LineChart component structure -->
-          <svg>
-            <!-- XAxis and YAxis structure -->
-            <!-- Tooltip structure -->
-            <!-- Line structure -->
-          </svg>
-        </div>
-      </div>
   </div>
 
 
   <!-- Recent Donations -->
-  <div style="grid-column: span 2; background-color: white; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);">
-    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E5E7EB; padding: 1rem;">
-      <h3 style="font-size: 1.125rem; font-weight: 600;">Recent Donations</h3>
-      <button style="background-color: #667eea; color: white; padding: 0.3rem 0.75rem; border-radius: 0.375rem; cursor: pointer;">View All</button>
-    </div>
-    <div style="border-top: 1px solid #e5e7eb;">
-      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
-        <div>
-          <span style="font-size: 0.875rem; color: #6B7280;">4:37 AM</span>
-          <p style="font-size: 0.875rem;">Received $100 donation from John Smith</p>
-          <p style="font-size: 0.875rem; color: #6B7280;">
-            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="7" rx="2" ry="2"/><path d="M16 1v6M8 1v6m-5 9h14a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v0a2 2 0 0 1 2-2z"/></svg> Credit Card</span>
-          </p>
-        </div>
-        <div style="text-align: right;">
-          <p style="font-size: 0.875rem;">John Smith</p>
-          <p style="font-size: 0.875rem;">$100</p>
-        </div>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
-        <div>
-          <span style="font-size: 0.875rem; color: #6B7280;">2:14 AM</span>
-          <p style="font-size: 0.875rem;">Received $50 donation from Lisa Johnson</p>
-          <p style="font-size: 0.875rem; color: #6B7280;">
-            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10.29A15.3 15.3 0 0 1 12 22c-1.38 0-2.71-.18-4-.53"/></svg> Website</span>
-          </p>
-        </div>
-        <div style="text-align: right;">
-          <p style="font-size: 0.875rem;">Lisa Johnson</p>
-          <p style="font-size: 0.875rem;">$50</p>
-        </div>
-      </div>
-      
-      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
-        <div>
-          <span style="font-size: 0.875rem; color: #6B7280;">12:59 AM</span>
-          <p style="font-size: 0.875rem;">Received $25 donation from Michael Lee</p>
-          <p style="font-size: 0.875rem; color: #6B7280;">
-            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="6" r="1"/><path d="M12 10v4l2 2"/></svg> Globe</span>
-          </p>
-        </div>
-        <div style="text-align: right;">
-          <p style="font-size: 0.875rem;">Michael Lee</p>
-          <p style="font-size: 0.875rem;">$25</p>
-        </div>
-      </div>
-      
-      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
-        <div>
-          <span style="font-size: 0.875rem; color: #6B7280;">Yesterday at 4:37 PM</span>
-          <p style="font-size: 0.875rem;">Received $75 donation from Emily Davis</p>
-          <p style="font-size: 0.875rem; color: #6B7280;">
-            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="7" rx="2" ry="2"/><path d="M16 1v6M8 1v6m-5 9h14a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v0a2 2 0 0 1 2-2z"/></svg> Credit Card</span>
-          </p>
-        </div>
-        <div style="text-align: right;">
-          <p style="font-size: 0.875rem;">Emily Davis</p>
-          <p style="font-size: 0.875rem;">$75</p>
-        </div>
-      </div>
-      
-      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;">
-        <div>
-          <span style="font-size: 0.875rem; color: #6B7280;">Yesterday at 10:22 AM</span>
-          <p style="font-size: 0.875rem;">Received $30 donation from David Wilson</p>
-          <p style="font-size: 0.875rem; color: #6B7280;">
-            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10.29A15.3 15.3 0 0 1 12 22c-1.38 0-2.71-.18-4-.53"/></svg> Website</span>
-          </p>
-        </div>
-        <div style="text-align: right;">
-          <p style="font-size: 0.875rem;">David Wilson</p>
-          <p style="font-size: 0.875rem;">$30</p>
-        </div>
-      </div>
-      
-      <div style="display: flex; justify-content: space-between; padding: 0.75rem 1rem;">
-        <div>
-          <span style="font-size: 0.875rem; color: #6B7280;">June 3</span>
-          <p style="font-size: 0.875rem;">Received $20 donation from Sarah Brown</p>
-          <p style="font-size: 0.875rem; color: #6B7280;">
-            <span>Source: <svg style="display: inline; height: 1rem; width: 1rem;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4"/><path d="M12 20a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/><path d="M4.93 4.93 19.07 19.07"/></svg> Gift</span>
-          </p>
-        </div>
-        <div style="text-align: right;">
-          <p style="font-size: 0.875rem;">Sarah Brown</p>
-          <p style="font-size: 0.875rem;">$20</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <h3 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Sources</h3>
+  <div id = "recentDonationContainer"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+//IMPORTANT, for authentication
+const token = localStorage.getItem("token");
+console.log(token);
+function back(){
+  window.location.href = "donationPage.html"
+}
 document.addEventListener('DOMContentLoaded', (event) => {
+    fetchRealTimeDonationData('day');
     fetchDonationData();
     initializeRealTimeLineChart();
+    fetchDonationStatistics();
+    fetchRecentDonations();
 });
+updateNotificationCount();
+
+async function updateNotificationCount() {  
+    const username = localStorage.getItem('username');
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
+
+    try {
+        const response = await fetch(`/notifications/userNotif/${username}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const notifications = await response.json();
+
+        const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
+
+        const notificationCountElement = document.getElementById('notification-count');
+        if (unseenCount > 0) {
+            notificationCountElement.style.display = 'inline';
+            notificationCountElement.textContent = unseenCount;
+        } else {
+            notificationCountElement.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+
+        if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../html/homePage.html'; // Redirect to home page
+        } else {
+            alert(`An error occurred: ${error.message} `);
+        }
+    }
+}
 
 const timeFilter = document.getElementById('timeFilter');
 timeFilter.addEventListener('change', function() {
@@ -223,13 +186,41 @@ timeFilter.addEventListener('change', function() {
     console.log(filter);
     fetchRealTimeDonationData(filter);
 });
+async function fetchDonationStatistics(){
+      const response = await fetch("http://localhost:3000/stats", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    const donations = await response.json();
+    console.log(donations)
+    console.log(donations[0].numberOfDonations)
+    document.getElementById('number-of-donations').textContent = donations[0].numberOfDonations;
+    document.getElementById('average-donation').textContent = `$${donations[0].averageDonation}`;
+    document.getElementById('total-donations').textContent = `$${donations[0].totalDonations}`;
+    document.getElementById('largest-single-donation').textContent = `$${donations[0].largestSingleDonation}`;
 
-function fetchDonationData() {
-    fetch('http://localhost:3000/donations')
-        .then(response => response.json())
-        .then(data => {
-            const companyNames = data.map(donation => donation.company);
-            const donationAmounts = data.map(donation => donation.amount);
+}
+async function fetchDonationData() {
+    try{
+        const response = await fetch("http://localhost:3000/donations", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const donations = await response.json();
+            const companyNames = donations.map(donation => donation.company);
+            const donationAmounts = donations.map(donation => donation.amount);
 
             const companyTotals = {};
             companyNames.forEach((company, index) => {
@@ -243,10 +234,24 @@ function fetchDonationData() {
             const values = Object.values(companyTotals);
 
             createPieChart(labels, values);
-        })
-        .catch(error => {
-            console.error('Error fetching donation data:', error);
-        });
+          } catch{
+            console.log(error);
+        if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); 
+            window.location.href = '../Index.html';
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../Index.html'; // Redirect to home page
+        } else {
+            alert('An error occurred: ${error.message}');
+        }
+      }
+          
 }
 
 function createPieChart(labels, values) {
@@ -298,14 +303,17 @@ function initializeRealTimeLineChart() {
                 x: {
                     type: 'time',
                     time: {
-                        unit: 'hour'
+                        unit: 'day' // Default unit
                     },
                     adapters: {
                         date: {
+                            library: 'luxon',
                             locale: 'en',
                             timezone: 'UTC'
                         }
-                    }
+                    },
+                    min: null,
+                    max: null
                 },
                 y: {
                     beginAtZero: true
@@ -314,53 +322,225 @@ function initializeRealTimeLineChart() {
         }
     });
 
-    fetchRealTimeDonationData(); // Fetch initial data
 }
+async function fetchRecentDonations() {
+    try {
+        const response = await fetch('http://localhost:3000/donations', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Include token if authentication is required
+            }
+        });
 
-function fetchRealTimeDonationData(filter) {
-    fetch('http://localhost:3000/donations')
-        .then(response => response.json())
-        .then(data => {
-            const labels = data.map(donation => new Date(donation.datetime));
-            const amounts = data.map(donation => donation.amount);
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
 
+        const donations = await response.json();
+        updateRecentDonationsUI(donations);
+    } catch (error) {
+      console.log(error);
+        if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../html/homePage.html'; // Redirect to home page
+        } else {
+            alert(`Error fetching recent donations:', error`);
+        }
+    }
+}
+  
+function updateRecentDonationsUI(donations) {
+    const container = document.getElementById('recentDonationContainer'); // Adjust selector as needed
+    container.innerHTML = '';
+
+    donations.forEach(donation => {
+        const donationElement = document.createElement('div');
+        donationElement.style.display = 'flex';
+        donationElement.style.justifyContent = 'space-between';
+        donationElement.style.padding = '0.75rem 1rem';
+        donationElement.style.borderBottom = '1px solid #e5e7eb';
+        const date = new Date(Date.parse(donation.datetime));
+        const localDate = date.toLocaleDateString();
+        const localTime = date.toLocaleTimeString();
+        donationElement.innerHTML = `
+            <div>
+                <span style="font-size: 0.875rem; color: #6B7280;">${localDate} ${localTime}</span>
+                <p style="font-size: 0.875rem;">${donation.company} received $${donation.amount} donation from ${donation.Username}</p>
+                <p style="font-size: 0.875rem; color: #6B7280;">
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <p style="font-size: 0.875rem;">${donation.Username}</p>
+                <p style="font-size: 0.875rem;">$${donation.amount}</p>
+            </div>
+        `;
+
+        container.appendChild(donationElement);
+    });
+}
+async function fetchRealTimeDonationData(filter) {
+    try{
+      console.log("FETCHING REAL TIME")
+        const response = await fetch("/donations", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+            let labels, amounts;
+            const data = await response.json(); 
+            // Aggregate data based on the filter
+            ({ labels, amounts } = aggregateDataByFilter(data, filter));
             // Update chart data
             donationLineChart.data.labels = labels;
             donationLineChart.data.datasets[0].data = amounts;
 
-            // Update chart unit based on filter
+            // Adjust the time range displayed on the x-axis
+            const timeRange = getTimeRangeForFilter(filter);
+            const latestTime = labels[labels.length - 1].getTime();
+            donationLineChart.options.scales.x.min = new Date(latestTime - timeRange);
+            donationLineChart.options.scales.x.max = new Date(latestTime);
+
+            // Update chart unit and format
             donationLineChart.options.scales.x.time.unit = getChartUnit(filter);
             donationLineChart.options.scales.x.time.tooltipFormat = getFormatOptions(filter);
 
+            // Calculate the maximum value for the y-axis
+            const maxAmount = Math.max(...amounts);
+            donationLineChart.options.scales.y.max = maxAmount;
+
             // Update the chart
+            console.log('UPDATING')
+            console.log(data)
             donationLineChart.update();
-        })
-        .catch(error => {
+        }   
+      catch (error){
             console.error('Error fetching real-time donation data:', error);
+
+            if (error.message.includes('Token has expired')) {
+                alert('Session expired. Please log in again.');
+                localStorage.removeItem('token'); // Clear the token
+                window.location.href = '../Index.html'; // Redirect to login page
+            } else if (error.message.includes('Invalid token')) {
+                alert('Invalid token. Please log in again.');
+                localStorage.removeItem('token'); // Clear the token
+                window.location.href = '../Index.html'; // Redirect to login page
+            } else if (error.message.includes('Forbidden')) {
+                alert('You do not have permission to access this resource.');
+                window.location.href = '../html/homePage.html'; // Redirect to home page
+            } else {
+                alert(`Error fetching real-time donation data:', error`);
+            }
+      }
+}
+
+function aggregateDataByFilter(data, filter) {
+    // Process data differently based on the selected filter (hour, day, month, year)
+    let labels = [];
+    let amounts = [];
+
+    if (filter === 'hour') {
+        // More detailed, frequent data points
+        data.forEach(donation => {
+            labels.push(new Date(donation.datetime));
+            amounts.push(donation.amount);
         });
+    } else if (filter === 'day') {
+        // Aggregate data by day
+        let dailyData = {};
+        data.forEach(donation => {
+            let date = new Date(donation.datetime);
+            let dayKey = date;
+            if (!dailyData[dayKey]) {
+                dailyData[dayKey] = 0;
+            }
+            dailyData[dayKey] += donation.amount;
+        });
+        labels = Object.keys(dailyData).map(dateStr => new Date(dateStr));
+        amounts = Object.values(dailyData);
+    } else if (filter === 'month') {
+        // Aggregate data by month
+        let monthlyData = {};
+        data.forEach(donation => {
+            let date = new Date(donation.datetime);
+            let monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+            if (!monthlyData[monthKey]) {
+                monthlyData[monthKey] = 0;
+            }
+            monthlyData[monthKey] += donation.amount;
+        });
+        labels = Object.keys(monthlyData).map(monthStr => new Date(monthStr + '-01'));
+        amounts = Object.values(monthlyData);
+    } else if (filter === 'year') {
+        // Aggregate data by year
+        let yearlyData = {};
+        data.forEach(donation => {
+            let date = new Date(donation.datetime);
+            let yearKey = date.getFullYear();
+            if (!yearlyData[yearKey]) {
+                yearlyData[yearKey] = 0;
+            }
+            yearlyData[yearKey] += donation.amount;
+        });
+        labels = Object.keys(yearlyData).map(yearStr => new Date(yearStr + '-01-01'));
+        amounts = Object.values(yearlyData);
+    }
+
+    return { labels, amounts };
+}
+
+function getTimeRangeForFilter(filter) {
+    switch (filter) {
+        case 'hour':
+            return 24 * 60 * 60 * 1000; // Last 24 hours
+        case 'day':
+            return 30 * 24 * 60 * 60 * 1000; // Last 30 days
+        case 'month':
+            return 365 * 24 * 60 * 60 * 1000; // Last 12 months
+        case 'year':
+            return 10 * 365 * 24 * 60 * 60 * 1000; // Last 10 years
+        default:
+            return 30 * 24 * 60 * 60 * 1000; // Default to 30 days
+    }
 }
 
 function getFormatOptions(filter) {
     switch (filter) {
-        case 'day':
-            return { day: '2-digit', month: '2-digit', year: 'numeric' };
         case 'hour':
-            return { hour: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' };
+            return 'MM-DD'; 
+        case 'day':
+            return 'DD';       
         case 'month':
-            return { month: 'short', year: 'numeric' };
+            return 'MMMM yyyy';         
         case 'year':
-            return { year: 'numeric' };
+            return 'yyyy';             
         default:
-            return { day: '2-digit', month: '2-digit', year: 'numeric' };
+            return 'YYYY-MM-DD';       
     }
 }
 
+
 function getChartUnit(filter) {
     switch (filter) {
-        case 'day':
-            return 'day';
         case 'hour':
             return 'hour';
+        case 'day':
+            return 'day';
         case 'month':
             return 'month';
         case 'year':
