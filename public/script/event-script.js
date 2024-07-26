@@ -76,7 +76,7 @@ const pdfPrint = async (event) => {
             alert('Session expired. Please log in again.');
             localStorage.removeItem('token'); // Clear the token
             window.location.href = '../Index.html'; //Redirect to login page
-        } else if (error.message.includes('token')) {
+        } else if (error.message.includes('Invalid token')) {
             alert('Invalid token. Please log in again.');
             localStorage.removeItem('token'); // Clear the token
             window.location.href = '../Index.html'; //Redirect to login page

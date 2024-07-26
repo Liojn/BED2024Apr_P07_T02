@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewAllUsersBtn = document.getElementById('viewAllUsersBtn');
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
+    const backToProfileBtn = document.getElementById('backToProfileBtn');
 
     updateNotificationCount();
     async function updateNotificationCount() {  
@@ -130,8 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('errorMessage').textContent = 'Access denied. Staff only.';
     }
 
-    document.getElementById('backToProfileBtn').addEventListener('click', function() {
-        window.location.href = 'profilePage.html';
+    if (backToProfileBtn)
+        document.getElementById('backToProfileBtn').addEventListener('click', function() {
+            window.location.href = 'profilePage.html';
     });
-    
 });
