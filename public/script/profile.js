@@ -12,50 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const userId = localStorage.getItem('userId');
     const backToProfileBtn = document.getElementById('backToProfileBtn');
 
-    updateNotificationCount();
-    async function updateNotificationCount() {  
-        const username = localStorage.getItem('username');
-        const token = localStorage.getItem('token'); // Retrieve token from local storage
-    
-        try {
-            const response = await fetch(`/notifications/userNotif/${username}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-            }
-    
-            const notifications = await response.json();
-    
-            const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
-    
-            const notificationCountElement = document.getElementById('notification-count');
-            if (unseenCount > 0) {
-                notificationCountElement.style.display = 'inline';
-                notificationCountElement.textContent = unseenCount;
-            } else {
-                notificationCountElement.style.display = 'none';
-            }
-            
-        } catch (error) {
-            console.error('Fetch error:', error);
-            if (error.message.includes('Token has expired')) {
-                alert('Session expired. Please log in again.');
-                localStorage.removeItem('token'); // Clear the token
-                window.location.href = '../Index.html'; // Redirect to login page
-            } else if (error.message.includes('Invalid token')) {
-                alert('Invalid token. Please log in again.');
-                localStorage.removeItem('token'); // Clear the token
-                window.location.href = '../Index.html'; // Redirect to login page
-            } else {
-                alert(`An error occurred: ${error.message} `);
-            }
-        }
-    }
     // Fetch user data from the server
     const fetchUserData = async () => {
         try {
@@ -136,5 +92,61 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'profilePage.html';
         });
     }
+
+
+
+
+
+
+
+
+
+
+    /*
+    updateNotificationCount();
+    async function updateNotificationCount() {  
+        const username = localStorage.getItem('username');
+        const token = localStorage.getItem('token'); // Retrieve token from local storage
+    
+        try {
+            const response = await fetch(`/notifications/userNotif/${username}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+    
+            const notifications = await response.json();
+    
+            const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
+    
+            const notificationCountElement = document.getElementById('notification-count');
+            if (unseenCount > 0) {
+                notificationCountElement.style.display = 'inline';
+                notificationCountElement.textContent = unseenCount;
+            } else {
+                notificationCountElement.style.display = 'none';
+            }
+            
+        } catch (error) {
+            console.error('Fetch error:', error);
+            if (error.message.includes('Token has expired')) {
+                alert('Session expired. Please log in again.');
+                localStorage.removeItem('token'); // Clear the token
+                window.location.href = '../Index.html'; // Redirect to login page
+            } else if (error.message.includes('Invalid token')) {
+                alert('Invalid token. Please log in again.');
+                localStorage.removeItem('token'); // Clear the token
+                window.location.href = '../Index.html'; // Redirect to login page
+            } else {
+                alert(`An error occurred: ${error.message} `);
+            }
+        }
+    }
+    */
     
 });
