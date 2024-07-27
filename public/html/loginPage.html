@@ -2,12 +2,14 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Welcome Page</title>
+    <title>Login Page</title>
     <link rel="stylesheet" href="../css/login-signup-style.css">
     <link rel="icon" type="image/png" href="../assets/favicon.png">
     <script src="../script/login-signup.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Itim&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
     
 </head>
 <body>
@@ -17,10 +19,10 @@
         <!-- Login form with ID and class -->
         <form id="loginForm" class="loginForm">
             <div class="user_input">
-                <input type="email" id="email" name="Email" placeholder="Email" required>
+                <input type="email" id="email" name="Email" placeholder="Email" autocomplete="email" required>
             </div>
             <div class="user_input">
-                <input type="password" id="password" name="Password" placeholder="Password" required>
+                <input type="password" id="password" name="Password" placeholder="Password" autocomplete="current-password" required>
             </div>
             <!-- Redirect to signup page link -->
             <div class="redirect">

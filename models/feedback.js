@@ -87,12 +87,12 @@ class Feedback {
                           VALUES (@username, @email, @title, @feedback, @verified, @date); 
                           SELECT SCOPE_IDENTITY() AS Fid;`;
         const request = connection.request();
-        request.input("username", newFeedbackData.username);
-        request.input("email", newFeedbackData.email);
-        request.input("title", newFeedbackData.title);
-        request.input("feedback", newFeedbackData.feedback);
-        request.input("verified", newFeedbackData.verified);
-        request.input("date", newFeedbackData.date);
+        request.input("username", newFeedbackData.Username);
+        request.input("email", newFeedbackData.Email);
+        request.input("title", newFeedbackData.Title);
+        request.input("feedback", newFeedbackData.Feedback);
+        request.input("verified", newFeedbackData.Verified);
+        request.input("date", newFeedbackData.Date);
         const result = await request.query(sqlQuery);
         connection.close();
     

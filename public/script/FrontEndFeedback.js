@@ -164,6 +164,7 @@ async function updateNotificationCount() {
             notificationCountElement.textContent = unseenCount;
         } else {
             notificationCountElement.style.display = 'none';
+            
         }
     } catch (error) {
         console.error('Fetch error:', error);

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DashboardScreen</title>
     <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
 </head>
 <link rel="stylesheet" href="../css/donationStats.css">
 <body>
@@ -19,9 +20,9 @@
                 </a>
                 <a href="../html/HomePage.html">Home</a>
                 <a href="../html/event.html">Event</a>
-                <a href="#">Donate</a>
+                <a href="donationPage.html">Donate</a>
                 <a id="currentpage" href="../html/FeedbackUser.html">Contact</a>
-                <a href="#">Account</a>
+                <a href="profilePage.html">Account</a>
             </div>
         </nav>
     </header>
@@ -130,21 +131,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
     fetchDonationStatistics();
     fetchRecentDonations();
 });
-//updateNotificationCount();
+updateNotificationCount();
 
 async function updateNotificationCount() {  
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token'); // Retrieve token from local storage
 
     try {
-        const response = await fetch(`http://localhost:3000/notifications/userNotif/${username}`, {
+        const response = await fetch(`/notifications/userNotif/${username}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         const notifications = await response.json();
@@ -159,23 +161,25 @@ async function updateNotificationCount() {
             notificationCountElement.style.display = 'none';
         }
     } catch (error) {
-      console.log(error);
+        console.error('Fetch error:', error);
+
         if (error.message.includes('Token has expired')) {
             alert('Session expired. Please log in again.');
-            localStorage.removeItem('token'); //Clear token
-            window.location.href = '../Index.html'; //Redirect to login page
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Invalid token')) {
             alert('Invalid token. Please log in again.');
-            localStorage.removeItem('token'); 
-            window.location.href = '../Index.html';
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Forbidden')) {
             alert('You do not have permission to access this resource.');
-            window.location.href = '../Index.html'; // Redirect to home page
+            window.location.href = '../html/homePage.html'; // Redirect to home page
         } else {
-            alert('An error occurred: ${error.message}');
+            alert(`An error occurred: ${error.message} `);
         }
     }
 }
+
 const timeFilter = document.getElementById('timeFilter');
 timeFilter.addEventListener('change', function() {
     const filter = timeFilter.value;
@@ -330,7 +334,8 @@ async function fetchRecentDonations() {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         const donations = await response.json();
@@ -339,21 +344,21 @@ async function fetchRecentDonations() {
       console.log(error);
         if (error.message.includes('Token has expired')) {
             alert('Session expired. Please log in again.');
-            localStorage.removeItem('token'); //Clear token
-            window.location.href = '../Index.html'; //Redirect to login page
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Invalid token')) {
             alert('Invalid token. Please log in again.');
-            localStorage.removeItem('token'); 
-            window.location.href = '../Index.html';
+            localStorage.removeItem('token'); // Clear the token
+            window.location.href = '../Index.html'; // Redirect to login page
         } else if (error.message.includes('Forbidden')) {
             alert('You do not have permission to access this resource.');
-            window.location.href = '../Index.html'; // Redirect to home page
+            window.location.href = '../html/homePage.html'; // Redirect to home page
         } else {
-            alert('An error occurred: ${error.message}');
+            alert(`Error fetching recent donations:', error`);
         }
-      }
-    
+    }
 }
+  
 function updateRecentDonationsUI(donations) {
     const container = document.getElementById('recentDonationContainer'); // Adjust selector as needed
     container.innerHTML = '';
@@ -386,7 +391,7 @@ function updateRecentDonationsUI(donations) {
 async function fetchRealTimeDonationData(filter) {
     try{
       console.log("FETCHING REAL TIME")
-        const response = await fetch("http://localhost:3000/donations", {
+        const response = await fetch("/donations", {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -394,7 +399,8 @@ async function fetchRealTimeDonationData(filter) {
             }
         });
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
             let labels, amounts;
             const data = await response.json(); 
@@ -424,21 +430,22 @@ async function fetchRealTimeDonationData(filter) {
             donationLineChart.update();
         }   
       catch (error){
-        console.log(error);
-        if (error.message.includes('Token has expired')) {
-            alert('Session expired. Please log in again.');
-            localStorage.removeItem('token'); //Clear token
-            window.location.href = '../Index.html'; //Redirect to login page
-        } else if (error.message.includes('Invalid token')) {
-            alert('Invalid token. Please log in again.');
-            localStorage.removeItem('token'); 
-            window.location.href = '../Index.html';
-        } else if (error.message.includes('Forbidden')) {
-            alert('You do not have permission to access this resource.');
-            window.location.href = '../Index.html'; // Redirect to home page
-        } else {
-            alert('An error occurred: ${error.message}');
-        }
+            console.error('Error fetching real-time donation data:', error);
+
+            if (error.message.includes('Token has expired')) {
+                alert('Session expired. Please log in again.');
+                localStorage.removeItem('token'); // Clear the token
+                window.location.href = '../Index.html'; // Redirect to login page
+            } else if (error.message.includes('Invalid token')) {
+                alert('Invalid token. Please log in again.');
+                localStorage.removeItem('token'); // Clear the token
+                window.location.href = '../Index.html'; // Redirect to login page
+            } else if (error.message.includes('Forbidden')) {
+                alert('You do not have permission to access this resource.');
+                window.location.href = '../html/homePage.html'; // Redirect to home page
+            } else {
+                alert(`Error fetching real-time donation data:', error`);
+            }
       }
 }
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Profile Edit Page</title>
+    <link rel="stylesheet" href="../css/profile.css">
+    <script src="../script/profileEdit.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Itim&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/4aa858a7fc.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header id="logined-nav">
+        <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
+        <nav>
+            <div class="nav">
+                <a href="../html/NotificationScreen.html" class="notification-icon">
+                    <i class="fa-regular fa-bell fa-xl"></i>
+                    <span id="notification-count" class="notification-count"></span>
+                </a>
+                <a href="homePage.html">Home</a>
+                <a href="event.html">Event</a>
+                <a href="donationPage.html">Donate</a>
+                <a href="FeedbackUser.html">Contact</a>
+                <a id="currentpage" href="profilePage.html">Account</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Edit Profile</h1>
+        <form id="editProfileForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div class="buttons">
+                <button type="submit">Save Changes</button>
+                <button type="button" id="cancelBtn">Cancel</button>
+            </div>
+        </form>
+    </div>
+    
+</body>
+</html>
