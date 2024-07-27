@@ -106,8 +106,7 @@
     padding: 10px;
     display: flex;
     align-items: center;
-    margin-left: 9%;
-    margin-right: 8%;
+    justify-content: center;
 }
 
 .searchbar-event input{

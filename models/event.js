@@ -151,7 +151,7 @@ class Event {
 
         const connection = await sql.connect(dbConfig); 
         try{
-            if (!event) {
+            if (!event) { //if event is null then reject with Error
                 const eventNotFoundError = new Error("Event does not exist.");
                 eventNotFoundError.code = 404; //Not Found
                 throw eventNotFoundError;
@@ -309,7 +309,7 @@ class Event {
             let doc = new PDFDocument();
             doc.font('Helvetica');
 
-            //Pipe the PDF to a writable stream (a file)
+            //Pipe the PDF to a writable stream (a file to my server)
             const writeStream = fs.createWriteStream(outputPath);
             doc.pipe(writeStream);
 
