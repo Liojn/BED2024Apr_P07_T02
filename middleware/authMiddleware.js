@@ -70,12 +70,11 @@ const authMiddleware = (req, res, next) => {
             // Users route 
             "/users": ["Staff"], // GET all users (staff only)
             "/users/checkUser": ["Public"], // GET check if user exists (public access)
-            "/users/[0-9]+": ["Student", "Staff"], // GET user by ID
+            "/users/[0-9]+": ["Student", "Staff"], // GET user by ID and DELETE user (own account) and  PUT update user
             "/users/register": ["Public"], // POST register new user (public access)
             "/users/login": ["Public"], // POST login user (public access)
-            "/users/[0-9]+/update": ["Student", "Staff"], // PUT update user
-            "/users/[0-9]+/delete": ["Student", "Staff"], // DELETE user (own account)
-            "/users/[0-9]+/admin/delete": ["Staff"], // DELETE any user (staff only)
+            //"/users/[0-9]+/update": ["Student", "Staff"], // PUT update user
+            "/users/[0-9]+/staff": ["Staff"], // DELETE any user (staff only)
 
             
         }
