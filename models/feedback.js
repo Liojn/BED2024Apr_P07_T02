@@ -26,7 +26,7 @@ class Feedback {
             return new Feedback(row.Fid, row.Username, row.Email, row.Title, row.Feedback, row.Verified, formattedDate);
         });
     }
-
+    
     static formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
