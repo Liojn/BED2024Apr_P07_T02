@@ -5,7 +5,7 @@ const User = require("./user");
 class Notifcations {
     constructor(notification_id, UserID, Fid, justifcation, response, seen, date){
         this.notification_id = notification_id,
-        this.UserID = UserID,
+        this.UserID = UserID, //Staff Id
         this.Fid = Fid,
         this.justifcation = justifcation,
         this.response = response,
@@ -26,6 +26,7 @@ class Notifcations {
         });
     }
 
+    //Get notifications by username and feedback details.
     static async getNotificationsByUsername(Username) {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `Select * from Notifications INNER JOIN Feedback ON Notifications.Fid = Feedback.Fid where Username = @Username`;
@@ -90,6 +91,7 @@ class Notifcations {
         return result.rowsAffected > 0;
     }
 
+    //Get staff username from User table using UserId (StaffId) from notification table
     static async getStaffUsername(staffId){
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `Select * from Notifications Inner Join Users On Notifications.UserID = Users.UserID where Notifications.UserID = @UserID`
@@ -116,6 +118,7 @@ class Notifcations {
         return this.getNotificationById(notification_id); 
     }
 
+    // Filter function of notification, but still need feedback info
     static async getNotificationBySeen(seen,username) {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `SELECT * FROM Notifications Inner Join Feedback on Notifications.Fid = Feedback.Fid WHERE Username = @Username  AND seen = @seen`;
