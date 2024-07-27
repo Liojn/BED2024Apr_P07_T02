@@ -18,11 +18,14 @@
             <div class="logo"> <img src="../assets/website-logo.png" alt="EcoImpact logo" > </div> <!--Logo nav page-->
             <nav>
                 <div class="nav">
-                    <a href="#"><i class="fa-regular fa-bell fa-xl"></i></i></a>
-                    <a href="#">Home</a>
-                    <a href="#">Event</a>
-                    <a id="currentpage" href="#">Donate</a>
-                    <a href="#" id="contactus">Contact</a>
+                    <a href="../html/NotificationScreen.html" class="notification-icon">
+                        <i class="fa-regular fa-bell fa-xl"></i>
+                        <span id="notification-count" class="notification-count"></span>
+                    </a>
+                    <a href="homePage.html">Home</a>
+                    <a href="event.html">Event</a>
+                    <a id="currentpage" href="donationPage.html">Donate</a>
+                    <a href="FeedbackUser.html" id="contactus">Contact</a>
                     <a href="profilePage.html">Account</a>
                 </div>
             </nav>
@@ -102,7 +105,7 @@
 
         async function fetchUserDonations() {  
             try{ 
-            const response = await fetch(`http://localhost:3000/donations/${username}`, {
+            const response = await fetch(`http://localhost:3000/donations/username?username=${username}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -147,6 +150,55 @@
         } else {
             alert('An error occurred: ${error.message}');
         }
+            }
+        }
+
+        updateNotificationCount();
+
+        async function updateNotificationCount() {  
+            const username = localStorage.getItem('username');
+            const token = localStorage.getItem('token'); // Retrieve token from local storage
+
+            try {
+                const response = await fetch(`/notifications/userNotif/${username}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+
+                const notifications = await response.json();
+
+                const unseenCount = notifications.filter(notification => notification.seen === 'N').length;
+
+                const notificationCountElement = document.getElementById('notification-count');
+                if (unseenCount > 0) {
+                    notificationCountElement.style.display = 'inline';
+                    notificationCountElement.textContent = unseenCount;
+                } else {
+                    notificationCountElement.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+
+                if (error.message.includes('Token has expired')) {
+                    alert('Session expired. Please log in again.');
+                    localStorage.removeItem('token'); // Clear the token
+                    window.location.href = '../Index.html'; // Redirect to login page
+                } else if (error.message.includes('Invalid token')) {
+                    alert('Invalid token. Please log in again.');
+                    localStorage.removeItem('token'); // Clear the token
+                    window.location.href = '../Index.html'; // Redirect to login page
+                } else if (error.message.includes('Forbidden')) {
+                    alert('You do not have permission to access this resource.');
+                    window.location.href = '../html/homePage.html'; // Redirect to home page
+                } else {
+                    alert(`An error occurred: ${error.message} `);
+                }
             }
         }
 

@@ -126,7 +126,7 @@ async function fetchFeedbacks(filter = 'all') {
                 <hr>
                 <h4>Date sent: ${feedback.date}</h4>
                 <div class="action-buttons">
-                    <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
+                    ${feedback.verified === 'N' ? `<button class="delete-btn" onclick="confirmDelete(this)">Delete</button>` : ''}
                     ${feedback.verified === 'N' ? `<button class="respond-btn" onclick="confirmRespond(this)">Respond</button>` : ''}
                 </div>
             `;
@@ -164,6 +164,7 @@ async function updateNotificationCount() {
             notificationCountElement.textContent = unseenCount;
         } else {
             notificationCountElement.style.display = 'none';
+            
         }
     } catch (error) {
         console.error('Fetch error:', error);
@@ -205,17 +206,9 @@ async function deleteFeedback() {
     closeModal();
     const feedbackBox = document.getElementById(feedbackId);
     const token = localStorage.getItem('token');
+    console.log(feedbackId)
 
     try {
-        // Delete notification associated with the feedback
-        const notificationResponse = await fetch(`/notification/${feedbackId.split('-')[1]}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
         // Delete feedback from the server
         const response = await fetch(`/feedbacks/${feedbackId.split('-')[1]}`, {  
             method: 'DELETE',
@@ -225,7 +218,7 @@ async function deleteFeedback() {
             }
         });
 
-        if (response.ok && notificationResponse.ok) {
+        if (response.ok) {
             feedbackBox.parentNode.removeChild(feedbackBox);
             await updateNotificationCount(); // Update the notification count after deletion
         } else {

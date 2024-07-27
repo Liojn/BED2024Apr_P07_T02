@@ -122,6 +122,33 @@
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "UserID": {
+                  "example": "any"
+                },
+                "Fid": {
+                  "example": "any"
+                },
+                "justification": {
+                  "example": "any"
+                },
+                "response": {
+                  "example": "any"
+                },
+                "seen": {
+                  "example": "N"
+                },
+                "date": {
+                  "example": "YYYY-MM-DD"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -294,6 +321,33 @@
             "name": "authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "example@gmail.com"
+                },
+                "title": {
+                  "example": "any"
+                },
+                "feedback": {
+                  "example": "any"
+                },
+                "verified": {
+                  "example": "N"
+                },
+                "date": {
+                  "example": "YYYY-MM-DD"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -494,6 +548,38 @@
         }
       }
     },
+    "/events/download/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/events/register/{id}": {
       "post": {
         "description": "",
@@ -562,11 +648,23 @@
             "schema": {
               "type": "object",
               "properties": {
-                "startTime": {
-                  "example": "any"
+               "title": {
+                  "example": "any that is min 3 char and max 250"
                 },
-                "username": {
-                  "example": "any"
+                "date": {
+                  "example": "YYYY-MM-DD"
+                },
+                "startTime": {
+                  "example": "HH:mm"
+                },
+                "endTime": {
+                  "example": "HH:mm"
+                },
+                "location": {
+                  "example": "address name and 6 digit postal code"
+                },
+                "description": {
+                  "example": "any that is min 10 char and max 800"
                 }
               }
             }
@@ -647,11 +745,23 @@
             "schema": {
               "type": "object",
               "properties": {
-                "startTime": {
-                  "example": "any"
+                "title": {
+                  "example": "any that is min 3 char and max 250"
                 },
-                "username": {
-                  "example": "any"
+                "date": {
+                  "example": "YYYY-MM-DD"
+                },
+                "startTime": {
+                  "example": "HH:mm"
+                },
+                "endTime": {
+                  "example": "HH:mm"
+                },
+                "location": {
+                  "example": "address name and 6 digit postal code"
+                },
+                "description": {
+                  "example": "any that is min 10 char and max 800"
                 }
               }
             }
@@ -1019,6 +1129,37 @@
       },
       "post": {
         "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "Username": {
+                  "example": "any"
+                },
+                "Email": {
+                  "example": "any"
+                },
+                "company": {
+                  "example": "any"
+                },
+                "amount": {
+                  "example": "any"
+                },
+                "datetime": {
+                  "example":"YYYY-MM-DD hh:mm:ss"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -1042,19 +1183,18 @@
         }
       }
     },
-    "/donations/{username}": {
+    "/donations/username": {
       "get": {
         "description": "",
         "parameters": [
           {
-            "name": "username",
-            "in": "path",
-            "required": true,
+            "name": "authorization",
+            "in": "header",
             "type": "string"
           },
           {
-            "name": "authorization",
-            "in": "header",
+            "name": "username",
+            "in": "query",
             "type": "string"
           }
         ],
