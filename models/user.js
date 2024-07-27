@@ -207,16 +207,36 @@ class User {
         let connection;
         try {
             connection = await sql.connect(dbConfig);
-            
-            const deleteQuery = 'DELETE FROM Users WHERE UserID = @UserID';
-            const request = connection.request();
-            request.input('UserID', userId);
+
+            // Getting the username
+            const userResult = await request.query('SELECT Username FROM Users WHERE UserID = @UserID');
+            if (userResult.recordset.length === 0) {
+                return false; // User not found
+            }
+            const username = userResult.recordset[0].Username;
+            request.input("Username", username);
+
+            // Delete from EventRegistrations
+            await request.query('DELETE FROM EventRegistrations WHERE username = @Username');
+
+            // Delete from Events
+            await request.query('DELETE FROM Events WHERE username = @Username');
     
-            const result = await request.query(deleteQuery);
+            // Delete from Donations
+            await request.query('DELETE FROM Donations WHERE Username = @Username');
     
-            return result.rowsAffected[0] > 0;
+            // Delete from Notifications
+            await request.query('DELETE FROM Notifications WHERE UserID = @UserID');
+    
+            // Delete from Feedback
+            await request.query('DELETE FROM Feedback WHERE Username = @Username');
+    
+            // Finally, delete the user
+            const deleteUserResult = await request.query('DELETE FROM Users WHERE UserID = @UserID');
+    
+            return deleteUserResult.rowsAffected[0] > 0;
         } catch (error) {
-            console.error("Error deleting user: ", error);
+            console.error("Error deleting user and related data: ", error);
             throw error;
         } finally {
             if (connection) {
