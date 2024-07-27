@@ -59,12 +59,14 @@
         </section>
     </div>
 <script>
+    console.log('token: ', token);
     const token = localStorage.getItem('token');
     if (!token) {
         alert('Please login again.');
         window.location.href = '../Index.html';
     }
 
+    /*
     updateNotificationCount();
     async function updateNotificationCount() {  
         const username = localStorage.getItem('username');
@@ -108,7 +110,7 @@
                 alert(`An error occurred: ${error.message} `);
             }
         }
-    }
+    }*/
 </script>
 </body>
 </html>
