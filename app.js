@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require('cors');
-const axios = require('axios');
 const sql = require("mssql");
 
 const feedbackController = require("./controllers/feedbackController");
@@ -51,8 +50,8 @@ app.put("/feedbacks/:id", authMiddleware,feedbackController.updateFeedback)
 
 
 // Event Route
-app.get("/events/get-location", eventController.getLocation);
-app.get("/events/search", eventController.searchEvent);
+app.get("/events/get-location", authMiddleware, eventController.getLocation);
+app.get("/events/search", authMiddleware, eventController.searchEvent);
 app.get("/events/download/:id", authMiddleware, eventController.printPDFSummary);
 app.post("/events/register/:id", authMiddleware, eventController.registerEvent);
 app.get("/events", authMiddleware, eventController.getAllEvents);
@@ -75,9 +74,9 @@ app.delete('/users/:id/staff', authMiddleware, staffAuthMiddleware, userControll
 
 
 // Donation routes
-app.get("/donations", donationController.getAllDonations);
+app.get("/donations", authMiddleware,donationController.getAllDonations);
 app.get('/nonprofits', donationController.fetchNonProfitNames);
-app.post("/donations",donationController.createDonation);
+app.post("/donations",authMiddleware,donationController.createDonation);
 app.get("/donations/username", authMiddleware, donationController.getDonationByUsername);
 app.get("/stats",authMiddleware, donationController.getAllStats);
 //donationController.getDonationStatistics()

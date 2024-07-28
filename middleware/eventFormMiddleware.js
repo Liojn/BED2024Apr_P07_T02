@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const moment = require('moment-timezone');
 
-/*
+/*   EXAMPLE OF DATA BEING POSTED
     {
         "title": "Orientation Day 2024",
         "date": "2024-07-15",
@@ -9,7 +9,7 @@ const moment = require('moment-timezone');
         "endTime": "10:40",
         "location": "NP LT58A, Atrium Hall",
         "description": "Join us in welcoming our newly joined members for bonding. S points awarded for exisiting members",
-    } EXAMPLE OF DATA BEING POSTED.
+    } 
  */
 const validateEvent = (req, res, next) => {
     const timezone = 'Asia/Singapore';

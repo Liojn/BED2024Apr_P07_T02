@@ -53,55 +53,6 @@
             return `${day}/${month}/${year} ${hours}:${minutes}`;
         }
 
-        async function fetchDonations() {
-            try {
-                const response = await fetch(`http://localhost:3000/donations`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-            });
-                const donations = await response.json();
-                console.log('All Donations:', donations); // Debugging
-                if (Array.isArray(donations)) {
-                    const donationContainer = document.getElementById('donationContainer');
-                    donations.forEach(donation => {
-                        const formattedDateTime = formatDateTime(donation.datetime);
-                        const donationBox = document.createElement('div');
-                        donationBox.classList.add('donation-box');
-                        donationBox.innerHTML = `
-                            <div class="donation-info">
-                                <div class="donation-amount-company">
-                                    <div class="donation-amount">$${donation.amount}</div>
-                                    <div class="donation-company">to ${donation.company}</div>
-                                </div>
-                            </div>
-                            <div class="donation-datetime">${formattedDateTime}</div>
-                        `;
-                        donationContainer.appendChild(donationBox);
-                    });
-                } else {
-                    console.error('Error: Donations data is not an array');
-                }
-            } catch (error) {
-                console.log(error);
-        if (error.message.includes('Token has expired')) {
-            alert('Session expired. Please log in again.');
-            localStorage.removeItem('token'); //Clear token
-            window.location.href = '../Index.html'; //Redirect to login page
-        } else if (error.message.includes('Invalid token')) {
-            alert('Invalid token. Please log in again.');
-            localStorage.removeItem('token'); 
-            window.location.href = '../Index.html';
-        } else if (error.message.includes('Forbidden')) {
-            alert('You do not have permission to access this resource.');
-            window.location.href = '../Index.html'; // Redirect to home page
-        } else {
-            alert('An error occurred: ${error.message}');
-        }
-            }
-        }
 
         async function fetchUserDonations() {  
             try{ 
