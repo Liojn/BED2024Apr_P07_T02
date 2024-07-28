@@ -18,13 +18,13 @@ const timeOptions = {
     minute: 'numeric',
     timeZone: 'UTC'
 };
-const formatter = new Intl.DateTimeFormat('en-GB', options);
+const formatter = new Intl.DateTimeFormat('en-GB', options); //en-GB for the proper format
 const dateFormatter = new Intl.DateTimeFormat('en-GB', dateOptions);
 const timeFormatter = new Intl.DateTimeFormat('en-GB', timeOptions);
 
 
 //IMPORTANT, for authentication throughout the website
-const token = localStorage.getItem("token") || ''; //set as empty if needed.
+const token = localStorage.getItem("token") || ''; //set as empty if needed, which will assist in prompting session expired
 
 console.log(token);
 
