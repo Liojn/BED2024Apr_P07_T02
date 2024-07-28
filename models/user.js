@@ -231,7 +231,7 @@ class User {
             await request.query('DELETE FROM Donations WHERE Username = @Username');
 
             // Delete from Notifications
-            await request.query('DELETE FROM Notifications WHERE UserID = @userId');
+            await request.query('DELETE n FROM Notifications n INNER JOIN Feedback f ON n.Fid = f.Fid WHERE f.Username = @Username;');
 
             // Delete from Feedback
             await request.query('DELETE FROM Feedback WHERE Username = @Username');
