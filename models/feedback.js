@@ -13,6 +13,7 @@ class Feedback {
         this.date = date;
     }
 
+    //Getting all feedback
     static async getAllFeedbacks() {
         const connection = await sql.connect(dbConfig);
         const sqlQuery = `SELECT * FROM Feedback`;
@@ -27,6 +28,7 @@ class Feedback {
         });
     }
     
+    //Used for formatting date
     static formatDate(date) {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
