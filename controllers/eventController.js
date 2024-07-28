@@ -1,7 +1,6 @@
 
 const Event = require("../models/event");
 const fs = require("fs");
-const path = require("path");
 
 const getAllEvents = async (req, res) => {
     try {
@@ -47,7 +46,7 @@ const updateEvent = async (req, res) => {
 
     try {
         const  successUpdateEvent = await Event.updateEvent(eventId, updatedEvent);
-        if (!successUpdateEvent) {
+        if (!successUpdateEvent) { //if var is null
             return res.status(404).send({ message: `No such Event with the followinng ID: ${eventId}`});
         } 
         res.json(successUpdateEvent);
@@ -77,7 +76,7 @@ const searchEvent = async (req, res) => {
     try{
         const events = await Event.searchEvent(searchTerm);
         res.json(events);
-    } catch (error) {
+    } catch (error) { //if a error is thrown by the model 
         console.error(error);
         res.status(500).json({ message: `Error searching for Event containing '${searchTerm}'`});
     }
@@ -92,7 +91,7 @@ const registerEvent = async (req, res) => {
         res.json(eventReg);
     } catch (error) {
         console.error(error);
-        const statusCode = error.code || 400; //default to 400 Bad Request if no code is set
+        const statusCode = error.code || 400; //default to 400 Bad Request if no code is set by event.js
         res.status(statusCode).json({ error: error.message });
     }
 
@@ -119,7 +118,7 @@ const getLocation = async (req, res) => {
 
     try{
         const locationResult = await Event.getLocation(encodedLocation);
-        if (locationResult.status === 'error') {
+        if (locationResult.status === 'error') { 
             return res.status(404).json({ error: locationResult.message });
         }
         res.json(locationResult).status(200);
