@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     
-    /*
+    
     updateNotificationCount();
     async function updateNotificationCount() {  
         const username = localStorage.getItem('username');
@@ -136,5 +136,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-        */
+        
 });

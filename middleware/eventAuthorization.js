@@ -3,7 +3,7 @@ const Event = require("../models/event");
 const eventAuthorizeAction = async(req, res, next) => {
     try{
         const eventId = parseInt(req.params.id);
-        const usernameFromToken = req.username; //extracted from JWT or session
+        const usernameFromToken = req.username; //extracted from JWT or session, given by previous authMiddlware
 
         //console.log(`User from: ${usernameFromToken}`);
         //console.log(`ID from: ${eventId}`);
@@ -18,7 +18,7 @@ const eventAuthorizeAction = async(req, res, next) => {
             return res.status(403).json({ message: "Unauthorized action. You are not authorized to perform this action." });
         }
 
-        req.originalAuthor = event.username; //to update later
+        req.originalAuthor = event.username; //to update later for event update
         next();
     } catch (error) {
         console.error('Authorization error:', error);

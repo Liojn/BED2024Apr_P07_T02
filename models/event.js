@@ -130,6 +130,7 @@ class Event {
         return result.rowsAffected > 0; // Indicate success based on affected rows
     }
 
+    //Method for Searching a particular event
     static async searchEvent(searchTerm){
         const connection = await sql.connect(dbConfig);
 
@@ -146,6 +147,7 @@ class Event {
         }
     }
 
+    //Method for registering a user to a event
     static async registerEvent(eventId, username){
         const event = await this.getEventbyId(eventId);
 
@@ -188,7 +190,7 @@ class Event {
             if (error.code === 404 || error.code === 403) {
                 throw error; 
             } else if (error.originalError && error.originalError.info && error.originalError.info.number === 2627) {
-                //Duplicate key error, username and eventId is unique pair
+                //Duplicate key error, username and eventId is unique pair defined by my Table EventRegistrations
                 const duplicateError = new Error("User is already registered for this event.");
                 duplicateError.code = 409; //Conflict
                 throw duplicateError;
@@ -205,6 +207,7 @@ class Event {
     
     }
 
+    //Method for retrieving all the users that signed up for the respective event
     static async getUsersByEventId(eventId){
         const connection = await sql.connect(dbConfig);
 
@@ -231,15 +234,16 @@ class Event {
         }
     }
 
+    //Method for checking validity of location on google map, before returning the proper link for embedding
     static async getLocation(encodedLocation){
         try{
             //Get location using the encoded, find first to validate
             const response = await axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodedLocation}&inputtype=textquery&fields=formatted_address,name,geometry&key=${MAP_APIKEY}`);
             const data = response.data;
 
-            //a key called status will show OK
+            //a key called status will show OK 
             if (data.status === 'OK') {
-                const candidates = data.candidates;
+                const candidates = data.candidates; //access the object
 
                 if (candidates.length === 1) {
                     //one place found
@@ -247,12 +251,12 @@ class Event {
                     //use their naming convention
                     const addressName = place.formatted_address || place.name;
 
-                    const results = {
+                    const results = { //able to locate a pin drop for the place, only one place found
                         status: 'success',
                         mapUrl: `https://www.google.com/maps/embed/v1/place?key=${MAP_APIKEY}&q=${encodeURIComponent(addressName)}`
                     };
                     return results;
-                }else { //try to search for places and display with search parameter
+                }else { //try to search for places and display with search parameter in the link
                     const results = {
                         status: 'search',
                         mapUrl: `https://www.google.com/maps/embed/v1/search?key=${apiKey}&q=${encodedLocation}`
@@ -267,7 +271,7 @@ class Event {
                 return error;
             }
         }
-        catch (error) { //error handling for whatever reasons.
+        catch (error) { //error handling for whatever reasons not covered
             const errors = {
                 status: 'error',
                 message: error.message
@@ -277,6 +281,7 @@ class Event {
 
     }
 
+    //Method for finding a existing event, retrieving all particular users & its information of the events and write out in pdf
     static async printPDFSummary(eventId) {
         let isPeople;
         try {
@@ -289,6 +294,7 @@ class Event {
             //Database connection
             const connection = await sql.connect(dbConfig);
             const request = connection.request();
+            //QUERY for getting list of participants of a selected Event, together with their email
             const sqlQuery = `SELECT u.username, u.Email, er.registrationTime FROM EventRegistrations er INNER JOIN Users u ON u.Username = er.username WHERE er.eventId = @eventId;`
             request.input("eventId", eventId);
             const result = await request.query(sqlQuery);
@@ -302,6 +308,7 @@ class Event {
 
             }
 
+            //The file path that is temp stored on the server first, and the image path for logo
             const imagePath = path.join(__dirname, '..', 'public', 'assets', 'website-logo.png');
             const outputPath = path.join(__dirname, `event_id${eventId}_summary.pdf`);
             
@@ -333,18 +340,18 @@ class Event {
             if (isPeople) {
                 doc.font('Helvetica-Bold').fontSize(16).text('Registrations', { underline: true });
                 doc.moveDown();
-        
                 users.forEach((user, index) => {
+                    //Calculation for if the pages run over to a new page, insert new page to continue writing
                     if (doc.y + 20 > doc.page.height - doc.page.margins.bottom) {
                         doc.addPage();
                     }
-
+                    //continue writing
                     doc.font('Helvetica').fontSize(12).text(`${index + 1}. Username: ${user.username}`);
                     doc.text(`    Email: ${user.Email}`);
                     doc.text(`    Registration Time: ${formatDateTime(user.registrationTime)}`);
                     doc.moveDown();
                 });
-            } else {
+            } else { //customised message
                 doc.font('Helvetica-Bold').fontSize(18).text('No registrations found', { align: 'center' });
             }
 
@@ -357,10 +364,10 @@ class Event {
                     fs.access(outputPath, fs.constants.F_OK, (err) => {
                         if (err) {
                             console.error('File does not exist:', err);
-                            reject('File does not exist');
+                            reject('File does not exist'); //will result in a error thrown
                         } else {
                             console.log('File exists:', outputPath);
-                            resolve(outputPath);
+                            resolve(outputPath); //return File directory of the pdf temp stored in server
                         }
                     });
                 });
@@ -375,7 +382,7 @@ class Event {
 
     }
 }
-
+// Utility details
 //formatting functions, for PDF Event Details
 function formatDate(date) {
     return moment.utc(date).format('DD MMMM YYYY'); //use UTC due to unwanted conversion from DB, alr in SGT
