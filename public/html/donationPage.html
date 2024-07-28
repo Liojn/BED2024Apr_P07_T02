@@ -104,6 +104,7 @@
             }
         });
     });
+//navigation to donation statistics page when donation statistics button is clicked
 function statistics(){
     window.location.href = "donationStatistics.html"
 }
@@ -111,9 +112,6 @@ function toggleDropdown() {
 var dropdown = document.getElementById("companyDropdown");
 dropdown.classList.toggle("active");
 }
-// document.getElementById('contactus').addEventListener('click', function() {
-//         window.location.href = "FeedbackUser.html";
-//     });
 document.getElementById('view').addEventListener('click', function() {
         window.location.href = "viewDonations.html";
     });
@@ -209,6 +207,7 @@ function successfulSubmission() {
         "datetime": currentDateTime,
     }
     console.log(jsonData)
+    //post request
     fetch('http://localhost:3000/donations', {
         method: 'POST',
         headers: {
@@ -292,6 +291,7 @@ function submitAnotherDonation(){
         "datetime": currentDateTime,
     }
     console.log(jsonData)
+    //post request
     fetch('http://localhost:3000/donations', {
         method: 'POST',
         headers: {
@@ -333,6 +333,7 @@ function submitAnotherDonation(){
         }
     });
 }
+//function to dynamically update the counter function in donation page
 async function fetchDonationStatistics(){
     try{
     const token = localStorage.getItem('token');
@@ -368,7 +369,7 @@ async function fetchDonationStatistics(){
     }
 
 }
-
+//functions to get non-profit names
 async function fetchNonProfitNames() {
         try {
             const response = await fetch('http://localhost:3000/nonprofits');
@@ -397,13 +398,11 @@ async function fetchNonProfitNames() {
     }
 
 function displayNonProfitNames(names) {
-    // const list = document.getElementById('nonProfitList');
-    // list.innerHTML = names.map(name => `<li>${name}</li>`).join('');
     const dropdownContent = document.getElementById('dropdownContent');
     dropdownContent.innerHTML = ''; // Clear existing options
     names.forEach(name => {
         const link = document.createElement('a');
-        link.href = '#'; // Replace with actual link behavior if needed
+        link.href = '#'; 
         link.textContent = name;
         link.addEventListener('click', function(event) {
             event.preventDefault();

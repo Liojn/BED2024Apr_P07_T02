@@ -113,7 +113,7 @@
 
 
   <!-- Recent Donations -->
-  <h3 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.75rem;">Donation Sources</h3>
+  <h3 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.75rem;">Recent Donations</h3>
   <div id = "recentDonationContainer"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     fetchRecentDonations();
 });
 updateNotificationCount();
-
+//updating notifications
 async function updateNotificationCount() {  
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token'); // Retrieve token from local storage
@@ -186,6 +186,7 @@ timeFilter.addEventListener('change', function() {
     console.log(filter);
     fetchRealTimeDonationData(filter);
 });
+//function to display some statistics like total number of donations
 async function fetchDonationStatistics(){
       const response = await fetch("http://localhost:3000/stats", {
             method: 'GET',
@@ -206,6 +207,7 @@ async function fetchDonationStatistics(){
     document.getElementById('largest-single-donation').textContent = `$${donations[0].largestSingleDonation}`;
 
 }
+//function to get data for pie chart
 async function fetchDonationData() {
     try{
         const response = await fetch("http://localhost:3000/donations", {
@@ -253,7 +255,7 @@ async function fetchDonationData() {
       }
           
 }
-
+//creation of pie chart
 function createPieChart(labels, values) {
     const ctx = document.getElementById('donationPieChart').getContext('2d');
     new Chart(ctx, {
@@ -283,7 +285,7 @@ function createPieChart(labels, values) {
 }
 
 let donationLineChart;
-
+//drawing the line graph
 function initializeRealTimeLineChart() {
     const ctx = document.getElementById('donationLineChart').getContext('2d');
     donationLineChart = new Chart(ctx, {
@@ -323,6 +325,7 @@ function initializeRealTimeLineChart() {
     });
 
 }
+//function for getting data for recent donations 
 async function fetchRecentDonations() {
     try {
         const response = await fetch('http://localhost:3000/donations', {
@@ -358,7 +361,7 @@ async function fetchRecentDonations() {
         }
     }
 }
-  
+//function to display recent donation data
 function updateRecentDonationsUI(donations) {
     const container = document.getElementById('recentDonationContainer'); // Adjust selector as needed
     container.innerHTML = '';
@@ -388,6 +391,7 @@ function updateRecentDonationsUI(donations) {
         container.appendChild(donationElement);
     });
 }
+//Function for getting data for line graph
 async function fetchRealTimeDonationData(filter) {
     try{
       console.log("FETCHING REAL TIME")
