@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (response.ok) {
                 const userData = await response.json();
-                console.log("user data fetched: ", userData);
+                // console.log("user data fetched: ", userData);
 
-                usernameInput.value = userData.username;
-                emailInput.value = userData.email;
+                usernameInput.value = userData.username; // Populate username field
+                emailInput.value = userData.email; // Populate email field
             } else {
                 console.error('Failed to fetch user data');
             }
@@ -31,8 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    fetchUserData();
+    fetchUserData(); // Call fetch user data
 
+    // Handle form submission for updating user profile
     editProfileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -41,8 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.forEach((value, key) => {
             dataReceived[key] = value;
         });
-        console.log("Data to send: ", dataReceived);
+        // console.log("Data to send: ", dataReceived);
 
+        // Checks for updates
         if (Object.keys(dataReceived).length === 0) {
             alert('No changes to update');
             return;
@@ -60,8 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log("Update successful: ", result);
+                // console.log("Update successful: ", result);
                 
+                // Update form fields with updated data
                 if (result.user) {
                     usernameInput.textContent = result.user.username;
                     emailInput.textContent = result.user.email;
@@ -69,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 alert('Profile updated successfully', result);
                 window.location.href = '../html/profilePage.html';
-            } else {
+            } else { 
                 console.error("Update failed: ", await response.text());
                 alert('Failed to update profile');
             }
@@ -79,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Handle cancel button click to redirect to profile page
     cancelBtn.addEventListener('click', () => {
         alert("redirecting..");
         window.location.href = "../html/profilePage.html";

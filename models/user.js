@@ -141,25 +141,27 @@ class User {
         }
     }
 
+    // Static method to update a user's information
     static async updateUser(userId, updatedFields) {
         let connection;
         try { 
             connection = await sql.connect(dbConfig);
 
-            console.log("Updating user: ", userId);
-            console.log("Fields to update: ", updatedFields);
+            // console.log("Updating user: ", userId);
+            // console.log("Fields to update: ", updatedFields);
             
             if (Object.keys(updatedFields).length === 0) {
                 console.log("No fields to update");
-                return await this.getUserById(userId);
+                return await this.getUserById(userId); // Return if no fields are updated
             }
 
-            let updateQuery = 'UPDATE Users SET ';
-            const request = connection.request();
+            let updateQuery = 'UPDATE Users SET '; // Constructing update query
+            const request = connection.request(); // Create a request object
                 
             for (const [key, value] of Object.entries(updatedFields)) {
                 let dbField;
 
+                // Mapping fields to corresponding database columns
                 if (key === 'username') {
                     dbField = 'Username';
                 } else if (key === 'email') {
@@ -167,33 +169,33 @@ class User {
                 } else if (key === 'password') {
                     dbField = 'Password';
                 } else {
-                    throw new Error(`Unexpected field: ${key}`);
+                    throw new Error(`Unexpected field: ${key}`); // Error handling
                 }
 
-                updateQuery += `${dbField} = @${key}`;
-                request.input(key, sql.NVarChar, value);
+                updateQuery += `${dbField} = @${key}`; // Adding field to update query
+                request.input(key, sql.NVarChar, value); // Adding paramenter to the request
 
                 if (Object.keys(updatedFields).indexOf(key) < Object.keys(updatedFields).length - 1) {
-                    updateQuery += ', ';
+                    updateQuery += ', '; // Adding in comma between fields
                 }
             }
     
-            updateQuery += ' WHERE UserID = @UserID';
-            request.input('UserID', userId);
+            updateQuery += ' WHERE UserID = @UserID'; // Query conditions
+            request.input('UserID', userId); // Adding UserID parameter to the request
 
-            console.log("Executing query: ", updateQuery);
-            console.log("With parameters: ", request.parameters); 
+            // console.log("Executing query: ", updateQuery);
+            // console.log("With parameters: ", request.parameters); 
     
-            const result = await request.query(updateQuery);
+            const result = await request.query(updateQuery); // Executing the query
     
-            console.log("Update result: ", result);
+            // console.log("Update result: ", result);
 
             if (result.rowsAffected[0] > 0) {
-                return await this.getUserById(userId);
+                return await this.getUserById(userId); // Reture updated user
             } else {
                 return null;
             }
-        } catch (error) {
+        } catch (error) { // Error handlings
             console.error("Error updating user: ", error);
             throw error;
         } finally {
@@ -216,6 +218,10 @@ class User {
             if (userResult.recordset.length === 0) {
                 return false; // User not found
             }
+          
+            const username = userResult.recordset[0].Username; // Extracting username
+            request.input("Username", username); // Adding Username to parameter to the request
+
             const username = userResult.recordset[0].Username;
 
             request.input("Username", username);

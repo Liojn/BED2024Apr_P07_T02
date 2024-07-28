@@ -24,14 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (response.ok) {
                 const userData = await response.json();
-                console.log("user data fetched: ", userData);
+                // console.log("user data fetched: ", userData);
 
+                // Populate user data into the DOM
                 username.textContent = userData.username;
                 email.textContent = userData.email;
                 accountType.textContent = userData.accountType;
                 if (userData.profilePicture) {
                     profilePicture.src = userData.profilePicture;
                 }
+                // Display admin panel if the user is a staff meember
                 if (userData.accountType === 'staff') {
                     adminPanel.style.display = 'block';
                 }
@@ -46,15 +48,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchUserData();
 
+    // Event listener for edit profile button 
     editProfileBtn.addEventListener('click', () => {
         window.location.href = '../html/profileEdit.html';
     });
 
+    // Event listener for logout button
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('token');
         window.location.href = '../html/loginPage.html';
     });
 
+    //Event listener for delete account button
     deleteAccountBtn.addEventListener('click', async () => {
         if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
             try {
@@ -78,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Display admin panel and add event listener if user is staff
     if (localStorage.getItem('accountType') === "Staff") {
         adminPanel.style.display = 'block';
         viewAllUsersBtn.addEventListener('click', () => {
@@ -87,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('errorMessage').textContent = 'Access denied. Staff only.';
     }
 
+    // Event listener for back to profile button
     if(backToProfileBtn) {
         document.getElementById('backToProfileBtn').addEventListener('click', function() {
             window.location.href = 'profilePage.html';
