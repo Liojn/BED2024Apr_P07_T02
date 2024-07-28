@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    updateNotificationCount();
+    updateNotificationCount(); // Update the notification count on page load
     
+    // Retrieve necessary data from localStorage
     const NotificationId = localStorage.getItem('notificationId');
     const token = localStorage.getItem('token');
     const UserID = localStorage.getItem('userId');
@@ -11,17 +12,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log(UserID);
     console.log(NotificationId);
 
+    // Check if the current page is NotificationDetails.html
     if (window.location.pathname.endsWith('NotificationDetails.html')) {
         console.log('On NotificationDetails page');
-        await updateSeen();
-        updateNotificationCount();
+        await updateSeen(); // Mark the notification as seen
+        updateNotificationCount(); // Update the notification count again
 
+        // Add event listener to the back button to navigate to NotificationScreen.html
         const backButton = document.getElementById('backButton');
         if (backButton) {
             backButton.addEventListener('click', () => {
                 window.location.href = 'NotificationScreen.html';
             });
         }
+        
+        // Retrieve selected notification and staff user ID from localStorage
         const selectedNotification = JSON.parse(localStorage.getItem('selectedNotification'));
         const staffUserId = localStorage.getItem('staffUserId');
         console.log('Selected Notification:', selectedNotification);
@@ -29,27 +34,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (selectedNotification && staffUserId) {
             try {
+                // Fetch the staff username and update the HTML with notification details
                 const staffUser = await fetchStaffUsername(staffUserId);
                 console.log('Staff User:', staffUser);
-                
-                // Update the HTML with the fetched data
+
+                // Update the HTML with feedback and staff response details
                 document.querySelector('div[style="width: 50%; padding: 1rem;"]:first-of-type').innerHTML = `
-                <div style="height: 100%; border: 1px solid #e2e8f0; border-radius: 0.5rem;">
-                    <div style="padding: 1rem;">
-                        <h2 style="font-size: 1.5rem;">Feedback Details</h2>
-                    </div>
-                    <div style="padding: 1rem; space-y: 1rem;">
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div>
-                                <p style="font-weight: bold;">User username:<br>${username}</p><br>
-                                <p style="font-size: 0.875rem; color: #6b7280;">Date sent:<br>${new Date(date).toLocaleDateString()}</p><br>
-                            </div>
+                    <div style="height: 100%; border: 1px solid #e2e8f0; border-radius: 0.5rem;">
+                        <div style="padding: 1rem;">
+                            <h2 style="font-size: 1.5rem;">Feedback Details</h2>
                         </div>
-                        <p style="font-size: 1.125rem;">Description:<br>${feedbackDetails.feedback}</p>
+                        <div style="padding: 1rem; space-y: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div>
+                                    <p style="font-weight: bold;">User username:<br>${username}</p><br>
+                                    <p style="font-size: 0.875rem; color: #6b7280;">Date sent:<br>${new Date(date).toLocaleDateString()}</p><br>
+                                </div>
+                            </div>
+                            <p style="font-size: 1.125rem;">Description:<br>${feedbackDetails.feedback}</p>
+                        </div>
                     </div>
-                </div>
-            `;
-    
+                `;
+
                 document.querySelector('div[style="width: 50%; padding: 1rem;"]:last-of-type').innerHTML = `
                     <div style="height: 100%; border: 1px solid #e2e8f0; border-radius: 0.5rem;">
                         <div style="padding: 1rem;">
@@ -72,22 +78,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // Check if the current page is NotificationScreen.html
     if (window.location.pathname.endsWith('NotificationScreen.html')) {
         console.log('Fetching notifications');
-        await fetchNotificationsDetails(null);
-        setupNotificationToggle();
+        await fetchNotificationsDetails(null); // Fetch all notifications
+        setupNotificationToggle(); // Setup the notification toggle buttons
     }
 });
 
+// Setup the notification toggle buttons
 function setupNotificationToggle() {
     const allButton = document.getElementById('showAllNotifications');
     const unseenButton = document.getElementById('showUnseenNotifications');
     const seenButton = document.getElementById('showSeenNotifications');
 
-    allButton.addEventListener('click', () => fetchNotificationsDetails(null));
-    unseenButton.addEventListener('click', () => fetchNotificationsDetails('N'));
-    seenButton.addEventListener('click', () => fetchNotificationsDetails('Y'));
+    allButton.addEventListener('click', () => fetchNotificationsDetails(null)); // Fetch all notifications
+    unseenButton.addEventListener('click', () => fetchNotificationsDetails('N')); // Fetch unseen notifications
+    seenButton.addEventListener('click', () => fetchNotificationsDetails('Y')); // Fetch seen notifications
 
+    // Function to set the active button style
     function setActiveButton(button) {
         [allButton, unseenButton, seenButton].forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
@@ -98,6 +107,7 @@ function setupNotificationToggle() {
     seenButton.addEventListener('click', () => setActiveButton(seenButton));
 }
 
+// Fetch notifications based on seen status
 async function fetchNotificationsDetails(seenStatus = null) {
     console.log('Inside fetchNotificationsDetails');
     const UserID = localStorage.getItem('userId');
@@ -106,12 +116,14 @@ async function fetchNotificationsDetails(seenStatus = null) {
     console.log('Username:', username);
     try {
         let url;
+        // Determine the URL based on seen status
         if (seenStatus === null) {
             url = `/notifications/userNotif/${username}`;
         } else {
             url = `/notifications/seen/${seenStatus}/${username}`;
         }
 
+        // Fetch the notifications from the server
         const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -126,6 +138,7 @@ async function fetchNotificationsDetails(seenStatus = null) {
 
         const notifications = await response.json();
 
+        // Store the notifications in localStorage
         localStorage.setItem('notifications', JSON.stringify(notifications));
 
         const notificationContainer = document.getElementById('notificationContainer');
@@ -142,6 +155,7 @@ async function fetchNotificationsDetails(seenStatus = null) {
             return;
         }
 
+        // Display the notifications in the DOM
         notifications.forEach((notification) => {
             const notificationBox = document.createElement('div');
             notificationBox.classList.add('notification-box');
@@ -170,6 +184,8 @@ async function fetchNotificationsDetails(seenStatus = null) {
         }
     }
 }
+
+// View notification details by navigating to NotificationDetails.html
 function viewNotificationDetails(notification_id) {
     const notificationsString = localStorage.getItem('notifications');
     
@@ -194,12 +210,14 @@ function viewNotificationDetails(notification_id) {
     }
 }
 
+// Confirm deletion of a notification
 function confirmDelete(notification_id) {
     if (confirm('Are you sure you want to delete this notification?')) {
         deleteNotification(notification_id);
     }
 }
 
+// Delete a notification by ID
 async function deleteNotification(notification_id) {
     console.log(notification_id)
     const token = localStorage.getItem('token');
@@ -224,6 +242,7 @@ async function deleteNotification(notification_id) {
     }
 }
 
+// Update the notification count
 async function updateNotificationCount() {  
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token'); // Retrieve token from local storage
@@ -270,6 +289,8 @@ async function updateNotificationCount() {
         }
     }
 }
+
+// Fetch the staff username by user ID
 async function fetchStaffUsername(userId) {
     console.log("hi");
     const token = localStorage.getItem('token');
@@ -294,6 +315,7 @@ async function fetchStaffUsername(userId) {
     }
 }
 
+// Mark a notification as seen
 async function updateSeen() {
     const NotificationId = localStorage.getItem('notificationId');
     const token = localStorage.getItem('token');
@@ -324,4 +346,3 @@ async function updateSeen() {
         console.error('Error updating seen status:', error);
     }
 }
-
