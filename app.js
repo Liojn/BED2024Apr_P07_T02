@@ -51,8 +51,8 @@ app.put("/feedbacks/:id", authMiddleware,feedbackController.updateFeedback)
 
 
 // Event Route
-app.get("/events/get-location", eventController.getLocation);
-app.get("/events/search", eventController.searchEvent);
+app.get("/events/get-location", authMiddleware, eventController.getLocation);
+app.get("/events/search", authMiddleware, eventController.searchEvent);
 app.get("/events/download/:id", authMiddleware, eventController.printPDFSummary);
 app.post("/events/register/:id", authMiddleware, eventController.registerEvent);
 app.get("/events", authMiddleware, eventController.getAllEvents);
