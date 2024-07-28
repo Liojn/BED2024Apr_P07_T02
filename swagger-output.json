@@ -513,6 +513,11 @@
             "name": "location",
             "in": "query",
             "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
@@ -535,6 +540,11 @@
           {
             "name": "searchTerm",
             "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
             "type": "string"
           }
         ],

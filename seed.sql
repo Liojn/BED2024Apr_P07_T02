@@ -119,10 +119,10 @@ Values
 
 
 /*The order of deleting database*/
-Drop Table EventRegistrations
+/* Drop Table EventRegistrations
 Drop Table Events
 Drop Table Notifications
 Drop Table Feedback
 Drop Table Donations
-Drop Table Users
+Drop Table Users */
 

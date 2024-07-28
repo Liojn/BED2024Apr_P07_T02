@@ -120,13 +120,14 @@ const loginUser = async (req, res) => {
     }
 };
 
+// Controller function to update user information 
 const updateUser = async (req, res) => {
     const userId = req.params.id;
     const { username, email, password } = req.body;
 
     try {
-        console.log("Received update request for user: ", userId);
-        console.log("Request body: ", req.body);
+        // console.log("Received update request for user: ", userId);
+        // console.log("Request body: ", req.body);
 
         const updatedFields = { username, email, password };
         if (username !== undefined && username !== '') {
@@ -140,11 +141,11 @@ const updateUser = async (req, res) => {
             updatedFields.password = hashedNewPassword;
         }
 
-        console.log("Fields to update: ", updatedFields);
+        // console.log("Fields to update: ", updatedFields);
 
         if(Object.keys(updatedFields).length > 0) {
             const updatedUser = await User.updateUser(userId, updatedFields);
-            console.log("User updated: ", updatedUser);
+            // console.log("User updated: ", updatedUser);
         
             if (!updatedUser) {
                 alert("User not found");
@@ -157,7 +158,7 @@ const updateUser = async (req, res) => {
             });
         
         } else {
-            console.log("No fields to update");
+            // console.log("No fields to update");
             res.status(400).json({ message: "No fields to update" });
         }
     }catch (error) {
@@ -166,7 +167,7 @@ const updateUser = async (req, res) => {
     }
 };
 
-
+// Controller function to delete a user 
 const deleteUser = async (req, res) => {
     const userId = req.params.id;
 

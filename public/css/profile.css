@@ -43,6 +43,7 @@
     transition: 1s;
 }
 
+/* Body Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #e2f5e7;
@@ -50,6 +51,7 @@ body {
     padding: 0;
 }
 
+/* Container Styles */
 .container {
     max-width: 800px;
     margin: 5, 5, 5, 5;
@@ -63,6 +65,7 @@ h1, h2 {
     color: #333;
 }
 
+/*Profile Information Style*/
 .profile-info {
     margin-bottom: 20px;
 }
@@ -75,6 +78,7 @@ h1, h2 {
     margin-bottom: 10px;
 }
 
+/*Button Styles*/
 .buttons {
     margin-top: 20px;
 }
@@ -101,6 +105,7 @@ button:hover {
     background-color: #d32f2f;
 }
 
+/*Form Group Styles*/
 .form-group {
     margin-bottom: 15px;
 }
@@ -110,6 +115,7 @@ label {
     margin-bottom: 5px;
 }
 
+/*Input Style*/
 input[type="text"],
 input[type="email"] {
     width: 100%;
@@ -118,12 +124,14 @@ input[type="email"] {
     border-radius: 4px;
 }
 
+/*Admin Panel Styles*/
 #adminPanel {
     margin-top: 30px;
     border-top: 1px solid #ddd;
     padding-top: 20px;
 }
 
+/*Notification Styles*/
 .notification-icon {
     position: relative;
     display: inline-block;
