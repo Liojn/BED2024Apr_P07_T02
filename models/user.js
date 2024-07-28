@@ -222,10 +222,6 @@ class User {
             const username = userResult.recordset[0].Username; // Extracting username
             request.input("Username", username); // Adding Username to parameter to the request
 
-            const username = userResult.recordset[0].Username;
-
-            request.input("Username", username);
-
 
             // Delete from EventRegistrations
             await request.query('DELETE FROM EventRegistrations WHERE username = @Username');
