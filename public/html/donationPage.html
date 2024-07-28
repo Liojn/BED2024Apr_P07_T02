@@ -36,7 +36,7 @@
     <div class = "container">
         <img src = "../assets/Rectangle 15.png" class = "Counter">
         <div class = "donation-overlay">Join our community in donating and be a positive change in the world. With over: </div>
-        <div class = "numbers">120,041+</div>
+        <div class = "numbers" id = "numbers">120,041+</div>
         <div class = "donation-overlay2">people already joining</div>
     </div>
     <div class = "Donation-form">
@@ -221,7 +221,7 @@ function successfulSubmission() {
     .then(result => {
         //Handle successful form submission
         console.log('Success:', result);
-        updateCounter();
+        fetchDonationStatistics();
         document.getElementById('form').reset();
         document.getElementById('dropdownToggle').innerText = 'Company Name';
         // Hide the submit button
@@ -255,28 +255,35 @@ function successfulSubmission() {
 
 //function for submit another donation
 function submitAnotherDonation(){
+    let value;
+    const now = new Date();
+    const currentDateTime = now.toISOString().slice(0, 19).replace('T', ' '); // Format: YYYY-MM-DD HH:MM:SS
     const companyName = document.querySelector(".dropdown-toggle").innerText.trim();
     const donationAmount = document.querySelector('input[name="donation"]:checked');
-    const customAmount = document.getElementById('customAmountInput').value.trim();
+    const selectedDonation = document.querySelector('input[name="donation"]:checked');
     const username = localStorage.getItem('username'); // Retrieve username from local storage
     const email = localStorage.getItem('email'); // Retrieve email from local storage
     const token = localStorage.getItem('token');
 
-    if (companyName === 'Company Name' || !donationAmount || (donationAmount.value === 'custom' && customAmount === '')) {
+
+        let donationValue = selectedDonation.value;
+
+        if (donationValue === 'custom') {
+            donationValue = customAmountInput.value;
+        }
+
+
+    // Check if all fields are filled
+    if (companyName === 'Company Name' || !donationAmount || (donationValue === 'custom' && customAmount === '')) {
         alert('Please fill in all fields before submitting.');
         return;
     }
-    updateCounter();
-    document.getElementById('dropdownToggle').innerText = 'Company Name';
-    document.getElementById('form').reset();
-    event.preventDefault()
     if (donationValue === 'custom'){
         donationValue == donationAmount
     }
-    console.log(donationValue)
-    console.log(currentDateTime)
     //jsonDate for post request
-
+    console.log(username)
+    console.log(email)
     const jsonData = {
         "Username":username,
         "Email":email,
@@ -289,7 +296,7 @@ function submitAnotherDonation(){
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` 
+            'Authorization': `Bearer ${token}` // Include token in request headers
         },
         body: JSON.stringify(jsonData)
     })
@@ -297,18 +304,69 @@ function submitAnotherDonation(){
     .then(result => {
         //Handle successful form submission
         console.log('Success:', result);
+        fetchDonationStatistics();
+        document.getElementById('form').reset();
+        document.getElementById('dropdownToggle').innerText = 'Company Name';
+        // Hide the submit button
+        document.querySelector('.submit-button').style.display = 'none';
+
+        // Show the 2 other buttons
+        document.getElementById('anotherDonation').style.display = 'block';
+        document.getElementById('view').style.display = 'block';
     })
     .catch(error => {
         //Handle errors
-        console.error('Error:', error);
+        console.log(error);
+        if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); 
+            window.location.href = '../Index.html';
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../Index.html'; // Redirect to home page
+        } else {
+            alert('An error occurred: ${error.message}');
+        }
     });
 }
+async function fetchDonationStatistics(){
+    try{
+    const token = localStorage.getItem('token');
+      const response = await fetch("http://localhost:3000/stats", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    const donations = await response.json();
+    console.log(donations[0].numberOfDonations)
+    document.getElementById('numbers').textContent = donations[0].numberOfDonations+"+";
+    }catch(error){
+        console.log(error);
+        if (error.message.includes('Token has expired')) {
+            alert('Session expired. Please log in again.');
+            localStorage.removeItem('token'); //Clear token
+            window.location.href = '../Index.html'; //Redirect to login page
+        } else if (error.message.includes('Invalid token')) {
+            alert('Invalid token. Please log in again.');
+            localStorage.removeItem('token'); 
+            window.location.href = '../Index.html';
+        } else if (error.message.includes('Forbidden')) {
+            alert('You do not have permission to access this resource.');
+            window.location.href = '../Index.html'; // Redirect to home page
+        } else {
+            alert('An error occurred: ${error.message}');
+        }
+    }
 
-function updateCounter() {
-    const counterElement = document.querySelector('.numbers');
-    let currentCount = parseInt(counterElement.textContent.replace(/\D/g, ''), 10);
-    currentCount++;
-    counterElement.textContent = currentCount.toLocaleString() + "+"; // Update the counter display
 }
 
 async function fetchNonProfitNames() {
@@ -361,7 +419,9 @@ function displayNonProfitNames(names) {
             }
     document.addEventListener('DOMContentLoaded', () => {
         fetchNonProfitNames();
+        fetchDonationStatistics();
     });
+
 
 // Back end post function
 

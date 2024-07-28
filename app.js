@@ -75,9 +75,9 @@ app.delete('/users/:id/staff', staffAuthMiddleware, userController.deleteUser);
 
 
 // Donation routes
-app.get("/donations", donationController.getAllDonations);
+app.get("/donations", authMiddleware,donationController.getAllDonations);
 app.get('/nonprofits', donationController.fetchNonProfitNames);
-app.post("/donations",donationController.createDonation);
+app.post("/donations",authMiddleware,donationController.createDonation);
 app.get("/donations/username", authMiddleware, donationController.getDonationByUsername);
 app.get("/stats",authMiddleware, donationController.getAllStats);
 //donationController.getDonationStatistics()
