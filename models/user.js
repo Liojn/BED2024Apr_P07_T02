@@ -209,6 +209,9 @@ class User {
         let connection;
         try {
             connection = await sql.connect(dbConfig);
+            const request = new sql.Request(connection);
+
+            request.input("UserID", sql.Int, userId);
 
             // Getting the username
             const userResult = await request.query('SELECT Username FROM Users WHERE UserID = @UserID');
