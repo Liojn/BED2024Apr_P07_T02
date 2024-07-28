@@ -71,7 +71,7 @@ app.post('/users/register', userController.addNewUser);
 app.post('/users/login', userController.loginUser);
 app.put('/users/:id', userController.updateUser);
 app.delete('/users/:id', authMiddleware, userController.deleteUser);
-app.delete('/users/:id/staff', staffAuthMiddleware, userController.deleteUser);
+app.delete('/users/:id/staff', authMiddleware, staffAuthMiddleware, userController.deleteUser);
 
 
 // Donation routes

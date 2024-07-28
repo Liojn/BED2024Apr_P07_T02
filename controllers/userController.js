@@ -99,7 +99,7 @@ const loginUser = async (req, res) => {
         if (loggingUser) {
             const token = jwt.sign(
                 { id: loggingUser.userId, username: loggingUser.username, accountType: loggingUser.accountType },
-                process.env.JWT_SECRET, {expiresIn: "900s"}
+                process.env.JWT_SECRET, {expiresIn: "2400s"}
             );
             res.status(200).json({ 
                 message: "User login successful", 
@@ -173,7 +173,7 @@ const deleteUser = async (req, res) => {
     try {
         const deleted = await User.deleteUser(userId);
         if (deleted) {
-            res.status(200).json({ message: "User deleted successfully" });
+            res.status(200).json({ message: "User and all related data deleted successfully" });
         } else {
             res.status(404).json({ message: "User not found" });
         }
