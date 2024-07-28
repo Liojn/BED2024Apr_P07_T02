@@ -209,12 +209,17 @@ class User {
             connection = await sql.connect(dbConfig);
 
             // Getting the username
-            const userResult = await request.query('SELECT Username FROM Users WHERE UserID = @UserID');
+            const request = connection.request();
+            request.input("userId", userId);
+
+            const userResult = await request.query('SELECT Username FROM Users WHERE UserID = @userId');
             if (userResult.recordset.length === 0) {
                 return false; // User not found
             }
             const username = userResult.recordset[0].Username;
+
             request.input("Username", username);
+
 
             // Delete from EventRegistrations
             await request.query('DELETE FROM EventRegistrations WHERE username = @Username');
@@ -224,15 +229,15 @@ class User {
     
             // Delete from Donations
             await request.query('DELETE FROM Donations WHERE Username = @Username');
-    
+
             // Delete from Notifications
-            await request.query('DELETE FROM Notifications WHERE UserID = @UserID');
-    
+            await request.query('DELETE FROM Notifications WHERE UserID = @userId');
+
             // Delete from Feedback
             await request.query('DELETE FROM Feedback WHERE Username = @Username');
-    
+
             // Finally, delete the user
-            const deleteUserResult = await request.query('DELETE FROM Users WHERE UserID = @UserID');
+            const deleteUserResult = await request.query('DELETE FROM Users WHERE UserID = @userId');
     
             return deleteUserResult.rowsAffected[0] > 0;
         } catch (error) {
